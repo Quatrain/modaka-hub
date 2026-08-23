@@ -488,7 +488,6 @@ export function CurationWorkbench() {
                       tasks={queueTasks}
                       items={queueTasks}
                       onDropFiles={handleUploadFiles}
-                      onFilesSelected={handleUploadFiles}
                     />
                   </Paper>
 

@@ -5,6 +5,26 @@ import * as crypto from 'node:crypto';
 import { initBackend } from '../../lib/backend';
 import { queueManager } from '../../lib/queue';
 
+
+// In-memory cache to prevent duplicate rapid uploads
+const recentUploads = new Map<string, number>();
+
+function isDuplicateUpload(hash: string): boolean {
+  const now = Date.now();
+  const lastTime = recentUploads.get(hash);
+  if (lastTime && (now - lastTime) < 4000) {
+    return true;
+  }
+  recentUploads.set(hash, now);
+  // Clean up old entries
+  if (recentUploads.size > 200) {
+    for (const [k, v] of recentUploads.entries()) {
+      if (now - v > 10000) recentUploads.delete(k);
+    }
+  }
+  return false;
+}
+
 export const POST: APIRoute = async ({ request }) => {
   await initBackend();
 
@@ -30,6 +50,10 @@ export const POST: APIRoute = async ({ request }) => {
       await fs.writeFile(tempFilePath, buffer);
 
       const fileHash = crypto.createHash('sha256').update(buffer).digest('hex');
+      if (isDuplicateUpload(fileHash)) {
+        console.log(`[Upload API] Ignored rapid duplicate upload for ${file.name} (hash: ${fileHash.substring(0, 8)})`);
+        continue;
+      }
 
       const task = await queueManager.addTask({
         name: file.name,
