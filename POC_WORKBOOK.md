@@ -9,155 +9,64 @@
 
 ## 1. Executive Summary & Enterprise Architecture
 
-Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for organizations (such as Bradtech), allowing experts to ingest raw documents, tag them along **5 multi-dimensional agronomic axes**, extract tailored knowledge packs for specific farmer profiles (delivered to **Modaka / "Hey Brad"**), and collect anonymized feedback loops.
+Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for Bradtech, organizing agronomic knowledge into **4 first-class root directories** matching the primary axes:
 
 ```mermaid
 flowchart TD
-    subgraph Hub ["1. Bradtech Central Hub (Bookworm)"]
-        RawDocs["Ingestion Multi-Sources (PDF, OCR, Field Data)"] --> AI["AI Tagging along 5 Fundamental Axes"]
-        AI --> WorldRepo["Canonical Repo: bradtech/world-agronomy<br>(Tagged with SOA + Revision)"]
-        WorldRepo --> Workbench["Curation Workbench (CoreUX)"]
-        TelemetryCollector["Telemetry Ingestion (/api/telemetry)"] --> Analytics["Curator Insights & Gap Analysis"]
+    subgraph RootStructure ["Arborescence Racine (bradtech/world-agronomy)"]
+        RootIndex["index.md (Index Racine OKF)"]
+        DirSoils["content/soils/ (9 Grands Types de Sols)"]
+        DirClimates["content/climates/ (Zones Agro-Climatiques)"]
+        DirCrops["content/crops/ (Filières & Productions Végétales)"]
+        DirItineraries["content/itineraries/ (Itinéraires Techniques & Pratiques)"]
     end
 
-    subgraph Axes ["5 Multi-Dimensional Agronomic Axes"]
-        Axis1["1. Sols (Texture, pH, Biology, Glomalin)"]
-        Axis2["2. Climats (Mediterranean, Oceanic, Semi-arid...)"]
-        Axis3["3. Géographie (Latitude range, Altitude)"]
-        Axis4["4. Itinéraires Techniques (Viticulture, Semis direct...)"]
-        Axis5["5. Productions Végétales (Viticulture, Arboriculture, Maraîchage, Grandes Cultures, PPAM...)"]
+    subgraph Hub ["1. Hub Central Bookworm"]
+        RawDocs["Ingestion Multi-Sources (PDF, OCR)"] --> AI["AI Tagging 4 Axes"]
+        AI --> RootStructure
+        RootStructure --> Workbench["Curation Workbench (CoreUX)"]
+        TelemetryCollector["Telemetry Ingestion (/api/telemetry)"] --> Analytics["Curator Insights"]
     end
 
-    subgraph Extraction ["2. Contextual Extraction Engine (/api/extract)"]
-        UserProfile["User X Profile<br>• Sol: Argilo-calcaire<br>• Climat: Méditerranéen<br>• Géo: 43.5°N, 150m<br>• Itinéraire: Viti Bio / Rouleau Faca<br>• Filière: Viticulture"]
-        WorldRepo --> FilterEngine["Multi-Axial Matching & Filter Engine"]
-        UserProfile --> FilterEngine
-        FilterEngine --> UserOKF["Exported OKF Tree for User X<br>(Includes SOA: bradtech/world-agronomy & Rev)"]
+    subgraph Extraction ["2. Moteur d'Extraction (/api/extract)"]
+        UserProfile["Profil Utilisateur X"] --> FilterEngine["Filtrage Multi-Axial"]
+        RootStructure --> FilterEngine
+        FilterEngine --> UserOKF["Export OKF Utilisateur X (Hey Brad)"]
     end
-
-    subgraph ClientSpace ["3. User X Space (Modaka / 'Hey Brad')"]
-        UserOKF --> LocalStorage["User Second Brain / Git Repo"]
-        LocalStorage --> HeyBrad["Hey Brad Conversational AI & QMD Search"]
-        UserEnrichment["User Field Notes & Local Enrichment"] --> LocalStorage
-        LocalMetrics["Local Interaction Metrics (Frequency, Votes)"] --> Anonymizer["Anonymization Layer"]
-        Anonymizer -->|Anonymized Telemetry Push| TelemetryCollector
-    end
-
-    AI -.-> Axes
 ```
 
 ---
 
-## 2. The 5 Multi-Dimensional Agronomic Axes
+## 2. The 4 Fundamental Root Axes
 
-Every agronomic document in Bookworm is classified across **5 orthogonal axes**:
-
-| Axe | Propriété OKF | Description & Exemples |
+| Répertoire Racine | Nom Pédologique | Contenu & Rôle |
 | :--- | :--- | :--- |
-| **1. Sols** | `soils` (`string[]`) | Texture, biologie et physico-chimie du sol : `argilo-calcaire`, `limoneux`, `sableux`, `granitique`, `schisteux`, `acide`, `alcalin`, `hydromorphe`, `vivant-microbiote`, `glomaline`. |
-| **2. Climats** | `climates` (`string[]`) | Zones agro-climatiques (classification Köppen adaptée) : `mediterraneen`, `oceanique`, `continental`, `semi-aride`, `subtropical`, `montagnard`, `aridite-estivale`. |
-| **3. Latitude & Altitude** | `geo` / `latitudes` / `altitudes` | Zonage géographique et altimétrique : `latitudes: ["40-45N"]`, `altitudes: ["colline-200-500m"]`, ou `latitudeRange: [42.0, 45.5]`. |
-| **4. Itinéraires Techniques** | `itineraries` (`string[]`) | Pratiques culturales et systèmes de production : `viticulture-biologique`, `arboriculture-fruitiere`, `maraichage-sol-vivant`, `grandes-cultures-semis-direct`, `enherbement-permanent`, `agroforesterie-intra-parcellaire`, `irrigation-goutte-a-goutte`, `taille-guyot-poussard`, `faca-roulage`. |
-| **5. Productions Végétales** | `crops` (`string[]`) | Filières et types de cultures : `viticulture` (vigne), `arboriculture` (olivier, pommier, amandier...), `maraichage` (légumes, petits fruits), `grandes-cultures` (céréales, oléagineux, protéagineux), `ppam` (plantes à parfum, aromatiques et médicinales), `fourrages` (prairies permanentes, luzerne). |
+| **`content/soils/`** | **Sols & Typologies** | Les 9 grands types de sols mondiaux (Calcisols, Luvisols, Vertisols, Arenosols, Cambisols, Andosols, Histosols, Gleysols, Rankers). |
+| **`content/climates/`** | **Climats & Agroclimatologie** | Typologies climatiques Köppen adaptées (Méditerranéen, Océanique, Continental, Semi-aride...). |
+| **`content/crops/`** | **Productions Végétales** | Filières végétales (Viticulture, Arboriculture, Maraîchage, Grandes Cultures, PPAM, Fourrages). |
+| **`content/itineraries/`** | **Itinéraires Techniques** | Pratiques culturales (Semis direct sous couvert, Rouleau Faca, Enherbement permanent, Agroforesterie...). |
 
 ---
 
-## 3. Provenance & Lineage Contract (Mandatory SOA & Revision)
+## 3. Les 9 Grands Types de Sols Curés
 
-All fiches generated, curated, or exported through Bookworm MUST include:
-1. **`soa` (Source of Authority)** : `bradtech/world-agronomy` (or upstream repository identifier).
-2. **`revision`** : Monotonic semver or Git commit SHA (e.g. `rev-1.2.0` or `rev-094fa44`).
-
-Example generated OKF frontmatter:
-```yaml
----
-soa: bradtech/world-agronomy
-revision: rev-1.2.0
-type: guide
-title: Gestion du Sol Vivant, Glomaline et Mycorhizes en Viticulture Méditerranéenne
-category: soil-health
-thematics:
-  - soil-health
-soils:
-  - argilo-calcaire
-  - vivant-microbiote
-  - glomaline
-climates:
-  - mediterraneen
-  - semi-aride
-latitudes:
-  - 40-45N
-altitudes:
-  - colline-200-500m
-  - plaine-0-200m
-itineraries:
-  - viticulture-biologique
-  - enherbement-permanent
-  - rouleau-faca
-crops:
-  - viticulture
-source: INRAE & Bradtech Research
-documentDate: 2026-06-10
-extractedFor: vigneron-domaine-des-terres-vivantes
-extractedAt: 2026-08-23T17:22:08.970Z
----
-```
+| Fiche OKF | Nom & Pédologie | Propriétés Clés & Conduite |
+| :--- | :--- | :--- |
+| [`sol-argilo-calcaire.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-argilo-calcaire.md) | **Sol Argilo-Calcaire** *(Calcisol / Rendzine)* | Structure grumeleuse stable ($Ca^{2+}$), pH 7.5-8.4, risque de chlorose ferrique, mycorhization et couverts de légumineuses. |
+| [`sol-limoneux.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-limoneux.md) | **Sol Limoneux** *(Luvisol / Sol Brun Lessivé)* | Forte réserve en eau (RU 2mm/cm), très sensible à la battance et au tassement, impératif de couverture à 100% et SDSCV. |
+| [`sol-sableux.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-sableux.md) | **Sol Sableux** *(Arenosol / Sol Léger)* | Très filtrant et précoce, faible CEC (<8 cmol+/kg), lessivage des nitrates, fractionnement goutte-à-goutte et biochar. |
+| [`sol-argileux.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-argileux.md) | **Sol Argileux Lourd** *(Vertisol / Pélosol)* | Argiles gonflantes 2:1, CEC >30 cmol+/kg, retrait-gonflement, auto-structuration biologique, enracinement pivotant. |
+| [`sol-schisteux.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-schisteux.md) | **Sol Schisteux** *(Cambisol Dystrique)* | Caillouteux (>60%), drainant, chaud (accumulation thermique nocturne), acide (pH 5.0), murets en terrasses et enherbement partiel. |
+| [`sol-granitique.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-granitique.md) | **Sol Granitique** *(Arène Granitique / Ranker)* | Sablo-limoneux, acide, riche en silice primaire, pauvre en phosphore assimilable, dépendance vitale aux mycorhizes. |
+| [`sol-humifere.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-humifere.md) | **Sol Humifère** *(Histosol / Chernozem)* | MO >5-10%, CEC >40 cmol+/kg, fertilité biologique maximale, rétention hydrique x5, zéro travail du sol oxydant. |
+| [`sol-hydromorphe.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-hydromorphe.md) | **Sol Hydromorphe** *(Gleysol / Planosol)* | Engorgement temporaire/permanent, marbrures d'oxydoréduction, anoxie racinaire, profilage en billons et plantes-pompes. |
+| [`sol-volcanique.md`](file:///Users/crapougnax/CODE/BRAD2026/world-agronomy/content/soils/sol-volcanique.md) | **Sol Volcanique** *(Andosol / Cendres)* | Densité <0.9 g/cm³, porosité >65%, complexes allophane-humus, fixation du phosphore, apport de MO fraîche. |
 
 ---
 
-## 4. Contextual Extraction Engine (`/api/extract`)
+## 4. Repositories & État Git
 
-The Contextual Extraction Engine creates tailored OKF bundles for specific farmers/users based on the 5 axes:
-
-```bash
-curl -s -X POST http://127.0.0.1:4322/api/extract \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "vigneron-domaine-des-terres-vivantes",
-    "userName": "Domaine des Terres Vivantes (Hérault)",
-    "soils": ["argilo-calcaire", "glomaline"],
-    "climates": ["mediterraneen"],
-    "latitude": 43.6,
-    "altitude": 140,
-    "itineraries": ["viticulture-biologique", "rouleau-faca"],
-    "crops": ["viticulture"],
-    "destinationPath": "/Users/crapougnax/CODE/CRAPOUGNAX/second-brain-data"
-  }'
-```
-
----
-
-## 5. Anonymized Telemetry Loop (`/api/telemetry`)
-
-Hey Brad sends anonymized usage telemetry back to Bookworm:
-```bash
-curl -s -X POST http://127.0.0.1:4322/api/telemetry \
-  -H "Content-Type: application/json" \
-  -d '{
-    "clientVersion": "hey-brad-v1.0.0",
-    "telemetryBatch": [
-      {
-        "documentUid": "gestion-sol-vivant-glomaline-viticulture",
-        "soa": "bradtech/world-agronomy",
-        "revision": "rev-1.2.0",
-        "usageCount": 18,
-        "helpfulVotes": 5,
-        "unhelpfulVotes": 0,
-        "contextKeywords": ["glomaline", "rouleau faca", "mycorhizes", "sécheresse"]
-      }
-    ]
-  }'
-```
-
----
-
-## 6. Repositories & Forking Topology
-
-All projects are aligned on branch `feat/bookworm-poc` with zero modifications to `develop` or `main`:
-
-| Repository | GitHub Location | Local Workspace Path | Branch | Role |
-| :--- | :--- | :--- | :--- | :--- |
-| **Quatrain Upstream** | `github.com/Quatrain/bookworm` | — | `feat/bookworm-poc` | Upstream canonical repo |
-| **Contributor Fork** | `github.com/crapougnax/bookworm` | `/Users/crapougnax/CODE/CRAPOUGNAX/bookworm` | `feat/bookworm-poc` | Main application code & workbench |
-| **CoreUX Monorepo** | `github.com/Quatrain/CoreUX` | `/Users/crapougnax/CODE/QUATRAIN/CoreUX` | `feat/bookworm-poc` | Reusable taxonomy, dropzone & curation packages |
-| **Target Dataset** | `github.com/bradtech/world-agronomy` | `/Users/crapougnax/CODE/BRAD2026/world-agronomy` | `feat/bookworm-poc` | Canonical OKF Agronomic Knowledge Base |
+Tous les projets sont alignés et commités localement sur la branche `feat/bookworm-poc` :
+- `Quatrain/CoreUX` : `feat/bookworm-poc` (commit `5e87dcb`)
+- `crapougnax/bookworm` : `feat/bookworm-poc` (commit `b40b9b1`)
+- `bradtech/world-agronomy` : `feat/bookworm-poc` (commit `9303430`)
