@@ -49,19 +49,21 @@ export const GET: APIRoute = async ({ url }) => {
               }
             }
 
-            // Apply multi-axial facet filtering if specified in query params
-            if (soilFilter && (!metadata.soils || !metadata.soils.includes(soilFilter))) {
-              continue;
+            // Dynamic axis query parameters matching
+            let matches = true;
+            for (const [paramKey, paramVal] of url.searchParams.entries()) {
+              if (paramKey === 'category' || !paramVal) continue;
+              
+              const singularKey = paramKey.endsWith('s') ? paramKey.slice(0, -1) : paramKey;
+              const pluralKey = paramKey.endsWith('s') ? paramKey : `${paramKey}s`;
+              
+              const itemVals = metadata[pluralKey] || metadata[singularKey] || metadata.axes?.[pluralKey] || metadata.axes?.[singularKey] || [];
+              if (!Array.isArray(itemVals) || !itemVals.includes(paramVal)) {
+                matches = false;
+                break;
+              }
             }
-            if (climateFilter && (!metadata.climates || !metadata.climates.includes(climateFilter))) {
-              continue;
-            }
-            if (itineraryFilter && (!metadata.itineraries || !metadata.itineraries.includes(itineraryFilter))) {
-              continue;
-            }
-            if (cropFilter && (!metadata.crops || !metadata.crops.includes(cropFilter))) {
-              continue;
-            }
+            if (!matches) continue;
 
             items.push({
               soa: 'bradtech/world-agronomy',

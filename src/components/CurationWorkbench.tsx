@@ -53,6 +53,8 @@ import { CurationCard, type OKFDocumentMetadata, OKFMetadataForm, ContextExtract
 
 export function CurationWorkbench() {
   const [thematics, setThematics] = useState<TaxonomyNode[]>([]);
+  const [axes, setAxes] = useState<any[]>([]);
+  const [axisFilters, setAxisFilters] = useState<Record<string, string>>({});
   const [selectedThematicId, setSelectedThematicId] = useState<string>('all');
   const [documents, setDocuments] = useState<OKFDocumentMetadata[]>([]);
   const [activeDocument, setActiveDocument] = useState<OKFDocumentMetadata | null>(null);
@@ -87,6 +89,7 @@ export function CurationWorkbench() {
     try {
       const res = await fetch('/api/taxonomies');
       const data = await res.json();
+      if (data.axes) setAxes(data.axes);
       if (data.thematics) {
         setThematics(data.thematics);
         taxonomyController.loadNodes(data.thematics);
@@ -100,10 +103,9 @@ export function CurationWorkbench() {
     try {
       let url = '/api/curate?';
       if (selectedThematicId && selectedThematicId !== 'all') url += `category=${selectedThematicId}&`;
-      if (selectedSoil) url += `soil=${selectedSoil}&`;
-      if (selectedClimate) url += `climate=${selectedClimate}&`;
-      if (selectedItinerary) url += `itinerary=${selectedItinerary}&`;
-      if (selectedCrop) url += `crop=${selectedCrop}&`;
+      Object.entries(axisFilters).forEach(([axKey, axVal]) => {
+        if (axVal) url += `${axKey}=${encodeURIComponent(axVal)}&`;
+      });
 
       const res = await fetch(url);
       const data = await res.json();
@@ -163,7 +165,7 @@ export function CurationWorkbench() {
 
   useEffect(() => {
     loadDocuments();
-  }, [selectedThematicId, selectedSoil, selectedClimate, selectedItinerary, selectedCrop]);
+  }, [selectedThematicId, axisFilters]);
 
   const handleSelectThematic = (node: TaxonomyNode) => {
     setSelectedThematicId(node.id);
@@ -377,68 +379,45 @@ export function CurationWorkbench() {
 
             <Divider />
 
-            {/* Multi-Axial Filter Facets */}
+            {/* Dynamic Multi-Axial Filter Facets */}
             <Stack gap="xs">
-              <Text fw={700} size="xs" c="dimmed">
-                FILTRAGE MULTI-AXIAL
-              </Text>
-              <Select
-                size="xs"
-                placeholder="Sol (argilo-calcaire...)"
-                data={[
-                  { value: '', label: 'Tous les sols' },
-                  { value: 'argilo-calcaire', label: 'Argilo-calcaire' },
-                  { value: 'limoneux', label: 'Limoneux' },
-                  { value: 'sableux', label: 'Sableux' },
-                  { value: 'vivant-microbiote', label: 'Sol vivant & microbiote' }
-                ]}
-                value={selectedSoil || ''}
-                onChange={(v) => setSelectedSoil(v || null)}
-                clearable
-              />
-              <Select
-                size="xs"
-                placeholder="Climat (méditerranéen...)"
-                data={[
-                  { value: '', label: 'Tous les climats' },
-                  { value: 'mediterraneen', label: 'Méditerranéen' },
-                  { value: 'oceanique', label: 'Océanique' },
-                  { value: 'semi-aride', label: 'Semi-aride' },
-                  { value: 'tempere', label: 'Tempéré' }
-                ]}
-                value={selectedClimate || ''}
-                onChange={(v) => setSelectedClimate(v || null)}
-                clearable
-              />
-              <Select
-                size="xs"
-                placeholder="Itinéraire technique"
-                data={[
-                  { value: '', label: 'Tous les itinéraires' },
-                  { value: 'viticulture-biologique', label: 'Viticulture bio' },
-                  { value: 'enherbement-permanent', label: 'Enherbement permanent' },
-                  { value: 'rouleau-faca', label: 'Mulch & Rouleau Faca' },
-                  { value: 'agroecologie', label: 'Agroécologie générale' }
-                ]}
-                value={selectedItinerary || ''}
-                onChange={(v) => setSelectedItinerary(v || null)}
-                clearable
-              />
-              <Select
-                size="xs"
-                placeholder="Filière / Production Végétale"
-                data={[
-                  { value: '', label: 'Toutes les filières' },
-                  { value: 'viticulture', label: 'Viticulture (Vigne)' },
-                  { value: 'arboriculture', label: 'Arboriculture (Fruits, Olivier...)' },
-                  { value: 'maraichage', label: 'Maraîchage' },
-                  { value: 'grandes-cultures', label: 'Grandes Cultures (Céréales...)' },
-                  { value: 'ppam', label: 'PPAM (Aromatiques & Médicinales)' }
-                ]}
-                value={selectedCrop || ''}
-                onChange={(v) => setSelectedCrop(v || null)}
-                clearable
-              />
+              <Group justify="space-between">
+                <Text fw={700} size="xs" c="dimmed">
+                  AXES DÉCLARÉS & ÉVOLUTIFS
+                </Text>
+                {Object.keys(axisFilters).length > 0 && (
+                  <Button size="compact-xs" variant="subtle" color="gray" onClick={() => setAxisFilters({})}>
+                    Effacer
+                  </Button>
+                )}
+              </Group>
+              {axes.map((axis) => {
+                const options = [
+                  { value: '', label: `Tous (${axis.label})` },
+                  ...(axis.items?.map((it) => ({
+                    value: it.slug || it.id,
+                    label: it.title || it.label
+                  })) || [])
+                ];
+                return (
+                  <Select
+                    key={axis.id}
+                    size="xs"
+                    placeholder={axis.label}
+                    data={options}
+                    value={axisFilters[axis.id] || ''}
+                    onChange={(v) => {
+                      setAxisFilters(prev => {
+                        const updated = { ...prev };
+                        if (!v) delete updated[axis.id];
+                        else updated[axis.id] = v;
+                        return updated;
+                      });
+                    }}
+                    clearable
+                  />
+                );
+              })}
             </Stack>
           </Stack>
         </AppShell.Navbar>
@@ -593,6 +572,7 @@ export function CurationWorkbench() {
                     <OKFMetadataForm
                       initialValues={activeDocument}
                       thematics={thematics}
+                      axes={axes}
                       onSave={handleSaveMetadata}
                       loading={saveLoading}
                     />

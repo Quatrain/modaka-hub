@@ -10,47 +10,94 @@ export const GET: APIRoute = async () => {
   await initBackend();
   const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
   const contentDir = path.join(gitLocalPath, 'content');
+  const configPath = path.join(gitLocalPath, 'bookworm.config.json');
 
   try {
     await fs.mkdir(contentDir, { recursive: true });
-    const entries = await fs.readdir(contentDir, { withFileTypes: true });
-    const thematics = [];
 
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const thematicSlug = entry.name;
-        const indexPath = path.join(contentDir, thematicSlug, 'index.md');
-        let label = thematicSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        let description = '';
-        let count = 0;
+    let config: any = {
+      soa: 'bradtech/world-agronomy',
+      name: 'Bradtech World Agronomy',
+      axes: [
+        { id: 'soils', label: 'Sols & Typologies Pédologiques', folder: 'soils', color: 'amber' },
+        { id: 'climates', label: 'Climats & Zones Agro-Climatiques', folder: 'climates', color: 'cyan' },
+        { id: 'crops', label: 'Productions Végétales & Filières', folder: 'crops', color: 'lime' },
+        { id: 'itineraries', label: 'Itinéraires Techniques & Pratiques', folder: 'itineraries', color: 'green' }
+      ]
+    };
 
-        try {
-          const indexContent = await fs.readFile(indexPath, 'utf-8');
-          if (indexContent.startsWith('---')) {
-            const parts = indexContent.split('---');
+    try {
+      const configRaw = await fs.readFile(configPath, 'utf-8');
+      config = JSON.parse(configRaw);
+    } catch {}
+
+    const axesResult: any[] = [];
+    const thematics: any[] = [];
+
+    // Scan each configured axis
+    for (const axis of config.axes || []) {
+      const axisFolder = axis.folder || axis.id;
+      const axisDirPath = path.join(contentDir, axisFolder);
+      await fs.mkdir(axisDirPath, { recursive: true });
+
+      const files = await fs.readdir(axisDirPath);
+      const items: any[] = [];
+
+      for (const file of files) {
+        if (file.endsWith('.md') && file !== 'index.md') {
+          const filePath = path.join(axisDirPath, file);
+          const raw = await fs.readFile(filePath, 'utf-8');
+          let meta: any = { id: file.replace('.md', ''), title: file.replace('.md', '') };
+
+          if (raw.startsWith('---')) {
+            const parts = raw.split('---');
             if (parts.length >= 3) {
-              const meta = parseYaml(parts[1]);
-              if (meta?.title) label = meta.title;
-              if (meta?.description) description = meta.description;
+              try {
+                meta = { ...meta, ...parseYaml(parts[1]) };
+              } catch {}
             }
           }
-        } catch {}
 
-        try {
-          const files = await fs.readdir(path.join(contentDir, thematicSlug));
-          count = files.filter(f => f.endsWith('.md') && f !== 'index.md').length;
-        } catch {}
-
-        thematics.push({
-          id: thematicSlug,
-          label,
-          description,
-          count
-        });
+          items.push({
+            id: meta.id || file.replace('.md', ''),
+            slug: file.replace('.md', ''),
+            label: meta.title || file.replace('.md', ''),
+            title: meta.title || file.replace('.md', ''),
+            description: meta.description || '',
+            tags: meta.tags || [],
+            path: path.join('content', axisFolder, file)
+          });
+        }
       }
+
+      const axisData = {
+        id: axis.id,
+        label: axis.label || axis.id,
+        folder: axisFolder,
+        color: axis.color || 'blue',
+        icon: axis.icon,
+        description: axis.description || '',
+        count: items.length,
+        items
+      };
+
+      axesResult.push(axisData);
+      thematics.push({
+        id: axis.id,
+        label: axis.label || axis.id,
+        description: axis.description || '',
+        color: axis.color,
+        count: items.length,
+        items
+      });
     }
 
-    return new Response(JSON.stringify({ thematics }), {
+    return new Response(JSON.stringify({
+      soa: config.soa || 'bradtech/world-agronomy',
+      config,
+      axes: axesResult,
+      thematics
+    }), {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (err: any) {
