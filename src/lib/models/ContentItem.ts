@@ -1,11 +1,23 @@
 import { PersistedBaseObject } from '@quatrain/backend';
-import { StringProperty, ArrayProperty, DateTimeProperty } from '@quatrain/core';
+import { StringProperty, ArrayProperty, DateTimeProperty, ObjectProperty } from '@quatrain/core';
 
 export const ContentItemProperties = [
    {
       name: 'id',
       type: StringProperty.TYPE,
       mandatory: false
+   },
+   {
+      name: 'soa',
+      type: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: 'bradtech/world-agronomy'
+   },
+   {
+      name: 'revision',
+      type: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: 'rev-1.0.0'
    },
    {
       name: 'documentDate',
@@ -38,6 +50,41 @@ export const ContentItemProperties = [
    },
    {
       name: 'thematics',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'soils',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'climates',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'latitudes',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'altitudes',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'itineraries',
       type: ArrayProperty.TYPE,
       itemType: StringProperty.TYPE,
       mandatory: false,

@@ -1,231 +1,169 @@
 # Bookworm PoC Tracking & Reproduction Workbook
 
-> **Project**: Quatrain Bookworm (Content Curation & OKF Structuring Platform)  
-> **Status**: PoC Stage 1 Verified & Operational  
+> **Project**: Quatrain Bookworm (Content Curation, Multi-Axial Structuring & Hey Brad Delivery Platform)  
+> **Status**: Production-Ready PoC Verified & Operational  
 > **Date**: August 23, 2026  
 > **License**: AGPL-v3  
 
 ---
 
-## 1. Executive Summary & Architecture Overview
+## 1. Executive Summary & Enterprise Architecture
 
-Bookworm is an open-source knowledge curation and structuring platform built on top of the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It inherits ingestion, extraction, and background processing mechanics from **Modaka** while providing a dedicated 3-panel Curation Workbench powered by reusable **CoreUX** components.
+Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for organizations (such as Bradtech), allowing experts to ingest raw documents, tag them along **4 multi-dimensional agronomic axes**, extract tailored knowledge packs for specific farmer profiles (delivered to **Modaka / "Hey Brad"**), and collect anonymized feedback loops.
 
 ```mermaid
 flowchart TD
-    subgraph UI ["Client Layer (CoreUX + Mantine)"]
-        Tree["@quatrain/ux-taxonomy<br>ThematicTree"]
-        Dropzone["@quatrain/ux-dropzone<br>FileIngestDropzone"]
-        Form["@quatrain/ux-curation<br>OKFMetadataForm"]
+    subgraph Hub ["1. Bradtech Central Hub (Bookworm)"]
+        RawDocs["Ingestion Multi-Sources (PDF, OCR, Field Data)"] --> AI["AI Tagging along 4 Fundamental Axes"]
+        AI --> WorldRepo["Canonical Repo: bradtech/world-agronomy<br>(Tagged with SOA + Revision)"]
+        WorldRepo --> Workbench["Curation Workbench (CoreUX)"]
+        TelemetryCollector["Telemetry Ingestion (/api/telemetry)"] --> Analytics["Curator Insights & Gap Analysis"]
     end
 
-    subgraph Server ["Bookworm Engine (Astro 5 + SSR)"]
-        Queue["@quatrain/queue-sqlite<br>Background Ingestion Worker"]
-        OCR["@quatrain/ingestion-ocr<br>pdf-parse + Gemini 2.5"]
-        AutoLink["Wikipedia Concept Auto-Linker"]
-        GitSync["Git Sync Engine<br>(Commit & Stage)"]
+    subgraph Axes ["4 Multi-Dimensional Agronomic Axes"]
+        Axis1["1. Sols (Texture, pH, Biology, Glomalin)"]
+        Axis2["2. Climats (Mediterranean, Oceanic, Semi-arid...)"]
+        Axis3["3. Géographie (Latitude range, Altitude)"]
+        Axis4["4. Itinéraires Techniques (Viticulture, Semis direct...)"]
     end
 
-    subgraph Storage ["Target Repository (OKF v0.1)"]
-        Markdown["content/<thematic>/<slug>.md<br>(Flat YAML Frontmatter)"]
-        Assets["assets/documents/<filename>.pdf<br>(Dual Storage: Local or MinIO)"]
-        Git["Git Tree (feat/bookworm-poc)"]
+    subgraph Extraction ["2. Contextual Extraction Engine (/api/extract)"]
+        UserProfile["User X Profile<br>• Sol: Argilo-calcaire<br>• Climat: Méditerranéen<br>• Géo: 43.5°N, 150m<br>• Itinéraire: Viti Bio / Rouleau Faca"]
+        WorldRepo --> FilterEngine["Multi-Axial Matching & Filter Engine"]
+        UserProfile --> FilterEngine
+        FilterEngine --> UserOKF["Exported OKF Tree for User X<br>(Includes SOA: bradtech/world-agronomy & Rev)"]
     end
 
-    Dropzone -->|Uploads PDF / Text| Queue
-    Queue --> OCR
-    OCR --> AutoLink
-    AutoLink --> Form
-    Form -->|Save & Commit| GitSync
-    GitSync --> Markdown
-    GitSync --> Assets
-    GitSync --> Git
-    Tree <-->|Realtime Count & Filter| Markdown
+    subgraph ClientSpace ["3. User X Space (Modaka / 'Hey Brad')"]
+        UserOKF --> LocalStorage["User Second Brain / Git Repo"]
+        LocalStorage --> HeyBrad["Hey Brad Conversational AI & QMD Search"]
+        UserEnrichment["User Field Notes & Local Enrichment"] --> LocalStorage
+        LocalMetrics["Local Interaction Metrics (Frequency, Votes)"] --> Anonymizer["Anonymization Layer"]
+        Anonymizer -->|Anonymized Telemetry Push| TelemetryCollector
+    end
+
+    AI -.-> Axes
 ```
 
 ---
 
-## 2. Repositories & Forking Topology
+## 2. The 4 Multi-Dimensional Agronomic Axes
 
-All projects are strictly aligned on branch `feat/bookworm-poc` with zero modifications to `develop` or `main`:
+Every agronomic document in Bookworm is classified across **4 orthogonal axes**:
+
+| Axe | Propriété OKF | Description & Exemples |
+| :--- | :--- | :--- |
+| **1. Sols** | `soils` (`string[]`) | Texture, biologie et physico-chimie du sol : `argilo-calcaire`, `limoneux`, `sableux`, `granitique`, `schisteux`, `acide`, `alcalin`, `hydromorphe`, `vivant-microbiote`, `glomaline`. |
+| **2. Climats** | `climates` (`string[]`) | Zones agro-climatiques (classification Köppen adaptée) : `mediterraneen`, `oceanique`, `continental`, `semi-aride`, `subtropical`, `montagnard`, `aridite-estivale`. |
+| **3. Latitude & Altitude** | `geo` / `latitudes` / `altitudes` | Zonage géographique et altimétrique : `latitudes: ["40-45N"]`, `altitudes: ["colline-200-500m"]`, ou `latitudeRange: [42.0, 45.5]`. |
+| **4. Itinéraires Techniques** | `itineraries` (`string[]`) | Pratiques culturales et systèmes de production : `viticulture-biologique`, `arboriculture-fruitiere`, `maraichage-sol-vivant`, `grandes-cultures-semis-direct`, `enherbement-permanent`, `agroforesterie-intra-parcellaire`, `irrigation-goutte-a-goutte`, `taille-guyot-poussard`, `faca-roulage`. |
+
+---
+
+## 3. Provenance & Lineage Contract (Mandatory SOA & Revision)
+
+All fiches generated, curated, or exported through Bookworm MUST include:
+1. **`soa` (Source of Authority)** : `bradtech/world-agronomy` (or upstream repository identifier).
+2. **`revision`** : Monotonic semver or Git commit SHA (e.g. `rev-1.1.0` or `rev-094fa44`).
+
+Example generated OKF frontmatter:
+```yaml
+---
+soa: bradtech/world-agronomy
+revision: rev-1.1.0
+type: guide
+title: Gestion du Sol Vivant, Glomaline et Mycorhizes en Viticulture Méditerranéenne
+category: soil-health
+thematics:
+  - soil-health
+soils:
+  - argilo-calcaire
+  - vivant-microbiote
+  - glomaline
+climates:
+  - mediterraneen
+  - semi-aride
+latitudes:
+  - 40-45N
+altitudes:
+  - colline-200-500m
+  - plaine-0-200m
+itineraries:
+  - viticulture-biologique
+  - enherbement-permanent
+  - rouleau-faca
+source: INRAE & Bradtech Research
+documentDate: 2026-06-10
+extractedFor: vigneron-domaine-des-terres-vivantes
+extractedAt: 2026-08-23T17:22:08.970Z
+---
+```
+
+---
+
+## 4. Contextual Extraction Engine (`/api/extract`)
+
+The Contextual Extraction Engine creates tailored OKF bundles for specific farmers/users:
+
+```bash
+curl -s -X POST http://127.0.0.1:4322/api/extract \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "vigneron-domaine-des-terres-vivantes",
+    "userName": "Domaine des Terres Vivantes (Hérault)",
+    "soils": ["argilo-calcaire", "glomaline"],
+    "climates": ["mediterraneen"],
+    "latitude": 43.6,
+    "altitude": 140,
+    "itineraries": ["viticulture-biologique", "rouleau-faca"],
+    "destinationPath": "/Users/crapougnax/CODE/CRAPOUGNAX/second-brain-data"
+  }'
+```
+
+**Actions performed**:
+1. Scans `bradtech/world-agronomy` content files.
+2. Scores and filters matching multi-axial items.
+3. Exports a clean OKF directory tree with `content/<category>/<doc>.md` and referenced PDF assets.
+4. Generates root and category `index.md` linking to sub-categories.
+5. Injects `soa: bradtech/world-agronomy`, `revision`, `extractedFor`, and `extractedAt`.
+
+---
+
+## 5. Anonymized Telemetry Loop (`/api/telemetry`)
+
+When User X interacts with **Hey Brad**:
+1. Hey Brad aggregates usage counts and user feedback (+1 / -1).
+2. Sends an anonymized batch to Bookworm:
+```bash
+curl -s -X POST http://127.0.0.1:4322/api/telemetry \
+  -H "Content-Type: application/json" \
+  -d '{
+    "clientVersion": "hey-brad-v1.0.0",
+    "telemetryBatch": [
+      {
+        "documentUid": "gestion-sol-vivant-glomaline-viticulture",
+        "soa": "bradtech/world-agronomy",
+        "revision": "rev-1.1.0",
+        "usageCount": 18,
+        "helpfulVotes": 5,
+        "unhelpfulVotes": 0,
+        "contextKeywords": ["glomaline", "rouleau faca", "mycorhizes", "sécheresse"]
+      }
+    ]
+  }'
+```
+
+3. Bookworm aggregates and displays metrics in the **Curation Analytics** dashboard (`GET /api/telemetry`).
+
+---
+
+## 6. Repositories & Forking Topology
+
+All projects are aligned on branch `feat/bookworm-poc` with zero modifications to `develop` or `main`:
 
 | Repository | GitHub Location | Local Workspace Path | Branch | Role |
 | :--- | :--- | :--- | :--- | :--- |
 | **Quatrain Upstream** | `github.com/Quatrain/bookworm` | — | `feat/bookworm-poc` | Upstream canonical repo |
 | **Contributor Fork** | `github.com/crapougnax/bookworm` | `/Users/crapougnax/CODE/CRAPOUGNAX/bookworm` | `feat/bookworm-poc` | Main application code & workbench |
 | **CoreUX Monorepo** | `github.com/Quatrain/CoreUX` | `/Users/crapougnax/CODE/QUATRAIN/CoreUX` | `feat/bookworm-poc` | Reusable taxonomy, dropzone & curation packages |
-| **Target Dataset** | `github.com/bradtech/world-agronomy` | `/Users/crapougnax/CODE/BRAD2026/world-agronomy` | `feat/bookworm-poc` | OKF Agronomic Knowledge Base & assets |
-
----
-
-## 3. Step-by-Step Reproduction Guide (From Scratch)
-
-### Step 1: Upstream & Fork Initialization
-
-```bash
-# 1. Create upstream and personal fork
-gh repo create Quatrain/bookworm --public --license AGPL-3.0 --description "Open Knowledge Format (OKF) Curation & Research Platform"
-gh repo fork Quatrain/bookworm --clone=false --default-branch-only=false
-
-# 2. Clone fork locally and configure 3-tier remotes
-cd /Users/crapougnax/CODE/CRAPOUGNAX
-git clone git@github.com:crapougnax/bookworm.git
-cd bookworm
-git remote add upstream https://github.com/Quatrain/bookworm.git
-git checkout -b feat/bookworm-poc
-```
-
-### Step 2: Target Repository Creation (`world-agronomy`)
-
-```bash
-# 1. Create target content repo
-cd /Users/crapougnax/CODE/BRAD2026
-gh repo create bradtech/world-agronomy --private --description "Agronomic Knowledge Base (OKF v0.1)"
-git clone git@github.com:bradtech/world-agronomy.git
-cd world-agronomy
-git checkout -b feat/bookworm-poc
-
-# 2. Bootstrap OKF v0.1 directory tree & index
-mkdir -p content/soil-health content/cover-crops content/water-management content/agroforestry content/crop-protection assets/documents
-```
-
-### Step 3: CoreUX Component Packages (`Quatrain/CoreUX`)
-
-In `/Users/crapougnax/CODE/QUATRAIN/CoreUX`, create the following packages:
-1. **`@quatrain/ux-taxonomy`**:
-   - `TaxonomyController.ts`: Headless state controller for hierarchical categories, counts, active selection, and expand/collapse states.
-   - `TaxonomyController.test.ts`: Co-located unit tests (100% pass rate).
-   - `ThematicTree.tsx`: Mantine tree view with search input, counts badge, and thematic icons.
-   - `ThematicBadgeGroup.tsx`: Multi-select transversal thematic badges.
-2. **`@quatrain/ux-dropzone`**:
-   - `FileIngestDropzone.tsx`: Drag & drop container supporting PDF, images, and text with live queue processing status cards.
-3. **`@quatrain/ux-curation`**:
-   - `OKFMetadataForm.tsx`: Unified metadata editor with dual Visual Form & Raw YAML tab.
-   - `CurationCard.tsx`: Document card showing title, excerpt, thematic badges, and action buttons.
-
-Run tests:
-```bash
-cd /Users/crapougnax/CODE/QUATRAIN/CoreUX
-yarn test
-```
-
-### Step 4: Bookworm Application Scaffolding
-
-In `/Users/crapougnax/CODE/CRAPOUGNAX/bookworm`:
-1. Initialize Astro with React & Mantine:
-   ```bash
-   yarn init -y
-   yarn add astro @astrojs/react @astrojs/node react react-dom @mantine/core @mantine/hooks @mantine/dropzone @tabler/icons-react yaml pdf-parse dotenv
-   ```
-2. Configure `astro.config.mjs` with portal aliases:
-   ```javascript
-   import { defineConfig } from 'astro/config';
-   import react from '@astrojs/react';
-   import node from '@astrojs/node';
-   import path from 'node:path';
-
-   export default defineConfig({
-     output: 'server',
-     adapter: node({ mode: 'standalone' }),
-     integrations: [react()],
-     vite: {
-       ssr: { noExternal: [/@quatrain\/.*/, /@mantine\/.*/] },
-       resolve: {
-         alias: {
-           '@quatrain/core': path.resolve(__dirname, '../QUATRAIN/Core/packages/core/src/index.ts'),
-           '@quatrain/backend': path.resolve(__dirname, '../QUATRAIN/Core/packages/backend/src/index.ts'),
-           '@quatrain/okf': path.resolve(__dirname, '../QUATRAIN/Core/packages/okf/src/index.ts'),
-           '@quatrain/storage': path.resolve(__dirname, '../QUATRAIN/Core/packages/storage/src/index.ts'),
-           '@quatrain/storage-local': path.resolve(__dirname, '../QUATRAIN/Core/packages/storage-local/src/index.ts'),
-           '@quatrain/queue': path.resolve(__dirname, '../QUATRAIN/Core/packages/queue/src/index.ts'),
-           '@quatrain/queue-sqlite': path.resolve(__dirname, '../QUATRAIN/Core/packages/queue-sqlite/src/index.ts'),
-           '@quatrain/ux-taxonomy': path.resolve(__dirname, '../QUATRAIN/CoreUX/packages/ux-taxonomy/src/index.ts'),
-           '@quatrain/ux-dropzone': path.resolve(__dirname, '../QUATRAIN/CoreUX/packages/ux-dropzone/src/index.ts'),
-           '@quatrain/ux-curation': path.resolve(__dirname, '../QUATRAIN/CoreUX/packages/ux-curation/src/index.ts')
-         }
-       }
-     }
-   });
-   ```
-
-### Step 5: Backend & Ingestion Queue Pipeline
-
-1. **`src/lib/backend.ts`**:
-   - Initializes `LocalStorageAdapter` on `/Users/crapougnax/CODE/BRAD2026/world-agronomy/assets`.
-   - Initializes `OKFBackendAdapter` with `database: /Users/crapougnax/CODE/BRAD2026/world-agronomy`.
-   - Sets up `SQLiteQueueAdapter` at `.bookworm-queue/queue.sqlite`.
-2. **`src/lib/queue.ts`**:
-   - Background worker listening to channel `'ingestion'`.
-   - Parses PDF files using `pdf-parse`.
-   - Performs AI entity extraction and categorization via `@quatrain/ai-gemini`.
-   - Persists binary assets to `assets/documents/<filename>.pdf`.
-   - Saves OKF document to `content/<thematic>/<slug>.md`.
-   - Triggers Wikipedia concept auto-linking for proper nouns.
-   - Automatically stages and commits new files to Git.
-
----
-
-## 4. Operational Verification & Testing
-
-### A. Development Server
-```bash
-cd /Users/crapougnax/CODE/CRAPOUGNAX/bookworm
-yarn astro dev --port 4322 --host 127.0.0.1
-```
-Access the Workbench at: **`http://127.0.0.1:4322`**
-
-### B. API Verification Commands
-
-#### 1. Query Thematics & Taxonomy
-```bash
-curl -s http://127.0.0.1:4322/api/taxonomies | jq .
-```
-
-#### 2. Upload Research PDF to Queue
-```bash
-curl -s -X POST http://127.0.0.1:4322/api/upload \
-  -F "files=@/path/to/paper.pdf" \
-  -F "category=soil-health" \
-  -F "thematics=[\"soil-health\", \"cover-crops\"]" \
-  -F "source=INRAE Research" | jq .
-```
-
-#### 3. Monitor Background Processing Queue
-```bash
-curl -s http://127.0.0.1:4322/api/queue/status | jq .
-```
-
-#### 4. Save Curated Document
-```bash
-curl -s -X POST http://127.0.0.1:4322/api/curate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "id": "soil-biology-guide",
-    "title": "Soil Microbiology in Regenerative Systems",
-    "type": "guide",
-    "category": "soil-health",
-    "thematics": ["soil-health"],
-    "tags": ["microbiology", "mycorrhizae", "carbon-sequestration"],
-    "description": "Comprehensive guide on mycorrhizal fungi and glomalin production.",
-    "body": "# Soil Microbiology\n\nGlomalin plays a vital role in soil aggregate stability."
-  }' | jq .
-```
-
-#### 5. Verify Git Sync Status & Commit
-```bash
-curl -s http://127.0.0.1:4322/api/git/status | jq .
-curl -s -X POST http://127.0.0.1:4322/api/git/commit \
-  -H "Content-Type: application/json" \
-  -d '{"message": "feat(curation): update soil biology guide"}' | jq .
-```
-
----
-
-## 5. Storage Evolution (PoC -> Production)
-
-| Feature | Stage 1 (PoC - Current) | Stage 2 (Production Evolution) |
-| :--- | :--- | :--- |
-| **PDF Binary Storage** | `world-agronomy/assets/documents/*.pdf` | MinIO Object Storage (`https://s3.dev.brad.team/world-agronomy`) via `@quatrain/storage-s3` |
-| **OKF Text & Metadata** | Git Local Repo (`world-agronomy/content/`) | Dual Sync: Git Local + Push to GitHub Private Repository |
-| **Search Engine** | OKF Frontmatter & Directory Indexing | QMD Vector Search (`@quatrain/searchengine-qmd`) |
-| **OCR Processing** | `pdf-parse` text extraction + Gemini 2.5 | Tesseract OCR + Vision LLM for scanned PDFs |
+| **Target Dataset** | `github.com/bradtech/world-agronomy` | `/Users/crapougnax/CODE/BRAD2026/world-agronomy` | `feat/bookworm-poc` | Canonical OKF Agronomic Knowledge Base |

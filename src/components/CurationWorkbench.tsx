@@ -20,7 +20,11 @@ import {
   Box,
   Notification,
   Title,
-  Tooltip
+  Tooltip,
+  TagsInput,
+  SimpleGrid,
+  ThemeIcon,
+  Table
 } from '@mantine/core';
 import {
   IconBook2,
@@ -34,11 +38,18 @@ import {
   IconFolder,
   IconSparkles,
   IconArrowRight,
-  IconDeviceFloppy
+  IconDeviceFloppy,
+  IconDownload,
+  IconActivity,
+  IconThumbUp,
+  IconThumbDown,
+  IconPlant,
+  IconMapPin,
+  IconWorld
 } from '@tabler/icons-react';
 import { TaxonomyController, ThematicTree, ThematicBadgeGroup, TaxonomyNode } from '@quatrain/ux-taxonomy';
 import { FileIngestDropzone, IngestFileItem } from '@quatrain/ux-dropzone';
-import { CurationCard, OKFDocumentMetadata, OKFMetadataForm } from '@quatrain/ux-curation';
+import { CurationCard, OKFDocumentMetadata, OKFMetadataForm, ContextExtractionModal, UserContextProfile } from '@quatrain/ux-curation';
 
 export function CurationWorkbench() {
   const [thematics, setThematics] = useState<TaxonomyNode[]>([]);
@@ -48,12 +59,20 @@ export function CurationWorkbench() {
   const [queueTasks, setQueueTasks] = useState<IngestFileItem[]>([]);
   const [gitStatus, setGitStatus] = useState<any>({ branch: 'feat/bookworm-poc', isClean: true, uncommittedFiles: [] });
   const [isNewThematicOpen, setIsNewThematicOpen] = useState(false);
+  const [isExtractionOpen, setIsExtractionOpen] = useState(false);
   const [newThematicLabel, setNewThematicLabel] = useState('');
   const [newThematicDesc, setNewThematicDesc] = useState('');
   const [activeTab, setActiveTab] = useState<string | null>('ingest');
   const [notification, setNotification] = useState<{ title: string; message: string; color: string } | null>(null);
   const [transversalThematics, setTransversalThematics] = useState<string[]>([]);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [extractLoading, setExtractLoading] = useState(false);
+  const [telemetryData, setTelemetryData] = useState<any>({ totalInteractions: 0, recordedDocuments: 0, stats: [] });
+
+  // Multi-axial filters
+  const [selectedSoil, setSelectedSoil] = useState<string | null>(null);
+  const [selectedClimate, setSelectedClimate] = useState<string | null>(null);
+  const [selectedItinerary, setSelectedItinerary] = useState<string | null>(null);
 
   const taxonomyController = useMemo(() => {
     return new TaxonomyController({
@@ -76,9 +95,14 @@ export function CurationWorkbench() {
     }
   };
 
-  const loadDocuments = async (category = selectedThematicId) => {
+  const loadDocuments = async () => {
     try {
-      const url = category && category !== 'all' ? `/api/curate?category=${category}` : '/api/curate';
+      let url = '/api/curate?';
+      if (selectedThematicId && selectedThematicId !== 'all') url += `category=${selectedThematicId}&`;
+      if (selectedSoil) url += `soil=${selectedSoil}&`;
+      if (selectedClimate) url += `climate=${selectedClimate}&`;
+      if (selectedItinerary) url += `itinerary=${selectedItinerary}&`;
+
       const res = await fetch(url);
       const data = await res.json();
       if (data.items) {
@@ -99,73 +123,89 @@ export function CurationWorkbench() {
     }
   };
 
-  const pollQueue = async () => {
+  const loadTelemetry = async () => {
     try {
-      const res = await fetch('/api/queue/status');
+      const res = await fetch('/api/telemetry');
       const data = await res.json();
-      if (data.tasks) {
-        setQueueTasks(data.tasks.map((t: any) => ({
-          id: t.id,
-          name: t.name,
-          size: t.size || 1024 * 1024,
-          type: t.type || 'pdf',
-          status: t.status === 'processing' ? 'processing' : t.status === 'completed' ? 'completed' : t.status === 'failed' ? 'error' : 'idle',
-          progress: t.progress,
-          error: t.error
-        })));
-      }
-    } catch {}
+      setTelemetryData(data);
+    } catch (e) {
+      console.error('Failed to load telemetry:', e);
+    }
+  };
+
+  const refreshAll = async () => {
+    await Promise.all([loadThematics(), loadDocuments(), loadGitStatus(), loadTelemetry()]);
   };
 
   useEffect(() => {
-    loadThematics();
-    loadDocuments('all');
-    loadGitStatus();
-  }, []);
-
-  // Poll queue every 3s
-  useEffect(() => {
-    const interval = setInterval(() => {
-      pollQueue();
-      loadGitStatus();
+    refreshAll();
+    const interval = setInterval(async () => {
+      try {
+        const qRes = await fetch('/api/queue/status');
+        const qData = await qRes.json();
+        if (qData.tasks) {
+          setQueueTasks(qData.tasks.map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            size: 0,
+            type: t.type,
+            status: t.status === 'processing' ? 'uploading' : t.status === 'completed' ? 'ready' : t.status,
+            progress: t.progress,
+            error: t.error
+          })));
+        }
+      } catch {}
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    loadDocuments();
+  }, [selectedThematicId, selectedSoil, selectedClimate, selectedItinerary]);
+
+  const handleSelectThematic = (node: TaxonomyNode) => {
+    setSelectedThematicId(node.id);
+  };
+
   const handleCreateThematic = async () => {
     if (!newThematicLabel.trim()) return;
+    const slug = newThematicLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     try {
       const res = await fetch('/api/taxonomies', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label: newThematicLabel, description: newThematicDesc })
+        body: JSON.stringify({
+          id: slug,
+          label: newThematicLabel,
+          description: newThematicDesc
+        })
       });
-      const data = await res.json();
-      if (data.success) {
+      if (res.ok) {
         setIsNewThematicOpen(false);
         setNewThematicLabel('');
         setNewThematicDesc('');
-        await loadThematics();
         setNotification({
           title: 'Thématique créée',
-          message: `La thématique "${newThematicLabel}" a été créée et committée dans le dépôt OKF.`,
+          message: `La thématique "${newThematicLabel}" a été créée avec succès.`,
           color: 'green'
         });
+        await refreshAll();
       }
-    } catch (e) {
-      console.error('Error creating thematic:', e);
+    } catch (e: any) {
+      setNotification({
+        title: 'Erreur',
+        message: e.message,
+        color: 'red'
+      });
     }
   };
 
-  const handleDropFiles = async (files: File[]) => {
+  const handleUploadFiles = async (files: File[]) => {
     const formData = new FormData();
-    for (const f of files) {
-      formData.append('files', f);
-    }
-    const cat = selectedThematicId !== 'all' ? selectedThematicId : 'soil-health';
-    formData.append('category', cat);
-    formData.append('thematics', JSON.stringify(transversalThematics.length > 0 ? transversalThematics : [cat]));
-    formData.append('source', 'Curation Bookworm');
+    files.forEach(f => formData.append('files', f));
+    formData.append('category', selectedThematicId === 'all' ? 'soil-health' : selectedThematicId);
+    formData.append('thematics', JSON.stringify(transversalThematics.length > 0 ? transversalThematics : [selectedThematicId]));
+    formData.append('soa', 'bradtech/world-agronomy');
 
     try {
       const res = await fetch('/api/upload', {
@@ -175,18 +215,21 @@ export function CurationWorkbench() {
       const data = await res.json();
       if (data.success) {
         setNotification({
-          title: 'Fichiers ajoutés à la file d\'ingestion',
-          message: `${files.length} document(s) sont en cours d'analyse IA et de parsing PDF.`,
+          title: 'Documents ajoutés à la file',
+          message: `${files.length} document(s) sont en cours d'ingestion et structuration IA.`,
           color: 'blue'
         });
-        pollQueue();
       }
-    } catch (e) {
-      console.error('Upload error:', e);
+    } catch (e: any) {
+      setNotification({
+        title: 'Erreur d\'upload',
+        message: e.message,
+        color: 'red'
+      });
     }
   };
 
-  const handleSaveCurated = async (metadata: OKFDocumentMetadata) => {
+  const handleSaveMetadata = async (metadata: OKFDocumentMetadata) => {
     setSaveLoading(true);
     try {
       const res = await fetch('/api/curate', {
@@ -197,39 +240,51 @@ export function CurationWorkbench() {
       const data = await res.json();
       if (data.success) {
         setNotification({
-          title: 'Curation enregistrée',
-          message: `Le document "${metadata.title}" a été synchronisé et committé dans le dépôt OKF.`,
+          title: 'Fiche OKF enregistrée & commitée',
+          message: `Document "${metadata.title}" mis à jour avec SOA: ${metadata.soa || 'bradtech/world-agronomy'}.`,
           color: 'green'
         });
-        await loadDocuments(selectedThematicId);
-        await loadThematics();
-        await loadGitStatus();
+        setActiveDocument(null);
+        await refreshAll();
       }
-    } catch (e) {
-      console.error('Save curation error:', e);
+    } catch (e: any) {
+      setNotification({
+        title: 'Erreur de sauvegarde',
+        message: e.message,
+        color: 'red'
+      });
     } finally {
       setSaveLoading(false);
     }
   };
 
-  const handleGitSync = async () => {
+  const handleExecuteExtraction = async (profile: UserContextProfile) => {
+    setExtractLoading(true);
     try {
-      const res = await fetch('/api/git/commit', {
+      const res = await fetch('/api/extract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'feat(curation): batch sync curated OKF knowledge base', push: false })
+        body: JSON.stringify(profile)
       });
       const data = await res.json();
       if (data.success) {
+        setIsExtractionOpen(false);
         setNotification({
-          title: 'Dépôt Git synchronisé',
-          message: 'Toutes les modifications OKF ont été committées en local.',
-          color: 'teal'
+          title: 'Extraction Contextuelle Réussie',
+          message: `${data.extractedCount} fiches agronomiques exportées vers ${data.destinationPath} avec SOA ${data.soa}.`,
+          color: 'green'
         });
-        loadGitStatus();
+      } else {
+        throw new Error(data.error || 'Erreur lors de l\'extraction');
       }
-    } catch (e) {
-      console.error('Git sync error:', e);
+    } catch (e: any) {
+      setNotification({
+        title: 'Erreur d\'extraction',
+        message: e.message,
+        color: 'red'
+      });
+    } finally {
+      setExtractLoading(false);
     }
   };
 
@@ -237,107 +292,141 @@ export function CurationWorkbench() {
     <MantineProvider defaultColorScheme="dark">
       <AppShell
         header={{ height: 60 }}
-        navbar={{ width: 300, breakpoint: 'sm' }}
-        aside={{ width: 340, breakpoint: 'md' }}
+        navbar={{ width: 320, breakpoint: 'sm' }}
         padding="md"
       >
-        {/* Top Header */}
+        {/* Header */}
         <AppShell.Header p="xs">
           <Group justify="space-between" h="100%">
             <Group gap="sm">
-              <IconBook2 size={28} color="var(--mantine-color-teal-filled)" />
+              <IconBook2 size={28} color="var(--mantine-color-green-5)" />
               <div>
-                <Text fw={700} size="md" inline>
-                  Bookworm
+                <Text fw={800} size="lg" c="white" style={{ letterSpacing: -0.5 }}>
+                  Bookworm <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
                 </Text>
-                <Text size="xs" c="dimmed" inline mt={2}>
-                  Curation & Indexation Sémantique OKF
+                <Text size="xs" c="dimmed">
+                  Curation Multi-Axiale & Structuration OKF v0.1
                 </Text>
               </div>
             </Group>
 
             <Group gap="md">
-              <Badge variant="light" color="blue" leftSection={<IconFolder size={12} />}>
-                Dépôt : world-agronomy
-              </Badge>
-
               <Badge
                 variant="outline"
-                color={gitStatus.isClean ? 'green' : 'orange'}
-                leftSection={<IconGitBranch size={12} />}
+                color="blue"
+                leftSection={<IconWorld size={12} />}
               >
-                {gitStatus.branch} ({gitStatus.isClean ? 'Propre' : `${gitStatus.uncommittedFiles?.length} modifiés`})
+                SOA: bradtech/world-agronomy
               </Badge>
 
               <Button
                 size="xs"
+                color="green"
                 variant="light"
-                color="teal"
-                leftSection={<IconDeviceFloppy size={14} />}
-                onClick={handleGitSync}
+                leftSection={<IconDownload size={14} />}
+                onClick={() => setIsExtractionOpen(true)}
               >
-                Commit Git
+                Extraire pour Modaka / Hey Brad
               </Button>
+
+              <Badge
+                color={gitStatus.isClean ? 'teal' : 'yellow'}
+                variant="light"
+                leftSection={<IconGitBranch size={12} />}
+              >
+                {gitStatus.branch} {gitStatus.isClean ? '✓ Sync' : `● (${gitStatus.uncommittedFiles?.length || 0})`}
+              </Badge>
+
+              <Tooltip label="Rafraîchir les données">
+                <ActionIcon variant="subtle" color="gray" onClick={refreshAll}>
+                  <IconRefresh size={18} />
+                </ActionIcon>
+              </Tooltip>
             </Group>
           </Group>
         </AppShell.Header>
 
-        {/* Left Sidebar: Thematics Explorer */}
+        {/* Sidebar / Left Tree */}
         <AppShell.Navbar p="md">
-          <Stack justify="space-between" h="100%">
-            <div>
-              <Group justify="space-between" mb="sm">
-                <Text size="xs" fw={700} c="dimmed" tt="uppercase">
-                  Thématiques & Catégories
-                </Text>
-                <ActionIcon
-                  size="sm"
-                  variant="light"
-                  color="blue"
-                  onClick={() => setIsNewThematicOpen(true)}
-                  aria-label="Ajouter une thématique"
-                >
-                  <IconPlus size={14} />
-                </ActionIcon>
-              </Group>
-
+          <Stack gap="md" h="100%">
+            <Group justify="space-between">
+              <Text fw={700} size="sm" c="dimmed">
+                THÉMATIQUES AGRO
+              </Text>
               <Button
-                variant={selectedThematicId === 'all' ? 'filled' : 'subtle'}
-                color="gray"
-                fullWidth
-                justify="start"
-                size="xs"
-                mb="xs"
-                onClick={() => {
-                  setSelectedThematicId('all');
-                  loadDocuments('all');
-                }}
+                size="compact-xs"
+                variant="light"
+                color="green"
+                leftSection={<IconPlus size={12} />}
+                onClick={() => setIsNewThematicOpen(true)}
               >
-                Toutes les thématiques ({documents.length})
+                Nouvelle
               </Button>
+            </Group>
 
+            <ScrollArea flex={1}>
               <ThematicTree
                 controller={taxonomyController}
-                onSelect={(node) => {
-                  setSelectedThematicId(node.id);
-                  loadDocuments(node.id);
-                }}
-                onAddSubThematic={() => setIsNewThematicOpen(true)}
+                nodes={thematics}
+                selectedId={selectedThematicId}
+                onSelect={handleSelectThematic}
               />
-            </div>
+            </ScrollArea>
 
-            <Paper withBorder p="xs" radius="sm" bg="var(--mantine-color-dark-7)">
-              <Text size="xs" c="dimmed">
-                Dernier commit :
+            <Divider />
+
+            {/* Multi-Axial Filter Facets */}
+            <Stack gap="xs">
+              <Text fw={700} size="xs" c="dimmed">
+                FILTRAGE MULTI-AXIAL
               </Text>
-              <Text size="xs" fw={500} truncate>
-                {gitStatus.lastCommit || 'Initialisation'}
-              </Text>
-            </Paper>
+              <Select
+                size="xs"
+                placeholder="Sol (argilo-calcaire...)"
+                data={[
+                  { value: '', label: 'Tous les sols' },
+                  { value: 'argilo-calcaire', label: 'Argilo-calcaire' },
+                  { value: 'limoneux', label: 'Limoneux' },
+                  { value: 'sableux', label: 'Sableux' },
+                  { value: 'vivant-microbiote', label: 'Sol vivant & microbiote' }
+                ]}
+                value={selectedSoil || ''}
+                onChange={(v) => setSelectedSoil(v || null)}
+                clearable
+              />
+              <Select
+                size="xs"
+                placeholder="Climat (méditerranéen...)"
+                data={[
+                  { value: '', label: 'Tous les climats' },
+                  { value: 'mediterraneen', label: 'Méditerranéen' },
+                  { value: 'oceanique', label: 'Océanique' },
+                  { value: 'semi-aride', label: 'Semi-aride' },
+                  { value: 'tempere', label: 'Tempéré' }
+                ]}
+                value={selectedClimate || ''}
+                onChange={(v) => setSelectedClimate(v || null)}
+                clearable
+              />
+              <Select
+                size="xs"
+                placeholder="Itinéraire technique"
+                data={[
+                  { value: '', label: 'Tous les itinéraires' },
+                  { value: 'viticulture-biologique', label: 'Viticulture bio' },
+                  { value: 'enherbement-permanent', label: 'Enherbement permanent' },
+                  { value: 'rouleau-faca', label: 'Mulch & Rouleau Faca' },
+                  { value: 'agroecologie', label: 'Agroécologie générale' }
+                ]}
+                value={selectedItinerary || ''}
+                onChange={(v) => setSelectedItinerary(v || null)}
+                clearable
+              />
+            </Stack>
           </Stack>
         </AppShell.Navbar>
 
-        {/* Center Main Area: Curation Workbench */}
+        {/* Main Content Area */}
         <AppShell.Main>
           {notification && (
             <Notification
@@ -353,162 +442,297 @@ export function CurationWorkbench() {
           <Tabs value={activeTab} onChange={setActiveTab}>
             <Tabs.List mb="md">
               <Tabs.Tab value="ingest" leftSection={<IconUpload size={16} />}>
-                Ingestion & Dépôt PDF
+                Ingestion & Curation ({documents.length})
               </Tabs.Tab>
-              <Tabs.Tab
-                value="curate"
-                leftSection={<IconSparkles size={16} />}
-                disabled={!activeDocument}
-              >
-                Éditeur de Curation {activeDocument ? `(${activeDocument.title})` : ''}
+              <Tabs.Tab value="telemetry" leftSection={<IconActivity size={16} />}>
+                Télémétrie & Retours Hey Brad ({telemetryData.totalInteractions})
               </Tabs.Tab>
             </Tabs.List>
 
+            {/* TAB 1: Ingestion & Curation */}
             <Tabs.Panel value="ingest">
-              <Stack gap="md">
-                <Paper withBorder p="md" radius="md">
-                  <Title order={4} mb="xs">
-                    Ingestion de Documents Agronomiques
-                  </Title>
-                  <Text size="sm" c="dimmed" mb="md">
-                    Les PDF déposés sont automatiquement parsés, analysés par l'IA Gemini pour extraire un résumé exécutif, déduire la thématique et auto-lier les concepts botaniques.
-                  </Text>
+              <SimpleGrid cols={{ base: 1, md: activeDocument ? 2 : 1 }} spacing="md">
+                {/* Left Panel: Dropzone & Document List */}
+                <Stack gap="md">
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between" mb="xs">
+                      <Group gap="xs">
+                        <IconSparkles size={18} color="var(--mantine-color-green-5)" />
+                        <Text fw={700} size="sm">
+                          Ingérer des publications ou guides agronomiques
+                        </Text>
+                      </Group>
+                      <Badge size="xs" color="gray">
+                        Dossier cible: {selectedThematicId}
+                      </Badge>
+                    </Group>
 
-                  <Group mb="md" grow>
-                    <Select
-                      label="Thématique cible principale"
-                      data={thematics.map((t) => ({ value: t.id, label: t.label }))}
-                      value={selectedThematicId !== 'all' ? selectedThematicId : 'soil-health'}
-                      onChange={(val) => val && setSelectedThematicId(val)}
+                    <FileIngestDropzone
+                      tasks={queueTasks}
+                      onFilesSelected={handleUploadFiles}
                     />
-                  </Group>
+                  </Paper>
 
-                  {thematics.length > 0 && (
-                    <ThematicBadgeGroup
-                      label="Thématiques transversales pré-associées"
-                      description="Associer automatiquement ces thématiques secondaires aux documents déposés"
-                      nodes={thematics}
-                      value={transversalThematics}
-                      onChange={setTransversalThematics}
-                      mb="md"
+                  {/* Curated Documents List */}
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between" mb="sm">
+                      <Text fw={700} size="sm">
+                        Documents Curés dans le Dépôt OKF ({documents.length})
+                      </Text>
+                    </Group>
+
+                    {documents.length === 0 ? (
+                      <Text c="dimmed" size="sm" ta="center" py="xl">
+                        Aucun document trouvé pour les filtres sélectionnés. Déposez un PDF ci-dessus pour l'ingérer.
+                      </Text>
+                    ) : (
+                      <Stack gap="sm">
+                        {documents.map((doc) => (
+                          <Paper
+                            key={doc.id}
+                            withBorder
+                            p="sm"
+                            radius="sm"
+                            style={{
+                              cursor: 'pointer',
+                              borderColor: activeDocument?.id === doc.id ? 'var(--mantine-color-green-6)' : undefined
+                            }}
+                            onClick={() => setActiveDocument(doc)}
+                          >
+                            <Group justify="space-between" align="flex-start">
+                              <Stack gap={4} flex={1}>
+                                <Group gap="xs">
+                                  <Badge size="xs" color="blue">
+                                    {doc.category}
+                                  </Badge>
+                                  <Badge size="xs" variant="outline" color="gray">
+                                    {doc.soa || 'bradtech/world-agronomy'}
+                                  </Badge>
+                                  <Text size="xs" c="dimmed">
+                                    {doc.revision || 'rev-1.0.0'}
+                                  </Text>
+                                </Group>
+                                <Text fw={700} size="sm">
+                                  {doc.title}
+                                </Text>
+                                <Text size="xs" c="dimmed" lineClamp={2}>
+                                  {doc.description || doc.body?.substring(0, 150)}
+                                </Text>
+                                <Group gap={4} mt={4}>
+                                  {doc.soils?.map((s) => (
+                                    <Badge key={s} size="xs" color="amber" variant="light">
+                                      {s}
+                                    </Badge>
+                                  ))}
+                                  {doc.climates?.map((c) => (
+                                    <Badge key={c} size="xs" color="cyan" variant="light">
+                                      {c}
+                                    </Badge>
+                                  ))}
+                                  {doc.itineraries?.map((it) => (
+                                    <Badge key={it} size="xs" color="green" variant="light">
+                                      {it}
+                                    </Badge>
+                                  ))}
+                                </Group>
+                              </Stack>
+                              <ActionIcon variant="subtle" color="green">
+                                <IconArrowRight size={16} />
+                              </ActionIcon>
+                            </Group>
+                          </Paper>
+                        ))}
+                      </Stack>
+                    )}
+                  </Paper>
+                </Stack>
+
+                {/* Right Panel: Metadata & OKF Editor */}
+                {activeDocument && (
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between" mb="sm">
+                      <Group gap="xs">
+                        <IconFileText size={18} color="var(--mantine-color-blue-5)" />
+                        <Text fw={700} size="sm">
+                          Éditeur de Métadonnées OKF & Frontmatter
+                        </Text>
+                      </Group>
+                      <Button
+                        size="compact-xs"
+                        variant="subtle"
+                        color="gray"
+                        onClick={() => setActiveDocument(null)}
+                      >
+                        Fermer
+                      </Button>
+                    </Group>
+
+                    <OKFMetadataForm
+                      initialValues={activeDocument}
+                      thematics={thematics}
+                      onSave={handleSaveMetadata}
+                      loading={saveLoading}
                     />
-                  )}
-
-                  <FileIngestDropzone
-                    onDropFiles={handleDropFiles}
-                    items={queueTasks}
-                    onRemoveItem={() => {}}
-                  />
-                </Paper>
-              </Stack>
+                  </Paper>
+                )}
+              </SimpleGrid>
             </Tabs.Panel>
 
-            <Tabs.Panel value="curate">
-              {activeDocument ? (
-                <CurationCard
-                  metadata={activeDocument}
-                  thematics={thematics}
-                  extractedText={activeDocument.body}
-                  onSave={handleSaveCurated}
-                  loading={saveLoading}
-                />
-              ) : (
-                <Text c="dimmed">Sélectionnez un document à droite pour ouvrir l'éditeur de curation.</Text>
-              )}
+            {/* TAB 2: Telemetry & Hey Brad Feedback */}
+            <Tabs.Panel value="telemetry">
+              <Stack gap="md">
+                <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between">
+                      <Text size="xs" c="dimmed" fw={700}>
+                        TOTAL INTERACTIONS
+                      </Text>
+                      <ThemeIcon color="blue" variant="light" size="sm">
+                        <IconActivity size={16} />
+                      </ThemeIcon>
+                    </Group>
+                    <Text fw={800} size="xl" mt="xs">
+                      {telemetryData.totalInteractions}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Requêtes posées à Hey Brad
+                    </Text>
+                  </Paper>
+
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between">
+                      <Text size="xs" c="dimmed" fw={700}>
+                        FICHES MOBILISÉES
+                      </Text>
+                      <ThemeIcon color="green" variant="light" size="sm">
+                        <IconBook2 size={16} />
+                      </ThemeIcon>
+                    </Group>
+                    <Text fw={800} size="xl" mt="xs">
+                      {telemetryData.recordedDocuments}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Fiches injectées dans le contexte IA
+                    </Text>
+                  </Paper>
+
+                  <Paper withBorder p="md" radius="md">
+                    <Group justify="space-between">
+                      <Text size="xs" c="dimmed" fw={700}>
+                        SOURCE D'AUTORITÉ CERTIFIÉE
+                      </Text>
+                      <ThemeIcon color="teal" variant="light" size="sm">
+                        <IconCheck size={16} />
+                      </ThemeIcon>
+                    </Group>
+                    <Text fw={800} size="md" mt="xs">
+                      bradtech/world-agronomy
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      Référentiel souverain OKF v0.1
+                    </Text>
+                  </Paper>
+                </SimpleGrid>
+
+                <Paper withBorder p="md" radius="md">
+                  <Title order={4} mb="md">
+                    Statistiques d'Usage par Fiche Agronomique (Remontées Hey Brad)
+                  </Title>
+
+                  {telemetryData.stats.length === 0 ? (
+                    <Text c="dimmed" size="sm" ta="center" py="xl">
+                      Aucune donnée de télémétrie enregistrée pour le moment.
+                    </Text>
+                  ) : (
+                    <Table striped highlightOnHover>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th>Fiche / Document UID</Table.Th>
+                          <Table.Th>SOA & Révision</Table.Th>
+                          <Table.Th>Consultations</Table.Th>
+                          <Table.Th>Votes Utilité</Table.Th>
+                          <Table.Th>Mots-Clés de Contexte</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>
+                        {telemetryData.stats.map((row: any) => (
+                          <Table.Tr key={row.documentUid}>
+                            <Table.Td fw={700}>{row.documentUid}</Table.Td>
+                            <Table.Td>
+                              <Badge size="xs" variant="outline">{row.soa}</Badge> {row.revision}
+                            </Table.Td>
+                            <Table.Td>{row.totalUsages}</Table.Td>
+                            <Table.Td>
+                              <Group gap="xs">
+                                <Badge size="xs" color="green" leftSection={<IconThumbUp size={10} />}>
+                                  +{row.helpfulVotes}
+                                </Badge>
+                                <Badge size="xs" color="red" leftSection={<IconThumbDown size={10} />}>
+                                  -{row.unhelpfulVotes}
+                                </Badge>
+                              </Group>
+                            </Table.Td>
+                            <Table.Td>
+                              <Group gap={4}>
+                                {row.keywords?.slice(0, 3).map((kw: string) => (
+                                  <Badge key={kw} size="xs" color="gray" variant="light">
+                                    {kw}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            </Table.Td>
+                          </Table.Tr>
+                        ))}
+                      </Table.Tbody>
+                    </Table>
+                  )}
+                </Paper>
+              </Stack>
             </Tabs.Panel>
           </Tabs>
         </AppShell.Main>
 
-        {/* Right Panel: Curated Documents List */}
-        <AppShell.Aside p="md">
-          <Group justify="space-between" mb="xs">
-            <Text size="xs" fw={700} c="dimmed" tt="uppercase">
-              Documents Curés ({documents.length})
-            </Text>
-            <ActionIcon size="sm" variant="subtle" onClick={() => loadDocuments(selectedThematicId)}>
-              <IconRefresh size={14} />
-            </ActionIcon>
-          </Group>
+        {/* Modal: New Thematic Category */}
+        <Modal
+          opened={isNewThematicOpen}
+          onClose={() => setIsNewThematicOpen(false)}
+          title="Créer une nouvelle thématique agronomique"
+          size="md"
+        >
+          <Stack gap="md">
+            <TextInput
+              label="Nom de la thématique"
+              placeholder="Ex: Agroforesterie Intra-parcellaire"
+              value={newThematicLabel}
+              onChange={(e) => setNewThematicLabel(e.currentTarget.value)}
+              required
+            />
+            <Textarea
+              label="Description"
+              placeholder="Arbres fruitiers, haies brise-vent, ombrage..."
+              value={newThematicDesc}
+              onChange={(e) => setNewThematicDesc(e.currentTarget.value)}
+              minRows={3}
+            />
+            <Group justify="flex-end">
+              <Button variant="default" onClick={() => setIsNewThematicOpen(false)}>
+                Annuler
+              </Button>
+              <Button color="green" onClick={handleCreateThematic}>
+                Créer la thématique
+              </Button>
+            </Group>
+          </Stack>
+        </Modal>
 
-          <ScrollArea h="calc(100vh - 120px)" offsetScrollbars>
-            <Stack gap="xs">
-              {documents.length === 0 ? (
-                <Text size="sm" c="dimmed" fs="italic" p="md">
-                  Aucun document curé dans cette thématique. Déposez des PDF dans l'onglet Ingestion.
-                </Text>
-              ) : (
-                documents.map((doc) => (
-                  <Card
-                    key={doc.id}
-                    withBorder
-                    padding="xs"
-                    radius="sm"
-                    style={{
-                      cursor: 'pointer',
-                      borderLeft: activeDocument?.id === doc.id ? '4px solid var(--mantine-color-blue-filled)' : undefined
-                    }}
-                    onClick={() => {
-                      setActiveDocument(doc);
-                      setActiveTab('curate');
-                    }}
-                  >
-                    <Group justify="space-between" wrap="nowrap" mb={4}>
-                      <Text size="sm" fw={600} truncate style={{ flex: 1 }}>
-                        {doc.title}
-                      </Text>
-                      <IconFileTypePdf size={16} color="var(--mantine-color-red-filled)" />
-                    </Group>
-
-                    <Text size="xs" c="dimmed" lineClamp={2} mb="xs">
-                      {doc.description || doc.summary || 'Sans résumé'}
-                    </Text>
-
-                    <Group justify="space-between">
-                      <Badge size="xs" color="gray">
-                        {doc.category}
-                      </Badge>
-                      <Text size="xs" c="blue" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        Éditer <IconArrowRight size={10} />
-                      </Text>
-                    </Group>
-                  </Card>
-                ))
-              )}
-            </Stack>
-          </ScrollArea>
-        </AppShell.Aside>
+        {/* Modal: Contextual Extraction for User X */}
+        <ContextExtractionModal
+          opened={isExtractionOpen}
+          onClose={() => setIsExtractionOpen(false)}
+          onExtract={handleExecuteExtraction}
+          loading={extractLoading}
+        />
       </AppShell>
-
-      {/* Modal: New Thematic */}
-      <Modal
-        opened={isNewThematicOpen}
-        onClose={() => setIsNewThematicOpen(false)}
-        title="Créer une nouvelle thématique OKF"
-      >
-        <Stack gap="md">
-          <TextInput
-            label="Nom de la thématique"
-            placeholder="Ex: Viticulture & Agroforesterie"
-            value={newThematicLabel}
-            onChange={(e) => setNewThematicLabel(e.currentTarget.value)}
-            required
-          />
-          <Textarea
-            label="Description du domaine"
-            placeholder="Description des concepts et techniques couverts..."
-            value={newThematicDesc}
-            onChange={(e) => setNewThematicDesc(e.currentTarget.value)}
-          />
-          <Group justify="flex-end">
-            <Button variant="default" onClick={() => setIsNewThematicOpen(false)}>
-              Annuler
-            </Button>
-            <Button color="blue" onClick={handleCreateThematic}>
-              Créer & Committer
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
     </MantineProvider>
   );
 }

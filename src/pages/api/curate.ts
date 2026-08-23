@@ -13,6 +13,9 @@ export const GET: APIRoute = async ({ url }) => {
   const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
   const contentDir = path.join(gitLocalPath, 'content');
   const targetCategory = url.searchParams.get('category');
+  const soilFilter = url.searchParams.get('soil');
+  const climateFilter = url.searchParams.get('climate');
+  const itineraryFilter = url.searchParams.get('itinerary');
 
   try {
     const items = [];
@@ -45,7 +48,20 @@ export const GET: APIRoute = async ({ url }) => {
               }
             }
 
+            // Apply multi-axial facet filtering if specified in query params
+            if (soilFilter && (!metadata.soils || !metadata.soils.includes(soilFilter))) {
+              continue;
+            }
+            if (climateFilter && (!metadata.climates || !metadata.climates.includes(climateFilter))) {
+              continue;
+            }
+            if (itineraryFilter && (!metadata.itineraries || !metadata.itineraries.includes(itineraryFilter))) {
+              continue;
+            }
+
             items.push({
+              soa: 'bradtech/world-agronomy',
+              revision: 'rev-1.0.0',
               ...metadata,
               id: metadata.id || file.replace('.md', ''),
               category: catSlug,
@@ -76,6 +92,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
+    const gitStatus = await gitSync.getStatus();
+    const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
+    const soa = body.soa || 'bradtech/world-agronomy';
+    const revision = body.revision || currentRev;
+
     const contentItem = await ContentItem.factory({
       id,
       title: body.title,
@@ -83,6 +104,13 @@ export const POST: APIRoute = async ({ request }) => {
       category,
       tags: body.tags || [],
       thematics: body.thematics || [category],
+      soils: body.soils || [],
+      climates: body.climates || [],
+      latitudes: body.latitudes || [],
+      altitudes: body.altitudes || [],
+      itineraries: body.itineraries || [],
+      soa,
+      revision,
       properNouns: body.properNouns || [],
       summary: body.description || body.summary,
       description: body.description || body.summary,
@@ -98,11 +126,11 @@ export const POST: APIRoute = async ({ request }) => {
     await contentItem.save();
 
     await gitSync.stageAndCommit(
-      `feat(curation): curate document "${body.title || id}" in ${category}`,
+      `feat(curation): curate document "${body.title || id}" in ${category} [SOA: ${soa}]`,
       [path.join('content', category, `${id}.md`)]
     );
 
-    return new Response(JSON.stringify({ success: true, item: { ...body, id } }), {
+    return new Response(JSON.stringify({ success: true, item: { ...body, id, soa, revision } }), {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (err: any) {

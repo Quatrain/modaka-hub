@@ -36,6 +36,13 @@ export interface IngestTask {
    textContent?: string;
    category?: string;
    thematics?: string[];
+   soils?: string[];
+   climates?: string[];
+   latitudes?: string[];
+   altitudes?: string[];
+   itineraries?: string[];
+   soa?: string;
+   revision?: string;
    contextNote?: string;
    fileHash?: string;
    source?: string;
@@ -116,18 +123,18 @@ class BookwormQueueManager {
 
       await updateProgress(45);
 
-      // AI semantic analysis via Gemini adapter
+      // AI semantic analysis via Gemini adapter with multi-axial prompt
       let aiResult: any = null;
       const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
       try {
          const ocrAdapter = Ingestion.getAdapter('ocr');
          if (ocrAdapter && (rawText || buffer)) {
-            Log.info(`[Bookworm Queue] Running Gemini AI semantic extraction (model: ${model})...`);
+            Log.info(`[Bookworm Queue] Running Gemini AI multi-axial extraction (model: ${model})...`);
             aiResult = await ocrAdapter.process(rawText || buffer!, {
                isText: Boolean(rawText),
                mimeType: isPdf ? 'application/pdf' : 'text/plain',
-               contextNote: task.contextNote || 'Ingestion pour base de connaissances agronomique OKF',
+               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries).',
                model
             });
          }
@@ -138,10 +145,21 @@ class BookwormQueueManager {
       await updateProgress(70);
 
       const title = aiResult?.title || task.name.replace(/\.[^/.]+$/, '');
-      const summary = aiResult?.summary || (rawText ? rawText.substring(0, 300).replace(/\s+/g, ' ') + '...' : 'Document curé.');
+      const summary = aiResult?.summary || (rawText ? rawText.substring(0, 300).replace(/\s+/g, ' ') + '...' : 'Document agronomique curé.');
       const tags = Array.isArray(aiResult?.tags) && aiResult.tags.length > 0 ? aiResult.tags : ['agronomie', 'curation'];
       const properNouns = Array.isArray(aiResult?.properNouns) ? aiResult.properNouns : extractProperNouns(rawText);
       const deductedCategory = task.category || aiResult?.category || 'soil-health';
+
+      // Deduce 4-axis facets if not provided
+      const soils = task.soils || aiResult?.soils || (rawText.toLowerCase().includes('argil') ? ['argilo-calcaire'] : ['vivant-microbiote']);
+      const climates = task.climates || aiResult?.climates || (rawText.toLowerCase().includes('mediterran') ? ['mediterraneen'] : ['tempere']);
+      const latitudes = task.latitudes || aiResult?.latitudes || ['40-45N'];
+      const altitudes = task.altitudes || aiResult?.altitudes || ['plaine-0-200m'];
+      const itineraries = task.itineraries || aiResult?.itineraries || (rawText.toLowerCase().includes('viti') ? ['viticulture-biologique', 'enherbement-permanent'] : ['agroecologie']);
+
+      const gitStatus = await gitSync.getStatus();
+      const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
+      const soa = task.soa || 'bradtech/world-agronomy';
 
       const fileHash = buffer ? crypto.createHash('sha256').update(buffer).digest('hex') : undefined;
       const originalFileName = task.name || `${slugify(title)}.pdf`;
@@ -157,16 +175,23 @@ class BookwormQueueManager {
       const contentItem = await ContentItem.factory({
          id: slug,
          title,
+         soa,
+         revision: currentRev,
          type: aiResult?.type || 'document',
          category: deductedCategory,
          tags,
          thematics: task.thematics || [deductedCategory],
+         soils,
+         climates,
+         latitudes,
+         altitudes,
+         itineraries,
          properNouns,
          summary,
          description: summary,
          originalFileUri: relativeAssetUri,
          fileHash,
-         source: task.source || 'Curation Bookworm',
+         source: task.source || 'Bradtech Curation Hub',
          documentDate: aiResult?.deductedDate || new Date().toISOString().split('T')[0],
          body: rawText || aiResult?.markdown || summary,
          createdAt: new Date().toISOString()
@@ -174,7 +199,7 @@ class BookwormQueueManager {
 
       contentItem.dataObject.uri = new ObjectUri(`content/${slug}`);
       await contentItem.save();
-      Log.info(`[Bookworm Queue] Persisted OKF document "content/${deductedCategory}/${slug}.md"`);
+      Log.info(`[Bookworm Queue] Persisted OKF document "content/${deductedCategory}/${slug}.md" with SOA ${soa} and revision ${currentRev}`);
 
       // Concept auto-linking for top proper nouns
       if (properNouns.length > 0) {
@@ -185,7 +210,7 @@ class BookwormQueueManager {
 
       // Stage and commit to local Git repo
       await gitSync.stageAndCommit(
-         `feat(curation): ingest document "${title}" into ${deductedCategory}`,
+         `feat(curation): ingest document "${title}" into ${deductedCategory} [SOA: ${soa}]`,
          [
             path.join('content', deductedCategory, `${slug}.md`),
             relativeAssetUri
