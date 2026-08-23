@@ -76,6 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
             const itemSoils: string[] = metadata.soils || [];
             const itemClimates: string[] = metadata.climates || [];
             const itemItineraries: string[] = metadata.itineraries || [];
+            const itemCrops: string[] = metadata.crops || [];
 
             if (body.soils && body.soils.length > 0) {
               const soilOverlap = body.soils.some(s => itemSoils.includes(s) || content.toLowerCase().includes(s.toLowerCase()));
@@ -90,6 +91,11 @@ export const POST: APIRoute = async ({ request }) => {
             if (body.itineraries && body.itineraries.length > 0) {
               const itiOverlap = body.itineraries.some(it => itemItineraries.includes(it) || content.toLowerCase().includes(it.toLowerCase()));
               if (itiOverlap) score += 30;
+            }
+
+            if (body.crops && body.crops.length > 0) {
+              const cropOverlap = body.crops.some(cr => itemCrops.includes(cr) || content.toLowerCase().includes(cr.toLowerCase()));
+              if (cropOverlap) score += 30;
             }
 
             matchedItems.push({

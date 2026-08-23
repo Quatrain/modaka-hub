@@ -9,26 +9,27 @@
 
 ## 1. Executive Summary & Enterprise Architecture
 
-Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for organizations (such as Bradtech), allowing experts to ingest raw documents, tag them along **4 multi-dimensional agronomic axes**, extract tailored knowledge packs for specific farmer profiles (delivered to **Modaka / "Hey Brad"**), and collect anonymized feedback loops.
+Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for organizations (such as Bradtech), allowing experts to ingest raw documents, tag them along **5 multi-dimensional agronomic axes**, extract tailored knowledge packs for specific farmer profiles (delivered to **Modaka / "Hey Brad"**), and collect anonymized feedback loops.
 
 ```mermaid
 flowchart TD
     subgraph Hub ["1. Bradtech Central Hub (Bookworm)"]
-        RawDocs["Ingestion Multi-Sources (PDF, OCR, Field Data)"] --> AI["AI Tagging along 4 Fundamental Axes"]
+        RawDocs["Ingestion Multi-Sources (PDF, OCR, Field Data)"] --> AI["AI Tagging along 5 Fundamental Axes"]
         AI --> WorldRepo["Canonical Repo: bradtech/world-agronomy<br>(Tagged with SOA + Revision)"]
         WorldRepo --> Workbench["Curation Workbench (CoreUX)"]
         TelemetryCollector["Telemetry Ingestion (/api/telemetry)"] --> Analytics["Curator Insights & Gap Analysis"]
     end
 
-    subgraph Axes ["4 Multi-Dimensional Agronomic Axes"]
+    subgraph Axes ["5 Multi-Dimensional Agronomic Axes"]
         Axis1["1. Sols (Texture, pH, Biology, Glomalin)"]
         Axis2["2. Climats (Mediterranean, Oceanic, Semi-arid...)"]
         Axis3["3. Géographie (Latitude range, Altitude)"]
         Axis4["4. Itinéraires Techniques (Viticulture, Semis direct...)"]
+        Axis5["5. Productions Végétales (Viticulture, Arboriculture, Maraîchage, Grandes Cultures, PPAM...)"]
     end
 
     subgraph Extraction ["2. Contextual Extraction Engine (/api/extract)"]
-        UserProfile["User X Profile<br>• Sol: Argilo-calcaire<br>• Climat: Méditerranéen<br>• Géo: 43.5°N, 150m<br>• Itinéraire: Viti Bio / Rouleau Faca"]
+        UserProfile["User X Profile<br>• Sol: Argilo-calcaire<br>• Climat: Méditerranéen<br>• Géo: 43.5°N, 150m<br>• Itinéraire: Viti Bio / Rouleau Faca<br>• Filière: Viticulture"]
         WorldRepo --> FilterEngine["Multi-Axial Matching & Filter Engine"]
         UserProfile --> FilterEngine
         FilterEngine --> UserOKF["Exported OKF Tree for User X<br>(Includes SOA: bradtech/world-agronomy & Rev)"]
@@ -47,9 +48,9 @@ flowchart TD
 
 ---
 
-## 2. The 4 Multi-Dimensional Agronomic Axes
+## 2. The 5 Multi-Dimensional Agronomic Axes
 
-Every agronomic document in Bookworm is classified across **4 orthogonal axes**:
+Every agronomic document in Bookworm is classified across **5 orthogonal axes**:
 
 | Axe | Propriété OKF | Description & Exemples |
 | :--- | :--- | :--- |
@@ -57,6 +58,7 @@ Every agronomic document in Bookworm is classified across **4 orthogonal axes**:
 | **2. Climats** | `climates` (`string[]`) | Zones agro-climatiques (classification Köppen adaptée) : `mediterraneen`, `oceanique`, `continental`, `semi-aride`, `subtropical`, `montagnard`, `aridite-estivale`. |
 | **3. Latitude & Altitude** | `geo` / `latitudes` / `altitudes` | Zonage géographique et altimétrique : `latitudes: ["40-45N"]`, `altitudes: ["colline-200-500m"]`, ou `latitudeRange: [42.0, 45.5]`. |
 | **4. Itinéraires Techniques** | `itineraries` (`string[]`) | Pratiques culturales et systèmes de production : `viticulture-biologique`, `arboriculture-fruitiere`, `maraichage-sol-vivant`, `grandes-cultures-semis-direct`, `enherbement-permanent`, `agroforesterie-intra-parcellaire`, `irrigation-goutte-a-goutte`, `taille-guyot-poussard`, `faca-roulage`. |
+| **5. Productions Végétales** | `crops` (`string[]`) | Filières et types de cultures : `viticulture` (vigne), `arboriculture` (olivier, pommier, amandier...), `maraichage` (légumes, petits fruits), `grandes-cultures` (céréales, oléagineux, protéagineux), `ppam` (plantes à parfum, aromatiques et médicinales), `fourrages` (prairies permanentes, luzerne). |
 
 ---
 
@@ -64,13 +66,13 @@ Every agronomic document in Bookworm is classified across **4 orthogonal axes**:
 
 All fiches generated, curated, or exported through Bookworm MUST include:
 1. **`soa` (Source of Authority)** : `bradtech/world-agronomy` (or upstream repository identifier).
-2. **`revision`** : Monotonic semver or Git commit SHA (e.g. `rev-1.1.0` or `rev-094fa44`).
+2. **`revision`** : Monotonic semver or Git commit SHA (e.g. `rev-1.2.0` or `rev-094fa44`).
 
 Example generated OKF frontmatter:
 ```yaml
 ---
 soa: bradtech/world-agronomy
-revision: rev-1.1.0
+revision: rev-1.2.0
 type: guide
 title: Gestion du Sol Vivant, Glomaline et Mycorhizes en Viticulture Méditerranéenne
 category: soil-health
@@ -92,6 +94,8 @@ itineraries:
   - viticulture-biologique
   - enherbement-permanent
   - rouleau-faca
+crops:
+  - viticulture
 source: INRAE & Bradtech Research
 documentDate: 2026-06-10
 extractedFor: vigneron-domaine-des-terres-vivantes
@@ -103,7 +107,7 @@ extractedAt: 2026-08-23T17:22:08.970Z
 
 ## 4. Contextual Extraction Engine (`/api/extract`)
 
-The Contextual Extraction Engine creates tailored OKF bundles for specific farmers/users:
+The Contextual Extraction Engine creates tailored OKF bundles for specific farmers/users based on the 5 axes:
 
 ```bash
 curl -s -X POST http://127.0.0.1:4322/api/extract \
@@ -116,24 +120,16 @@ curl -s -X POST http://127.0.0.1:4322/api/extract \
     "latitude": 43.6,
     "altitude": 140,
     "itineraries": ["viticulture-biologique", "rouleau-faca"],
+    "crops": ["viticulture"],
     "destinationPath": "/Users/crapougnax/CODE/CRAPOUGNAX/second-brain-data"
   }'
 ```
-
-**Actions performed**:
-1. Scans `bradtech/world-agronomy` content files.
-2. Scores and filters matching multi-axial items.
-3. Exports a clean OKF directory tree with `content/<category>/<doc>.md` and referenced PDF assets.
-4. Generates root and category `index.md` linking to sub-categories.
-5. Injects `soa: bradtech/world-agronomy`, `revision`, `extractedFor`, and `extractedAt`.
 
 ---
 
 ## 5. Anonymized Telemetry Loop (`/api/telemetry`)
 
-When User X interacts with **Hey Brad**:
-1. Hey Brad aggregates usage counts and user feedback (+1 / -1).
-2. Sends an anonymized batch to Bookworm:
+Hey Brad sends anonymized usage telemetry back to Bookworm:
 ```bash
 curl -s -X POST http://127.0.0.1:4322/api/telemetry \
   -H "Content-Type: application/json" \
@@ -143,7 +139,7 @@ curl -s -X POST http://127.0.0.1:4322/api/telemetry \
       {
         "documentUid": "gestion-sol-vivant-glomaline-viticulture",
         "soa": "bradtech/world-agronomy",
-        "revision": "rev-1.1.0",
+        "revision": "rev-1.2.0",
         "usageCount": 18,
         "helpfulVotes": 5,
         "unhelpfulVotes": 0,
@@ -152,8 +148,6 @@ curl -s -X POST http://127.0.0.1:4322/api/telemetry \
     ]
   }'
 ```
-
-3. Bookworm aggregates and displays metrics in the **Curation Analytics** dashboard (`GET /api/telemetry`).
 
 ---
 

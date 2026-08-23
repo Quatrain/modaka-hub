@@ -134,7 +134,7 @@ class BookwormQueueManager {
             aiResult = await ocrAdapter.process(rawText || buffer!, {
                isText: Boolean(rawText),
                mimeType: isPdf ? 'application/pdf' : 'text/plain',
-               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries).',
+               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les 5 axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries), productions végétales (crops).',
                model
             });
          }
@@ -156,6 +156,7 @@ class BookwormQueueManager {
       const latitudes = task.latitudes || aiResult?.latitudes || ['40-45N'];
       const altitudes = task.altitudes || aiResult?.altitudes || ['plaine-0-200m'];
       const itineraries = task.itineraries || aiResult?.itineraries || (rawText.toLowerCase().includes('viti') ? ['viticulture-biologique', 'enherbement-permanent'] : ['agroecologie']);
+      const crops = task.crops || aiResult?.crops || (rawText.toLowerCase().includes('viti') || rawText.toLowerCase().includes('vign') ? ['viticulture'] : (rawText.toLowerCase().includes('arbori') || rawText.toLowerCase().includes('oliv') ? ['arboriculture'] : ['grandes-cultures']));
 
       const gitStatus = await gitSync.getStatus();
       const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
@@ -186,6 +187,7 @@ class BookwormQueueManager {
          latitudes,
          altitudes,
          itineraries,
+         crops,
          properNouns,
          summary,
          description: summary,

@@ -73,6 +73,7 @@ export function CurationWorkbench() {
   const [selectedSoil, setSelectedSoil] = useState<string | null>(null);
   const [selectedClimate, setSelectedClimate] = useState<string | null>(null);
   const [selectedItinerary, setSelectedItinerary] = useState<string | null>(null);
+  const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
 
   const taxonomyController = useMemo(() => {
     return new TaxonomyController({
@@ -102,6 +103,7 @@ export function CurationWorkbench() {
       if (selectedSoil) url += `soil=${selectedSoil}&`;
       if (selectedClimate) url += `climate=${selectedClimate}&`;
       if (selectedItinerary) url += `itinerary=${selectedItinerary}&`;
+      if (selectedCrop) url += `crop=${selectedCrop}&`;
 
       const res = await fetch(url);
       const data = await res.json();
@@ -161,7 +163,7 @@ export function CurationWorkbench() {
 
   useEffect(() => {
     loadDocuments();
-  }, [selectedThematicId, selectedSoil, selectedClimate, selectedItinerary]);
+  }, [selectedThematicId, selectedSoil, selectedClimate, selectedItinerary, selectedCrop]);
 
   const handleSelectThematic = (node: TaxonomyNode) => {
     setSelectedThematicId(node.id);
@@ -422,6 +424,21 @@ export function CurationWorkbench() {
                 onChange={(v) => setSelectedItinerary(v || null)}
                 clearable
               />
+              <Select
+                size="xs"
+                placeholder="Filière / Production Végétale"
+                data={[
+                  { value: '', label: 'Toutes les filières' },
+                  { value: 'viticulture', label: 'Viticulture (Vigne)' },
+                  { value: 'arboriculture', label: 'Arboriculture (Fruits, Olivier...)' },
+                  { value: 'maraichage', label: 'Maraîchage' },
+                  { value: 'grandes-cultures', label: 'Grandes Cultures (Céréales...)' },
+                  { value: 'ppam', label: 'PPAM (Aromatiques & Médicinales)' }
+                ]}
+                value={selectedCrop || ''}
+                onChange={(v) => setSelectedCrop(v || null)}
+                clearable
+              />
             </Stack>
           </Stack>
         </AppShell.Navbar>
@@ -534,6 +551,11 @@ export function CurationWorkbench() {
                                   {doc.itineraries?.map((it) => (
                                     <Badge key={it} size="xs" color="green" variant="light">
                                       {it}
+                                    </Badge>
+                                  ))}
+                                  {doc.crops?.map((cr: string) => (
+                                    <Badge key={cr} size="xs" color="lime" variant="light">
+                                      {cr}
                                     </Badge>
                                   ))}
                                 </Group>

@@ -16,6 +16,7 @@ export const GET: APIRoute = async ({ url }) => {
   const soilFilter = url.searchParams.get('soil');
   const climateFilter = url.searchParams.get('climate');
   const itineraryFilter = url.searchParams.get('itinerary');
+  const cropFilter = url.searchParams.get('crop');
 
   try {
     const items = [];
@@ -56,6 +57,9 @@ export const GET: APIRoute = async ({ url }) => {
               continue;
             }
             if (itineraryFilter && (!metadata.itineraries || !metadata.itineraries.includes(itineraryFilter))) {
+              continue;
+            }
+            if (cropFilter && (!metadata.crops || !metadata.crops.includes(cropFilter))) {
               continue;
             }
 
@@ -109,6 +113,7 @@ export const POST: APIRoute = async ({ request }) => {
       latitudes: body.latitudes || [],
       altitudes: body.altitudes || [],
       itineraries: body.itineraries || [],
+      crops: body.crops || [],
       soa,
       revision,
       properNouns: body.properNouns || [],

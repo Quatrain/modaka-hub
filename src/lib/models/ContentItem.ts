@@ -1,5 +1,5 @@
 import { PersistedBaseObject } from '@quatrain/backend';
-import { StringProperty, ArrayProperty, DateTimeProperty, ObjectProperty } from '@quatrain/core';
+import { StringProperty, ArrayProperty, DateTimeProperty } from '@quatrain/core';
 
 export const ContentItemProperties = [
    {
@@ -85,6 +85,13 @@ export const ContentItemProperties = [
    },
    {
       name: 'itineraries',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'crops',
       type: ArrayProperty.TYPE,
       itemType: StringProperty.TYPE,
       mandatory: false,
