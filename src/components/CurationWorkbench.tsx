@@ -47,9 +47,9 @@ import {
   IconMapPin,
   IconWorld
 } from '@tabler/icons-react';
-import { TaxonomyController, ThematicTree, ThematicBadgeGroup, TaxonomyNode } from '@quatrain/ux-taxonomy';
-import { FileIngestDropzone, IngestFileItem } from '@quatrain/ux-dropzone';
-import { CurationCard, OKFDocumentMetadata, OKFMetadataForm, ContextExtractionModal, UserContextProfile } from '@quatrain/ux-curation';
+import { TaxonomyController, ThematicTree, ThematicBadgeGroup, type TaxonomyNode } from '@quatrain/ux-taxonomy';
+import { FileIngestDropzone, type IngestFileItem } from '@quatrain/ux-dropzone';
+import { CurationCard, type OKFDocumentMetadata, OKFMetadataForm, ContextExtractionModal, type UserContextProfile } from '@quatrain/ux-curation';
 
 export function CurationWorkbench() {
   const [thematics, setThematics] = useState<TaxonomyNode[]>([]);
