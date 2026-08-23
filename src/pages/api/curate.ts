@@ -1,0 +1,111 @@
+import type { APIRoute } from 'astro';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { parse as parseYaml } from 'yaml';
+import { ObjectUri } from '@quatrain/types';
+import { initBackend } from '../../lib/backend';
+import { ContentItem } from '../../lib/models/ContentItem';
+import { gitSync } from '../../lib/git-sync';
+import { slugify } from '../../lib/utils';
+
+export const GET: APIRoute = async ({ url }) => {
+  await initBackend();
+  const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
+  const contentDir = path.join(gitLocalPath, 'content');
+  const targetCategory = url.searchParams.get('category');
+
+  try {
+    const items = [];
+    const categories = await fs.readdir(contentDir, { withFileTypes: true });
+
+    for (const catEntry of categories) {
+      if (catEntry.isDirectory()) {
+        const catSlug = catEntry.name;
+        if (targetCategory && targetCategory !== 'all' && targetCategory !== catSlug) {
+          continue;
+        }
+
+        const catDirPath = path.join(contentDir, catSlug);
+        const files = await fs.readdir(catDirPath);
+
+        for (const file of files) {
+          if (file.endsWith('.md') && file !== 'index.md') {
+            const filePath = path.join(catDirPath, file);
+            const content = await fs.readFile(filePath, 'utf-8');
+            let metadata: any = { id: file.replace('.md', ''), category: catSlug };
+            let body = content;
+
+            if (content.startsWith('---')) {
+              const parts = content.split('---');
+              if (parts.length >= 3) {
+                try {
+                  metadata = { ...metadata, ...parseYaml(parts[1]) };
+                  body = parts.slice(2).join('---').trim();
+                } catch {}
+              }
+            }
+
+            items.push({
+              ...metadata,
+              id: metadata.id || file.replace('.md', ''),
+              category: catSlug,
+              body
+            });
+          }
+        }
+      }
+    }
+
+    return new Response(JSON.stringify({ items }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+  }
+};
+
+export const POST: APIRoute = async ({ request }) => {
+  await initBackend();
+  const body = await request.json();
+  const rawId = body.id || slugify(body.title || 'document');
+  const id = slugify(rawId);
+  const category = body.category || 'soil-health';
+
+  if (!id) {
+    return new Response(JSON.stringify({ error: 'Document ID is required' }), { status: 400 });
+  }
+
+  try {
+    const contentItem = await ContentItem.factory({
+      id,
+      title: body.title,
+      type: body.type || 'document',
+      category,
+      tags: body.tags || [],
+      thematics: body.thematics || [category],
+      properNouns: body.properNouns || [],
+      summary: body.description || body.summary,
+      description: body.description || body.summary,
+      source: body.source,
+      documentDate: body.documentDate,
+      originalFileUri: body.originalFileUri,
+      fileHash: body.fileHash,
+      body: body.body || '',
+      createdAt: body.timestamp || new Date().toISOString()
+    });
+
+    contentItem.dataObject.uri = new ObjectUri(`content/${id}`);
+    await contentItem.save();
+
+    await gitSync.stageAndCommit(
+      `feat(curation): curate document "${body.title || id}" in ${category}`,
+      [path.join('content', category, `${id}.md`)]
+    );
+
+    return new Response(JSON.stringify({ success: true, item: { ...body, id } }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+  }
+};

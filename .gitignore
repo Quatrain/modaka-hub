@@ -1,6 +1,7 @@
 node_modules/
 dist/
-.env
 .astro/
+.bookworm-queue/
+.bookworm-temp/
+.env.local
 .DS_Store
-*.log
