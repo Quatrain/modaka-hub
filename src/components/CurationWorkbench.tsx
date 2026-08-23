@@ -469,6 +469,8 @@ export function CurationWorkbench() {
 
                     <FileIngestDropzone
                       tasks={queueTasks}
+                      items={queueTasks}
+                      onDropFiles={handleUploadFiles}
                       onFilesSelected={handleUploadFiles}
                     />
                   </Paper>
