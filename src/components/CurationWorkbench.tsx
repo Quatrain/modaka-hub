@@ -24,7 +24,8 @@ import {
   TagsInput,
   SimpleGrid,
   ThemeIcon,
-  Table
+  Table,
+  Avatar
 } from '@mantine/core';
 import {
   IconBook2,
@@ -45,7 +46,8 @@ import {
   IconThumbDown,
   IconPlant,
   IconMapPin,
-  IconWorld
+  IconWorld,
+  IconLogout
 } from '@tabler/icons-react';
 import { TaxonomyController, ThematicTree, ThematicBadgeGroup, type TaxonomyNode } from '@quatrain/ux-taxonomy';
 import { FileIngestDropzone, type IngestFileItem } from '@quatrain/ux-dropzone';
@@ -70,6 +72,7 @@ export function CurationWorkbench() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [extractLoading, setExtractLoading] = useState(false);
   const [telemetryData, setTelemetryData] = useState<any>({ totalInteractions: 0, recordedDocuments: 0, stats: [] });
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; roles: string[] } | null>(null);
 
   // Multi-axial filters
   const [selectedSoil, setSelectedSoil] = useState<string | null>(null);
@@ -85,6 +88,21 @@ export function CurationWorkbench() {
   }, [thematics]);
 
   // Load initial data
+
+  const loadUser = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load user:', e);
+    }
+  };
+
   const loadThematics = async () => {
     try {
       const res = await fetch('/api/taxonomies');
@@ -306,7 +324,7 @@ export function CurationWorkbench() {
               <IconBook2 size={28} color="var(--mantine-color-green-5)" />
               <div>
                 <Text fw={800} size="lg" c="white" style={{ letterSpacing: -0.5 }}>
-                  Anemorph <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
+                  Modaka-Hub <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
                 </Text>
                 <Text size="xs" c="dimmed">
                   Curation Multi-Axiale & Structuration OKF v0.1
@@ -345,6 +363,35 @@ export function CurationWorkbench() {
                 <ActionIcon variant="subtle" color="gray" onClick={refreshAll}>
                   <IconRefresh size={18} />
                 </ActionIcon>
+              </Tooltip>
+
+              {currentUser && (
+                <Group gap="xs" style={{ borderLeft: "1px solid rgba(48, 54, 61, 0.8)", paddingLeft: "12px" }}>
+                  <Avatar color="green" radius="xl" size="sm">
+                    {currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : "BR"}
+                  </Avatar>
+                  <Box visibleFrom="xs">
+                    <Text size="xs" fw={700} c="white" style={{ lineHeight: 1.2 }}>
+                      {currentUser.name}
+                    </Text>
+                    <Text size="10px" c="dimmed" style={{ lineHeight: 1.1 }}>
+                      {currentUser.email}
+                    </Text>
+                  </Box>
+                </Group>
+              )}
+
+              <Tooltip label="Se déconnecter de Modaka-Hub">
+                <Button
+                  component="a"
+                  href="/api/auth/logout"
+                  size="xs"
+                  color="red"
+                  variant="subtle"
+                  leftSection={<IconLogout size={14} />}
+                >
+                  Déconnexion
+                </Button>
               </Tooltip>
             </Group>
           </Group>

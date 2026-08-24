@@ -5,3 +5,8 @@ dist/
 .bookworm-temp/
 .env.local
 .DS_Store
+
+.env
+.anemorph-queue/
+.modaka-hub-queue/
+*.pdf

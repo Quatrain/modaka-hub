@@ -2040,9 +2040,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@quatrain/ai-gemini@portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ai-gemini@portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ai-gemini@portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ai-gemini@portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@google/genai": "npm:latest"
     "@quatrain/ai": "npm:^1.1.4"
@@ -2050,17 +2050,147 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "npm:^1.2.18"
   languageName: node
   linkType: soft
 
-"@quatrain/anemorph@workspace:.":
+"@quatrain/api-client@portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/anemorph@workspace:."
+  resolution: "@quatrain/api-client@portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/api": "workspace:*"
+    "@quatrain/http": "workspace:*"
+    "@quatrain/log": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/api-server-astro@portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/api-server-astro@portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/api": "workspace:*"
+    "@quatrain/api-server": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/api-server@portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/api-server@portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/api": "workspace:*"
+    "@quatrain/backend": "workspace:*"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/http": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/api@portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/api@portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/core": "workspace:*"
+    "@quatrain/http": "workspace:*"
+    "@quatrain/log": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/api": "workspace:*"
+    "@quatrain/backend": "npm:^1.2.17"
+    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/http": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/backend@portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/backend@portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@faker-js/faker": "npm:^7.6.0"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/log": "workspace:*"
+    "@quatrain/types": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/core@portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/core@portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/log": "workspace:*"
+    "@quatrain/types": "workspace:*"
+    node-persist: "npm:^4.0.4"
+    which: "npm:^5.0.0"
+  languageName: node
+  linkType: soft
+
+"@quatrain/http@portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/http@portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  languageName: node
+  linkType: soft
+
+"@quatrain/ingestion-audio@portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ingestion-audio@portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/ai": "workspace:*"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/ingestion": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/ingestion-ocr@portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ingestion-ocr@portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/ai": "workspace:*"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/ingestion": "workspace:*"
+    pdf-parse: "npm:^1.1.1"
+  languageName: node
+  linkType: soft
+
+"@quatrain/ingestion-web@portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ingestion-web@portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/ai": "workspace:*"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/ingestion": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/ingestion@portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ingestion@portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/backend": "workspace:*"
+    "@quatrain/core": "workspace:*"
+    "@quatrain/log": "workspace:*"
+    "@quatrain/types": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/log@portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/log@portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    chalk: "npm:^4.1.2"
+    loglevel: "npm:^1.9.2"
+  languageName: node
+  linkType: soft
+
+"@quatrain/modaka-hub@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/modaka-hub@workspace:."
   dependencies:
     "@astrojs/node": "npm:^9.0.0"
     "@astrojs/react": "npm:^4.2.0"
@@ -2115,139 +2245,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@quatrain/api-client@portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/okf@portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/api-client@portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/api": "workspace:*"
-    "@quatrain/http": "workspace:*"
-    "@quatrain/log": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/api-server-astro@portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/api-server-astro@portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/api": "workspace:*"
-    "@quatrain/api-server": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/api-server@portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/api-server@portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/api": "workspace:*"
-    "@quatrain/backend": "workspace:*"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/http": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/api@portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/api@portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/core": "workspace:*"
-    "@quatrain/http": "workspace:*"
-    "@quatrain/log": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/api": "workspace:*"
-    "@quatrain/backend": "npm:^1.2.17"
-    "@quatrain/core": "npm:^1.2.18"
-    "@quatrain/http": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/backend@portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/backend@portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@faker-js/faker": "npm:^7.6.0"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/log": "workspace:*"
-    "@quatrain/types": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/core@portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/core@portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/log": "workspace:*"
-    "@quatrain/types": "workspace:*"
-    node-persist: "npm:^4.0.4"
-    which: "npm:^5.0.0"
-  languageName: node
-  linkType: soft
-
-"@quatrain/http@portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/http@portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  languageName: node
-  linkType: soft
-
-"@quatrain/ingestion-audio@portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/ingestion-audio@portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/ai": "workspace:*"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/ingestion": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/ingestion-ocr@portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/ingestion-ocr@portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/ai": "workspace:*"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/ingestion": "workspace:*"
-    pdf-parse: "npm:^1.1.1"
-  languageName: node
-  linkType: soft
-
-"@quatrain/ingestion-web@portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/ingestion-web@portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/ai": "workspace:*"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/ingestion": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/ingestion@portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/ingestion@portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    "@quatrain/backend": "workspace:*"
-    "@quatrain/core": "workspace:*"
-    "@quatrain/log": "workspace:*"
-    "@quatrain/types": "workspace:*"
-  languageName: node
-  linkType: soft
-
-"@quatrain/log@portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/log@portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fanemorph%40workspace%3A."
-  dependencies:
-    chalk: "npm:^4.1.2"
-    loglevel: "npm:^1.9.2"
-  languageName: node
-  linkType: soft
-
-"@quatrain/okf@portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fanemorph%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@quatrain/okf@portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/okf@portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/backend": "workspace:*"
     "@quatrain/log": "workspace:*"
@@ -2257,9 +2257,9 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/queue-sqlite@portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/queue-sqlite@portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/queue-sqlite@portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/queue-sqlite@portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "workspace:*"
     "@quatrain/queue": "workspace:*"
@@ -2268,44 +2268,44 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/queue@portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/queue@portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/queue@portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/queue@portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "npm:^1.2.18"
     fs-extra: "npm:^11.2.0"
   languageName: node
   linkType: soft
 
-"@quatrain/searchengine-qmd@portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/searchengine-qmd@portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/searchengine-qmd@portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/searchengine-qmd@portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "workspace:*"
     "@quatrain/searchengine": "workspace:*"
   languageName: node
   linkType: soft
 
-"@quatrain/searchengine@portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/searchengine@portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/searchengine@portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/searchengine@portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "workspace:*"
   languageName: node
   linkType: soft
 
-"@quatrain/storage-local@portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/storage-local@portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/storage-local@portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/storage-local@portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/storage": "workspace:*"
     fs-extra: "npm:^11.2.0"
   languageName: node
   linkType: soft
 
-"@quatrain/storage-s3@portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/storage-s3@portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/storage-s3@portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/storage-s3@portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.337.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.342.0"
@@ -2314,9 +2314,9 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/storage@portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/storage@portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/storage@portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/storage@portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/core": "npm:^1.2.18"
     fs-extra: "npm:^11.2.0"
@@ -2325,15 +2325,15 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/types@portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/types@portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/types@portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/types@portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   languageName: node
   linkType: soft
 
-"@quatrain/ux-curation@portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ux-curation@portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ux-curation@portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ux-curation@portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@mantine/core": "npm:^7.10.0"
     "@mantine/hooks": "npm:^7.10.0"
@@ -2346,9 +2346,9 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/ux-dropzone@portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ux-dropzone@portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ux-dropzone@portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ux-dropzone@portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@mantine/core": "npm:^7.10.0"
     "@mantine/dropzone": "npm:^7.10.0"
@@ -2361,9 +2361,9 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/ux-taxonomy@portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ux-taxonomy@portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ux-taxonomy@portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ux-taxonomy@portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@mantine/core": "npm:^7.10.0"
     "@mantine/hooks": "npm:^7.10.0"
@@ -2375,9 +2375,9 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@quatrain/ux@portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fanemorph%40workspace%3A.":
+"@quatrain/ux@portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@quatrain/ux@portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fanemorph%40workspace%3A."
+  resolution: "@quatrain/ux@portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@mantine/core": "npm:^7.15.0"
     "@mantine/hooks": "npm:^7.15.0"

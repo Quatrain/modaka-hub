@@ -1,18 +1,18 @@
 import type { AppCompositionInterface, PWAContentInterface } from '@quatrain/types';
 
 /**
- * Official Anemorph application composition definition.
- * Connects the Anemorph curation UI with Modaka runtime adapters.
+ * Official Modaka-Hub application composition definition.
+ * Connects the Modaka-Hub curation UI with Modaka runtime adapters.
  */
-export const anemorphComposition: AppCompositionInterface<PWAContentInterface> = {
+export const modaka-hubComposition: AppCompositionInterface<PWAContentInterface> = {
    content: {
       type: 'pwa',
-      name: 'anemorph',
+      name: 'modaka-hub',
       version: '0.1.0',
       distPath: './dist',
       manifest: {
-         name: 'Anemorph OKF Curation Workbench',
-         short_name: 'Anemorph',
+         name: 'Modaka-Hub OKF Curation Workbench',
+         short_name: 'Modaka-Hub',
          theme_color: '#1a202c',
          background_color: '#1a202c'
       }

@@ -18,8 +18,8 @@ Anemorph is a content curation workbench designed to ingest heterogeneous docume
 
 ```bash
 # Clone repository
-git clone git@github.com:crapougnax/anemorph.git
-cd anemorph
+git clone git@github.com:crapougnax/modaka-hub.git
+cd modaka-hub
 
 # Install dependencies
 yarn install

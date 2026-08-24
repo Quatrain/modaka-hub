@@ -24,7 +24,7 @@ export async function initBackend() {
    initialized = true;
 
    Log.addLogger('default', new DefaultLoggerAdapter('', LogLevel.INFO), true);
-   Log.info('[Anemorph] Initializing backend adapters and OKF storage...');
+   Log.info('[Modaka-Hub] Initializing backend adapters and OKF storage...');
 
    const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
    const documentStoragePath = process.env.DOCUMENT_STORAGE_PATH || path.join(gitLocalPath, 'assets');
@@ -71,7 +71,7 @@ export async function initBackend() {
    Ingestion.addAdapter(new WebIngestionAdapter(), 'web');
 
    // 5. Configure SQLite background queue
-   const queueDbDir = path.resolve(process.cwd(), '.anemorph-queue');
+   const queueDbDir = path.resolve(process.cwd(), '.modaka-hub-queue');
    try {
       fs.mkdirSync(queueDbDir, { recursive: true });
    } catch {}
@@ -81,10 +81,10 @@ export async function initBackend() {
 
    // 6. Start listening to queue
    await queueManager.startListening();
-   Log.info('[Anemorph] Backend ready. Targeting OKF repo at:', gitLocalPath);
+   Log.info('[Modaka-Hub] Backend ready. Targeting OKF repo at:', gitLocalPath);
 }
 
 // Auto initialize
 initBackend().catch(err => {
-   Log.error(`[Anemorph] Initialization error: ${err.message}`);
+   Log.error(`[Modaka-Hub] Initialization error: ${err.message}`);
 });
