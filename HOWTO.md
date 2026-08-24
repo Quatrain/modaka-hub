@@ -1,4 +1,4 @@
-# Bookworm — How-To & Usage Guide
+# Anemorph — How-To & Usage Guide
 
 ## Common Workflows
 

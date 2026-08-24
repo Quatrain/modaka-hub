@@ -306,7 +306,7 @@ export function CurationWorkbench() {
               <IconBook2 size={28} color="var(--mantine-color-green-5)" />
               <div>
                 <Text fw={800} size="lg" c="white" style={{ letterSpacing: -0.5 }}>
-                  Bookworm <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
+                  Anemorph <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
                 </Text>
                 <Text size="xs" c="dimmed">
                   Curation Multi-Axiale & Structuration OKF v0.1

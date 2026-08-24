@@ -1,5 +1,5 @@
 {
-  "name": "@quatrain/bookworm",
+  "name": "@quatrain/anemorph",
   "type": "module",
   "version": "0.1.0",
   "description": "Collaborative content curation and knowledge indexing platform conforming to OKF v0.1",
@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crapougnax/bookworm.git"
+    "url": "git+https://github.com/crapougnax/anemorph.git"
   },
   "engines": {
     "node": ">=22.0.0"

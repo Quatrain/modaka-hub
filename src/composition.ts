@@ -1,18 +1,18 @@
 import type { AppCompositionInterface, PWAContentInterface } from '@quatrain/types';
 
 /**
- * Official Bookworm application composition definition.
- * Connects the Bookworm curation UI with Modaka runtime adapters.
+ * Official Anemorph application composition definition.
+ * Connects the Anemorph curation UI with Modaka runtime adapters.
  */
-export const bookwormComposition: AppCompositionInterface<PWAContentInterface> = {
+export const anemorphComposition: AppCompositionInterface<PWAContentInterface> = {
    content: {
       type: 'pwa',
-      name: 'bookworm',
+      name: 'anemorph',
       version: '0.1.0',
       distPath: './dist',
       manifest: {
-         name: 'Bookworm OKF Curation Workbench',
-         short_name: 'Bookworm',
+         name: 'Anemorph OKF Curation Workbench',
+         short_name: 'Anemorph',
          theme_color: '#1a202c',
          background_color: '#1a202c'
       }

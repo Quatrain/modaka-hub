@@ -24,7 +24,7 @@ export async function initBackend() {
    initialized = true;
 
    Log.addLogger('default', new DefaultLoggerAdapter('', LogLevel.INFO), true);
-   Log.info('[Bookworm] Initializing backend adapters and OKF storage...');
+   Log.info('[Anemorph] Initializing backend adapters and OKF storage...');
 
    const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
    const documentStoragePath = process.env.DOCUMENT_STORAGE_PATH || path.join(gitLocalPath, 'assets');
@@ -71,7 +71,7 @@ export async function initBackend() {
    Ingestion.addAdapter(new WebIngestionAdapter(), 'web');
 
    // 5. Configure SQLite background queue
-   const queueDbDir = path.resolve(process.cwd(), '.bookworm-queue');
+   const queueDbDir = path.resolve(process.cwd(), '.anemorph-queue');
    try {
       fs.mkdirSync(queueDbDir, { recursive: true });
    } catch {}
@@ -81,10 +81,10 @@ export async function initBackend() {
 
    // 6. Start listening to queue
    await queueManager.startListening();
-   Log.info('[Bookworm] Backend ready. Targeting OKF repo at:', gitLocalPath);
+   Log.info('[Anemorph] Backend ready. Targeting OKF repo at:', gitLocalPath);
 }
 
 // Auto initialize
 initBackend().catch(err => {
-   Log.error(`[Bookworm] Initialization error: ${err.message}`);
+   Log.error(`[Anemorph] Initialization error: ${err.message}`);
 });

@@ -10,7 +10,7 @@ export const GET: APIRoute = async () => {
   await initBackend();
   const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
   const contentDir = path.join(gitLocalPath, 'content');
-  const configPath = path.join(gitLocalPath, 'bookworm.config.json');
+  const configPath = path.join(gitLocalPath, 'anemorph.config.json');
 
   try {
     await fs.mkdir(contentDir, { recursive: true });

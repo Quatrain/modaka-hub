@@ -1,6 +1,6 @@
-# Bookworm PoC Tracking & Reproduction Workbook
+# Anemorph PoC Tracking & Reproduction Workbook
 
-> **Project**: Quatrain Bookworm (Content Curation, Multi-Axial Structuring & Hey Brad Delivery Platform)  
+> **Project**: Quatrain Anemorph (Content Curation, Multi-Axial Structuring & Hey Brad Delivery Platform)  
 > **Status**: Production-Ready PoC Verified & Operational  
 > **Date**: August 23, 2026  
 > **License**: AGPL-v3  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary & Enterprise Architecture
 
-Bookworm is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for Bradtech, organizing agronomic knowledge into **4 first-class root directories** matching the primary axes:
+Anemorph is an open-source knowledge curation and structuring platform built on the **Quatrain framework** and the **Open Knowledge Format (OKF v0.1)** standard. It acts as the central **Knowledge Hub** for Bradtech, organizing agronomic knowledge into **4 first-class root directories** matching the primary axes:
 
 ```mermaid
 flowchart TD
@@ -21,7 +21,7 @@ flowchart TD
         DirItineraries["content/itineraries/ (Itinéraires Techniques & Pratiques)"]
     end
 
-    subgraph Hub ["1. Hub Central Bookworm"]
+    subgraph Hub ["1. Hub Central Anemorph"]
         RawDocs["Ingestion Multi-Sources (PDF, OCR)"] --> AI["AI Tagging 4 Axes"]
         AI --> RootStructure
         RootStructure --> Workbench["Curation Workbench (CoreUX)"]
@@ -66,7 +66,7 @@ flowchart TD
 
 ## 4. Repositories & État Git
 
-Tous les projets sont alignés et commités localement sur la branche `feat/bookworm-poc` :
-- `Quatrain/CoreUX` : `feat/bookworm-poc` (commit `5e87dcb`)
-- `crapougnax/bookworm` : `feat/bookworm-poc` (commit `b40b9b1`)
-- `bradtech/world-agronomy` : `feat/bookworm-poc` (commit `9303430`)
+Tous les projets sont alignés et commités localement sur la branche `feat/anemorph-poc` :
+- `Quatrain/CoreUX` : `feat/anemorph-poc` (commit `5e87dcb`)
+- `crapougnax/anemorph` : `feat/anemorph-poc` (commit `b40b9b1`)
+- `bradtech/world-agronomy` : `feat/anemorph-poc` (commit `9303430`)

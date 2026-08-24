@@ -34,9 +34,9 @@ export const POST: APIRoute = async ({ request }) => {
     const category = (formData.get('category') as string) || 'soil-health';
     const thematicsJson = formData.get('thematics') as string;
     const thematics = thematicsJson ? JSON.parse(thematicsJson) : [category];
-    const source = (formData.get('source') as string) || 'Curation Bookworm';
+    const source = (formData.get('source') as string) || 'Curation Anemorph';
 
-    const tempDir = path.resolve(process.cwd(), '.bookworm-temp');
+    const tempDir = path.resolve(process.cwd(), '.anemorph-temp');
     await fs.mkdir(tempDir, { recursive: true });
 
     const createdTasks = [];

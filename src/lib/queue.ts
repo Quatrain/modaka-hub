@@ -48,24 +48,24 @@ export interface IngestTask {
    source?: string;
 }
 
-class BookwormQueueManager {
+class AnemorphQueueManager {
    protected isListening = false;
 
    public async startListening() {
       if (this.isListening) return;
       this.isListening = true;
-      Log.info('[Bookworm Queue] Starting background queue worker for "ingestion"');
+      Log.info('[Anemorph Queue] Starting background queue worker for "ingestion"');
 
       const adapter = Queue.getQueue<any>();
       adapter.listen('ingestion', async (task: any, options: { updateProgress: Function }) => {
-         Log.info(`[Bookworm Queue] Processing ingestion task "${task.name || task.id}"`);
+         Log.info(`[Anemorph Queue] Processing ingestion task "${task.name || task.id}"`);
          try {
             await this.executeTask(task, async (progress: number) => {
                await options.updateProgress(progress);
             });
-            Log.info(`[Bookworm Queue] Completed task "${task.name || task.id}"`);
+            Log.info(`[Anemorph Queue] Completed task "${task.name || task.id}"`);
          } catch (err: any) {
-            Log.error(`[Bookworm Queue] Failed task "${task.name || task.id}": ${err.message}`);
+            Log.error(`[Anemorph Queue] Failed task "${task.name || task.id}": ${err.message}`);
             throw err;
          }
       });
@@ -110,11 +110,11 @@ class BookwormQueueManager {
 
       if (isPdf && buffer) {
          try {
-            Log.info(`[Bookworm Queue] Parsing PDF contents with pdf-parse (${buffer.length} bytes)...`);
+            Log.info(`[Anemorph Queue] Parsing PDF contents with pdf-parse (${buffer.length} bytes)...`);
             const parsedPdf = await pdfParse(buffer);
             rawText = parsedPdf.text || '';
          } catch (e: any) {
-            Log.warn(`[Bookworm Queue] pdf-parse fallback error: ${e.message}`);
+            Log.warn(`[Anemorph Queue] pdf-parse fallback error: ${e.message}`);
             rawText = '';
          }
       } else if (task.textContent) {
@@ -130,7 +130,7 @@ class BookwormQueueManager {
       try {
          const ocrAdapter = Ingestion.getAdapter('ocr');
          if (ocrAdapter && (rawText || buffer)) {
-            Log.info(`[Bookworm Queue] Running Gemini AI multi-axial extraction (model: ${model})...`);
+            Log.info(`[Anemorph Queue] Running Gemini AI multi-axial extraction (model: ${model})...`);
             aiResult = await ocrAdapter.process(rawText || buffer!, {
                isText: Boolean(rawText),
                mimeType: isPdf ? 'application/pdf' : 'text/plain',
@@ -139,7 +139,7 @@ class BookwormQueueManager {
             });
          }
       } catch (err: any) {
-         Log.warn(`[Bookworm Queue] AI structuring error: ${err.message}. Using fallback heuristics.`);
+         Log.warn(`[Anemorph Queue] AI structuring error: ${err.message}. Using fallback heuristics.`);
       }
 
       await updateProgress(70);
@@ -169,7 +169,7 @@ class BookwormQueueManager {
 
       if (buffer) {
          await fs.writeFile(targetAssetPath, buffer);
-         Log.info(`[Bookworm Queue] Saved binary asset to ${targetAssetPath}`);
+         Log.info(`[Anemorph Queue] Saved binary asset to ${targetAssetPath}`);
       }
 
       const slug = slugify(title) || crypto.randomUUID();
@@ -193,7 +193,7 @@ class BookwormQueueManager {
          description: summary,
          originalFileUri: relativeAssetUri,
          fileHash,
-         source: task.source || 'Bradtech Curation Hub',
+         source: task.source || 'Bradtech Anemorph Hub',
          documentDate: aiResult?.deductedDate || new Date().toISOString().split('T')[0],
          body: rawText || aiResult?.markdown || summary,
          createdAt: new Date().toISOString()
@@ -201,7 +201,7 @@ class BookwormQueueManager {
 
       contentItem.dataObject.uri = new ObjectUri(`content/${slug}`);
       await contentItem.save();
-      Log.info(`[Bookworm Queue] Persisted OKF document "content/${deductedCategory}/${slug}.md" with SOA ${soa} and revision ${currentRev}`);
+      Log.info(`[Anemorph Queue] Persisted OKF document "content/${deductedCategory}/${slug}.md" with SOA ${soa} and revision ${currentRev}`);
 
       // Concept auto-linking for top proper nouns
       if (properNouns.length > 0) {
@@ -223,4 +223,4 @@ class BookwormQueueManager {
    }
 }
 
-export const queueManager = new BookwormQueueManager();
+export const queueManager = new AnemorphQueueManager();
