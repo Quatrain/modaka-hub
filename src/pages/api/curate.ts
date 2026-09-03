@@ -133,6 +133,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       createdAt: body.timestamp || new Date().toISOString()
     });
 
+    const categoryDir = path.join(gitLocalPath, 'content', category);
+    await fs.mkdir(categoryDir, { recursive: true });
+
     contentItem.dataObject.uri = new ObjectUri(`content/${id}`);
     await contentItem.save();
 

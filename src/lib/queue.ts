@@ -199,6 +199,9 @@ class ModakaHubQueueManager {
          createdAt: new Date().toISOString()
       });
 
+      const categoryDir = path.join(gitLocalPath, 'content', deductedCategory);
+      await fs.mkdir(categoryDir, { recursive: true });
+
       contentItem.dataObject.uri = new ObjectUri(`content/${slug}`);
       await contentItem.save();
       Log.info(`[Modaka-Hub Queue] Persisted OKF document "content/${deductedCategory}/${slug}.md" with SOA ${soa} and revision ${currentRev}`);
