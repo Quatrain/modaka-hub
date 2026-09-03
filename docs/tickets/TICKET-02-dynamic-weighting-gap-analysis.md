@@ -1,37 +1,42 @@
-# Ticket #2 : Moteur de Pondération Dynamique & Analytics Avancées (Gap Analysis)
+# Ticket #2: Dynamic Weighting Scoring Algorithm & Gap Analysis Analytics
 
-- **ID :** TICKET-02
-- **Statut :** 📋 Backlog / Spécifié
-- **Priorité :** Moyenne
-- **Composants :** `modaka-hub`, `telemetry`, `@quatrain/ux-curation`
-- **Auteurs :** Équipe Quatrain & Bradtech
-
----
-
-## 🎯 Objectif Métier
-
-Consolider la télémétrie anonymisée remontant des instances décentralisées ("Hey Brad" / fermes) pour :
-1. Calculer un **score de pertinence et d'autorité scientifique dynamique** pour chaque fiche OKF.
-2. Détecter les manques ("Gap Analysis") : questions récurrentes des agriculteurs sur le terrain sans réponse documentée dans `world-agronomy`.
+- **ID:** TICKET-02
+- **Status:** 📋 Backlog / Specified
+- **Priority:** Medium
+- **Components:** Telemetry Engine, Analytics Dashboard, Curation UX
+- **Authors:** Quatrain & Bradtech Engineering Teams
 
 ---
 
-## 🏗️ Spécifications Techniques
+## 🎯 Objective & Business Value
 
-### 1. Formule de Scoring Algorithmique
-Pour chaque fiche OKF $i$ :
-$$\text{Score}_i = \text{BaseQuality}_i \times \log_2(1 + \text{UsageCount}_i) \times \left(\frac{\text{HelpfulVotes}_i + 1}{\text{HelpfulVotes}_i + \text{UnhelpfulVotes}_i + 2}\right)$$
+Empower domain curators and agronomists with actionable intelligence regarding knowledge coverage:
+- Calculate real-time dynamic relevance scores based on real-world farmer usage and telemetry feedback.
+- Detect "agronomic knowledge gaps" across pedoclimatic zones and crop itineraries.
+- Prioritize curation queues automatically towards missing, incomplete, or highly queried topics.
 
-- $\text{BaseQuality}$ : Note attribuée par les pairs lors de la curation initiale (défaut : 1.0).
-- $\text{UsageCount}$ : Nombre de fois où la fiche a été injectée dans le contexte LLM de "Hey Brad".
-- $\text{HelpfulVotes} / \text{UnhelpfulVotes}$ : Retours explicites des agriculteurs (+1 / -1).
+---
 
-### 2. Tableau de Bord "Gap Analysis" dans le Workbench
-- Onglet dédié **Analytics & Lacunes** dans `CurationWorkbench`.
-- Liste ordonnée des termes et requêtes ayant généré un faible score de similarité vectorielle côté client.
-- Bouton d'action directe : *"Lancer une recherche documentaire ou ingérer un PDF sur ce sujet"*.
+## 🏗️ Technical Architecture & Specifications
 
-### 3. Critères d'Acceptation
-- [ ] Endpoint `/api/telemetry/stats` agrège les métriques par catégorie et par axe.
-- [ ] Le score de pertinence est visualisable sur chaque `CurationCard`.
-- [ ] Les données de télémétrie restent 100% anonymisées (aucune PII de ferme transmise).
+### 1. Dynamic Weighting Formula
+Each OKF document receives a composite relevance index calculated as:
+$$\text{Score}(d) = w_1 \cdot \text{Consultations}(d) + w_2 \cdot \text{FeedbackRatio}(d) + w_3 \cdot \text{RecencyFactor}(d)$$
+
+Where:
+- $\text{FeedbackRatio}(d) = \frac{\text{thumbsUp} + 1}{\text{thumbsUp} + \text{thumbsDown} + 2}$ (Laplacian smoothed).
+- Low scoring documents (< 0.3) trigger automatic review tasks in the curation workbench.
+
+### 2. Gap Analysis Heatmap
+Expose a visual 2D matrix comparing:
+- Horizontal Axis: Crop types & technical itineraries.
+- Vertical Axis: Pedoclimatic combinations (soil $\times$ climate).
+- Cell Color: Depth of curated document coverage (green: comprehensive, red: zero documentation).
+
+---
+
+## 📋 Acceptance Criteria
+
+- [ ] Telemetry endpoint `/api/telemetry` calculates normalized document scores.
+- [ ] Visual gap analysis matrix rendered within the curation workbench dashboard.
+- [ ] Priority sorting in curation queue prioritizing low-coverage categories.

@@ -1,35 +1,39 @@
-# Ticket #3 : Ingestion Multi-Sources (Audio / Notes Vocales & Moissonnage Web)
+# Ticket #3: Multi-Source Ingestion: Audio Voice Memos & Web Harvesting
 
-- **ID :** TICKET-03
-- **Statut :** 📋 Backlog / Spécifié
-- **Priorité :** Moyenne
-- **Composants :** `modaka-hub`, `@quatrain/ingestion-audio`, `@quatrain/ingestion-web`, `@quatrain/queue`
-- **Auteurs :** Équipe Quatrain & Bradtech
-
----
-
-## 🎯 Objectif Métier
-
-Étendre les capacités d'ingestion de Modaka-Hub au-delà du seul PDF pour capter :
-1. **Les notes vocales de terrain** des agronomes et conseillers (enregistrements MP3/M4A/WAV).
-2. **Les publications et fiches techniques en ligne** (moissonnage d'articles INRAE, Acta, Chambres d'Agriculture par URL).
+- **ID:** TICKET-03
+- **Status:** 📋 Backlog / Specified
+- **Priority:** Medium
+- **Components:** Ingestion Pipeline, Audio Processing (`@quatrain/ingestion-audio`), Web Harvester (`@quatrain/ingestion-web`)
+- **Authors:** Quatrain & Bradtech Engineering Teams
 
 ---
 
-## 🏗️ Spécifications Techniques
+## 🎯 Objective & Business Value
 
-### 1. Notes Vocales & Audio (`@quatrain/ingestion-audio`)
-- Déposer un fichier audio dans la zone de drop.
-- Transcription automatique via Whisper / Gemini Audio.
-- Structuration en fiche OKF avec extraction multi-axiale (sols, climats, itinéraires).
-- Conservation du fichier audio source dans `assets/audio/`.
+Expand Modaka-Hub's ingestion capabilities beyond standard PDF and text documents to capture tacit and dispersed knowledge directly from the field:
+1. **Audio Voice Memos**: Field agronomists and winegrowers record quick observations on mobile devices during field tours.
+2. **Web Content Harvesting**: Automated ingestion of technical bulletin articles (e.g. BSV - Bulletins de Santé du Végétal, INRAE articles, technical blogs).
 
-### 2. Moissonnage Web (`@quatrain/ingestion-web`)
-- Champ "Saisir une URL documentaire" dans le Dropzone.
-- Extraction du contenu principal (nettoyage boilerplate, extraction figures et tables).
-- Transformation en Markdown propre conforme aux spécifications OKF v0.1.
+---
 
-### 3. Critères d'Acceptation
-- [ ] Support des formats `.mp3`, `.m4a`, `.wav`, `.ogg` dans le dropzone.
-- [ ] Support des URLs HTTP/HTTPS avec validation et protection SSRF.
-- [ ] Tâche asynchrone traitée par le queue worker sans blocage de l'interface.
+## 🏗️ Technical Architecture & Specifications
+
+### 1. Audio Processing Pipeline (`@quatrain/ingestion-audio`)
+- Supported input formats: `.m4a`, `.mp3`, `.wav`, `.ogg`.
+- Integration with multimodal Gemini API or Whisper transcription engine.
+- Speech-to-text transcription paired with multi-axial classification prompt to extract agronomic observations, affected crops, and treatment itineraries.
+- Raw audio file persisted in `assets/audio/` with SHA-256 integrity hash.
+
+### 2. Web Ingestion Adapter (`@quatrain/ingestion-web`)
+- Input: URL pointing to an agronomic technical article or press release.
+- Headless DOM parsing via Readability / Cheerio to strip boilerplate and ads.
+- Automatic canonical URL preservation and author extraction.
+- Automatic conversion into standard OKF markdown.
+
+---
+
+## 📋 Acceptance Criteria
+
+- [ ] Audio upload supported on `/api/upload` with automatic speech-to-text and multi-axial tagging.
+- [ ] Direct URL ingestion with clean markdown extraction and source attribution.
+- [ ] End-to-end integration tests for audio and web ingestion tasks in SQLite queue.
