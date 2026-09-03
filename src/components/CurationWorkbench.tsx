@@ -47,11 +47,13 @@ import {
   IconPlant,
   IconMapPin,
   IconWorld,
-  IconLogout
+  IconLogout,
+  IconSettings
 } from '@tabler/icons-react';
 import { TaxonomyController, ThematicTree, ThematicBadgeGroup, type TaxonomyNode } from '@quatrain/ux-taxonomy';
 import { FileIngestDropzone, type IngestFileItem } from '@quatrain/ux-dropzone';
 import { CurationCard, type OKFDocumentMetadata, OKFMetadataForm, ContextExtractionModal, type UserContextProfile } from '@quatrain/ux-curation';
+import { AdminSettingsModal } from './AdminSettingsModal';
 
 export function CurationWorkbench() {
   const [thematics, setThematics] = useState<TaxonomyNode[]>([]);
@@ -64,6 +66,7 @@ export function CurationWorkbench() {
   const [gitStatus, setGitStatus] = useState<any>({ branch: 'feat/bookworm-poc', isClean: true, uncommittedFiles: [] });
   const [isNewThematicOpen, setIsNewThematicOpen] = useState(false);
   const [isExtractionOpen, setIsExtractionOpen] = useState(false);
+  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
   const [newThematicLabel, setNewThematicLabel] = useState('');
   const [newThematicDesc, setNewThematicDesc] = useState('');
   const [activeTab, setActiveTab] = useState<string | null>('ingest');
@@ -386,6 +389,20 @@ export function CurationWorkbench() {
                     </Text>
                   </Box>
                 </Group>
+              )}
+
+              {(currentUser?.roles?.includes('admin-brad') || currentUser?.roles?.includes('admin')) && (
+                <Tooltip label="Paramètres Système (LLM, S3, Git, Auth)">
+                  <ActionIcon
+                    variant="light"
+                    color="yellow"
+                    size="md"
+                    radius="md"
+                    onClick={() => setIsAdminSettingsOpen(true)}
+                  >
+                    <IconSettings size={18} />
+                  </ActionIcon>
+                </Tooltip>
               )}
 
               <Tooltip label="Se déconnecter de Modaka-Hub">
@@ -788,6 +805,12 @@ export function CurationWorkbench() {
           onClose={() => setIsExtractionOpen(false)}
           onExtract={handleExecuteExtraction}
           loading={extractLoading}
+        />
+
+        {/* Modal: Admin System Settings */}
+        <AdminSettingsModal
+          opened={isAdminSettingsOpen}
+          onClose={() => setIsAdminSettingsOpen(false)}
         />
       </AppShell>
     </MantineProvider>
