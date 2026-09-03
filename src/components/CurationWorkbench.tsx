@@ -55,7 +55,16 @@ import { FileIngestDropzone, type IngestFileItem } from '@quatrain/ux-dropzone';
 import { CurationCard, type OKFDocumentMetadata, OKFMetadataForm, ContextExtractionModal, type UserContextProfile } from '@quatrain/ux-curation';
 import { AdminSettingsModal } from './AdminSettingsModal';
 
-export function CurationWorkbench() {
+interface CurationWorkbenchProps {
+  initialUser?: {
+    name?: string;
+    email?: string;
+    roles?: string[];
+    isAdmin?: boolean;
+  } | null;
+}
+
+export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) {
   const [thematics, setThematics] = useState<TaxonomyNode[]>([]);
   const [axes, setAxes] = useState<any[]>([]);
   const [axisFilters, setAxisFilters] = useState<Record<string, string>>({});
@@ -75,7 +84,16 @@ export function CurationWorkbench() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [extractLoading, setExtractLoading] = useState(false);
   const [telemetryData, setTelemetryData] = useState<any>({ totalInteractions: 0, recordedDocuments: 0, stats: [] });
-  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; roles: string[] } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; roles: string[]; isAdmin?: boolean } | null>(
+    initialUser
+      ? {
+          name: initialUser.name || initialUser.email || 'Utilisateur',
+          email: initialUser.email || '',
+          roles: initialUser.roles || [],
+          isAdmin: initialUser.isAdmin
+        }
+      : null
+  );
 
   // Multi-axial filters
   const [selectedSoil, setSelectedSoil] = useState<string | null>(null);
@@ -159,10 +177,11 @@ export function CurationWorkbench() {
   };
 
   const refreshAll = async () => {
-    await Promise.all([loadThematics(), loadDocuments(), loadGitStatus(), loadTelemetry()]);
+    await Promise.all([loadUser(), loadThematics(), loadDocuments(), loadGitStatus(), loadTelemetry()]);
   };
 
   useEffect(() => {
+    loadUser();
     refreshAll();
     const interval = setInterval(async () => {
       try {
@@ -391,7 +410,7 @@ export function CurationWorkbench() {
                 </Group>
               )}
 
-              {(currentUser?.roles?.includes('admin-brad') || currentUser?.roles?.includes('admin')) && (
+              {(currentUser?.roles?.includes('admin-brad') || currentUser?.roles?.includes('admin') || currentUser?.isAdmin) && (
                 <Tooltip label="Paramètres Système (LLM, S3, Git, Auth)">
                   <ActionIcon
                     variant="light"

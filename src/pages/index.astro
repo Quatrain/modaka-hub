@@ -1,8 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { CurationWorkbench } from '../components/CurationWorkbench';
+
+const user = Astro.locals.user
+  ? {
+      ...Astro.locals.user,
+      isAdmin:
+        Astro.locals.user.roles?.includes('admin-brad') ||
+        Astro.locals.user.roles?.includes('admin')
+    }
+  : null;
 ---
 
 <Layout title="Modaka-Hub - Curation OKF World Agronomy">
-	<CurationWorkbench client:only="react" />
+	<CurationWorkbench initialUser={user} client:only="react" />
 </Layout>
