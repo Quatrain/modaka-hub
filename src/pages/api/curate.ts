@@ -86,9 +86,12 @@ export const GET: APIRoute = async ({ url }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   await initBackend();
-  const body = await request.json();
+  const rawBody = await request.json();
+  const sanitized = locals.rbac ? (locals.rbac.sanitizeWrite('document', rawBody) as any) : rawBody;
+  // Merge sanitized fields with raw body to retain unconfigured fields while enforcing FLS
+  const body = { ...rawBody, ...sanitized };
   const rawId = body.id || slugify(body.title || 'document');
   const id = slugify(rawId);
   const category = body.category || 'soil-health';
@@ -100,8 +103,9 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const gitStatus = await gitSync.getStatus();
     const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
-    const soa = body.soa || 'bradtech/world-agronomy';
-    const revision = body.revision || currentRev;
+    // If soa or revision were stripped by FLS for non-admin, fallback to canonical values
+    const soa = (sanitized.soa) || 'bradtech/world-agronomy';
+    const revision = (sanitized.revision) || currentRev;
 
     const contentItem = await ContentItem.factory({
       id,

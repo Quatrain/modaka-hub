@@ -39,6 +39,7 @@ const RAW_RUNTIME_STATE =
           ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
@@ -2432,6 +2433,17 @@ const RAW_RUNTIME_STATE =
         "linkType": "SOFT"\
       }]\
     ]],\
+    ["@quatrain/auth-rbac", [\
+      ["portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
+        "packageLocation": "../../QUATRAIN/Core/packages/auth-rbac/",\
+        "packageDependencies": [\
+          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+        ],\
+        "linkType": "SOFT"\
+      }]\
+    ]],\
     ["@quatrain/backend", [\
       ["portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
         "packageLocation": "../../QUATRAIN/Core/packages/backend/",\
@@ -2543,6 +2555,7 @@ const RAW_RUNTIME_STATE =
           ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\

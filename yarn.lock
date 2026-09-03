@@ -2098,6 +2098,15 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@quatrain/auth-rbac@portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/auth-rbac@portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/api": "workspace:*"
+    "@quatrain/http": "workspace:*"
+  languageName: node
+  linkType: soft
+
 "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
   resolution: "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
@@ -2203,6 +2212,7 @@ __metadata:
     "@quatrain/api-server": "npm:^1.1.11"
     "@quatrain/api-server-astro": "npm:^1.1.15"
     "@quatrain/auth": "npm:^1.2.10"
+    "@quatrain/auth-rbac": "npm:^1.0.0"
     "@quatrain/backend": "npm:^1.2.17"
     "@quatrain/core": "npm:^1.2.17"
     "@quatrain/ingestion": "npm:^1.0.1"

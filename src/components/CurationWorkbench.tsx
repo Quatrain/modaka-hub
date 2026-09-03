@@ -371,9 +371,16 @@ export function CurationWorkbench() {
                     {currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : "BR"}
                   </Avatar>
                   <Box visibleFrom="xs">
-                    <Text size="xs" fw={700} c="white" style={{ lineHeight: 1.2 }}>
-                      {currentUser.name}
-                    </Text>
+                    <Group gap={6} align="center">
+                      <Text size="xs" fw={700} c="white" style={{ lineHeight: 1.2 }}>
+                        {currentUser.name}
+                      </Text>
+                      {currentUser.roles?.includes('admin-brad') || currentUser.roles?.includes('admin') ? (
+                        <Badge size="xs" color="yellow" variant="light">Admin Brad</Badge>
+                      ) : (
+                        <Badge size="xs" color="teal" variant="light">Curateur</Badge>
+                      )}
+                    </Group>
                     <Text size="10px" c="dimmed" style={{ lineHeight: 1.1 }}>
                       {currentUser.email}
                     </Text>
