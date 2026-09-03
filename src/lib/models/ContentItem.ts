@@ -148,6 +148,86 @@ export const ContentItemProperties = [
       mandatory: false
    },
    {
+      name: 'authors',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'translators',
+      type: ArrayProperty.TYPE,
+      itemType: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: []
+   },
+   {
+      name: 'publisher',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'edition',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'publicationYear',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'language',
+      type: StringProperty.TYPE,
+      mandatory: false,
+      defaultValue: 'fr'
+   },
+   {
+      name: 'isbn',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'doi',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'copyright',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'originalTitle',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'originalLanguage',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'originalPublisher',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'originalYear',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'originalCopyright',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
+      name: 'citation',
+      type: StringProperty.TYPE,
+      mandatory: false
+   },
+   {
       name: 'createdAt',
       type: StringProperty.TYPE,
       mandatory: false

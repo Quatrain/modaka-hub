@@ -42,10 +42,24 @@ export interface IngestTask {
    altitudes?: string[];
    itineraries?: string[];
    soa?: string;
-   revision?: string;
    contextNote?: string;
    fileHash?: string;
    source?: string;
+   authors?: string[];
+   translators?: string[];
+   publisher?: string;
+   edition?: string;
+   publicationYear?: string;
+   language?: string;
+   isbn?: string;
+   doi?: string;
+   copyright?: string;
+   originalTitle?: string;
+   originalLanguage?: string;
+   originalPublisher?: string;
+   originalYear?: string;
+   originalCopyright?: string;
+   citation?: string;
 }
 
 class ModakaHubQueueManager {
@@ -134,7 +148,7 @@ class ModakaHubQueueManager {
             aiResult = await ocrAdapter.process(rawText || buffer!, {
                isText: Boolean(rawText),
                mimeType: isPdf ? 'application/pdf' : 'text/plain',
-               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les 5 axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries), productions végétales (crops).',
+               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les 5 axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries), productions végétales (crops). Extrais aussi rigoureusement les métadonnées bibliographiques: auteurs (authors: string[]), traducteurs (translators: string[]), éditeur (publisher: string), édition/version (edition: string), année de publication (publicationYear: string), langue (language: string), ISBN (isbn: string), DOI (doi: string), copyright de cette édition (copyright: string), titre original (originalTitle: string), langue originale (originalLanguage: string), éditeur d\'origine (originalPublisher: string), année originale (originalYear: string), copyright original (originalCopyright: string), et la citation normalisée (citation: string).',
                model
             });
          }
@@ -195,6 +209,22 @@ class ModakaHubQueueManager {
          fileHash,
          source: task.source || 'Bradtech Modaka-Hub Hub',
          documentDate: aiResult?.deductedDate || new Date().toISOString().split('T')[0],
+         // Bibliographic & Intellectual Property References
+         authors: task.authors || aiResult?.authors || [],
+         translators: task.translators || aiResult?.translators || [],
+         publisher: task.publisher || aiResult?.publisher || undefined,
+         edition: task.edition || aiResult?.edition || undefined,
+         publicationYear: task.publicationYear || aiResult?.publicationYear || (aiResult?.deductedDate ? aiResult.deductedDate.split('-')[0] : undefined),
+         language: task.language || aiResult?.language || 'fr',
+         isbn: task.isbn || aiResult?.isbn || undefined,
+         doi: task.doi || aiResult?.doi || undefined,
+         copyright: task.copyright || aiResult?.copyright || undefined,
+         originalTitle: task.originalTitle || aiResult?.originalTitle || undefined,
+         originalLanguage: task.originalLanguage || aiResult?.originalLanguage || undefined,
+         originalPublisher: task.originalPublisher || aiResult?.originalPublisher || undefined,
+         originalYear: task.originalYear || aiResult?.originalYear || undefined,
+         originalCopyright: task.originalCopyright || aiResult?.originalCopyright || undefined,
+         citation: task.citation || aiResult?.citation || undefined,
          body: rawText || aiResult?.markdown || summary,
          createdAt: new Date().toISOString()
       });

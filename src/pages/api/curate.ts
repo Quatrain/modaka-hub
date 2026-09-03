@@ -129,6 +129,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
       documentDate: body.documentDate,
       originalFileUri: body.originalFileUri,
       fileHash: body.fileHash,
+      // Bibliographic & Intellectual Property References
+      authors: body.authors || [],
+      translators: body.translators || [],
+      publisher: body.publisher,
+      edition: body.edition,
+      publicationYear: body.publicationYear,
+      language: body.language || 'fr',
+      isbn: body.isbn,
+      doi: body.doi,
+      copyright: body.copyright,
+      originalTitle: body.originalTitle,
+      originalLanguage: body.originalLanguage,
+      originalPublisher: body.originalPublisher,
+      originalYear: body.originalYear,
+      originalCopyright: body.originalCopyright,
+      citation: body.citation,
       body: body.body || '',
       createdAt: body.timestamp || new Date().toISOString()
     });
