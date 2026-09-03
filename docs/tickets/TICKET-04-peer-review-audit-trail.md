@@ -1,50 +1,62 @@
-# Ticket #4 : Traçabilité & Signatures Multi-Curateurs (Audit Trail & Peer Review)
+# Ticket #4: Multi-Curator Peer Review Lifecycle, Audit Trail & Cryptographic Signatures
 
-- **ID :** TICKET-04
-- **Statut :** 📋 Backlog / Spécifié
-- **Priorité :** Basse / Enterprise
-- **Composants :** `modaka-hub`, `@quatrain/auth-rbac`, Git
-- **Auteurs :** Équipe Quatrain & Bradtech
-
----
-
-## 🎯 Objectif Métier
-
-Garantir la rigueur scientifique de `world-agronomy` en instaurant un processus de **relecture par les pairs (Peer Review)** avant publication officielle d'une fiche, avec signature cryptographique ou attribution claire des curateurs et relecteurs.
+- **ID:** TICKET-04
+- **Status:** 📋 Backlog / Specified
+- **Priority:** Low
+- **Components:** RBAC Engine, OKF Frontmatter Schema, Git Commit Signing
+- **Authors:** Quatrain & Bradtech Engineering Teams
 
 ---
 
-## 🏗️ Spécifications Techniques
+## 🎯 Objective & Business Value
 
-### 1. Cycle de Vie d'une Fiche OKF
+Establish an enterprise-grade scientific validation lifecycle for critical agricultural knowledge:
+- Enforce a formal multi-curator review flow (`draft` $\to$ `in_review` $\to$ `peer_approved` $\to$ `certified`).
+- Provide an unforgeable, immutable audit trail tracking who reviewed, approved, or edited each technical claim.
+- Cryptographically sign published knowledge assets using ed25519 commit signatures or GPG.
+
+---
+
+## 🏗️ Technical Architecture & Specifications
+
+### 1. Document Lifecycle States & RBAC Transitions
 ```mermaid
 stateDiagram-v2
-    [*] --> Draft : Curateur ingest/crée
-    Draft --> InReview : Curateur soumet
-    InReview --> Approved : Relecteur (expert) valide
-    InReview --> ChangesRequested : Demande de corrections
-    ChangesRequested --> InReview : Curateur modifie
-    Approved --> Published : Admin merge dans main & tag release
+    [*] --> Draft : Curateur Ingests
+    Draft --> InReview : Curateur Submits
+    InReview --> PeerApproved : Senior Expert Approves
+    PeerApproved --> Certified : Lead Agronomist Signs
+    InReview --> ChangesRequested : Reviewer Rejects
+    ChangesRequested --> Draft : Re-edit
 ```
 
-### 2. Métadonnées Frontmatter Étendues
+- Standard curators can only transition from `draft` to `in_review`.
+- Only users with `reviewer` or `admin` roles can approve or certify documents.
+
+### 2. OKF Frontmatter Signatures
 ```yaml
 ---
-soa: bradtech/world-agronomy
-revision: rev-2026.09-8af31e
-status: approved # draft | in-review | approved | published
-curatedBy: "alice.martin@brad.ag"
-reviewedBy: "dr.dupont@inrae.fr"
-reviewedAt: "2026-09-03T18:00:00Z"
-reviewNotes: "Recommandations validées d'après les essais 2024-2025."
+id: biocontrol-mildew-copper-reduction
+type: technical-itinerary
+curator_trail:
+  - user_id: 2ec2520e-7a0d-4fb0-884a-22f41a373567
+    email: olivier@brad.ag
+    role: curator
+    action: drafted
+    timestamp: 2026-09-03T18:45:00Z
+  - user_id: a84c9102-19bc-43fd-88fa-33c901e82811
+    email: expert@inrae.fr
+    role: senior-reviewer
+    action: approved
+    timestamp: 2026-09-04T09:12:00Z
+    signature_hash: ed25519:7a4f91...
 ---
 ```
 
-### 3. Rôle RBAC `reviewer`
-- Ajout du rôle `reviewer` dans `src/rbac/roles.ts`.
-- Droit d'approuver ou rejeter les fiches, sans droit de commit/push direct sur `main`.
+---
 
-### 4. Critères d'Acceptation
-- [ ] Statut de publication affiché sur la `CurationCard`.
-- [ ] Les fiches en statut `draft` ne sont pas exportées lors des extractions pour les fermes.
-- [ ] Historique de relecture consultable dans le Workbench.
+## 📋 Acceptance Criteria
+
+- [ ] Transition state guards enforced by `@quatrain/auth-rbac`.
+- [ ] Audit trail appended to OKF YAML frontmatter without breaking standard parsers.
+- [ ] Historical changelog visible in the workbench revision panel.

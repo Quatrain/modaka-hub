@@ -1,28 +1,28 @@
-# Ticket #6 : Extraction et Conservation des Références Bibliographiques, Traductions & Copyrights
+# Ticket #6: Bibliographic References, Translators & Dual Copyright Lineage Tracking
 
-- **ID :** TICKET-06
-- **Statut :** 📋 Spécifié & Implémenté
-- **Priorité :** Haute
-- **Composants :** `modaka-hub`, `ContentItem`, Ingestion Queue, OKF Frontmatter, Gemini Prompt
-- **Auteurs :** Équipe Quatrain & Bradtech
-
----
-
-## 🎯 Contexte & Objectif
-
-Dans un atelier de curation documentaire et scientifique comme Modaka-Hub, l'importation d'ouvrages, de thèses, de rapports techniques ou d'articles scientifiques nécessite une traçabilité bibliographique et juridique rigoureuse.
-
-Lorsqu'un ouvrage étranger est traduit ou qu'une réédition intervient, il est indispensable de conserver :
-1. **Les contributeurs intellectuels** : Auteurs originaux et Traducteurs.
-2. **L'édition courante** : Éditeur, numéro d'édition/version, date/année, ISBN/DOI, et copyright de l'édition.
-3. **L'œuvre originale (en cas de traduction ou réédition)** : Titre original, langue d'origine, éditeur d'origine, année de parution initiale et copyright original.
-4. **La citation formelle** : Chaîne normalisée (format APA / ISO 690) pour les citations automatisées.
+- **ID:** TICKET-06
+- **Status:** 🚀 Implemented & Specified
+- **Priority:** High
+- **Components:** `modaka-hub`, `ContentItem`, Ingestion Queue, OKF Frontmatter Schema, Gemini Prompt
+- **Authors:** Quatrain & Bradtech Engineering Teams
 
 ---
 
-## 🏗️ Schéma de Métadonnées OKF v0.1
+## 🎯 Context & Objective
 
-Ces attributs sont inscrits dans le frontmatter YAML du document markdown :
+In a professional scientific and documentation curation workbench like Modaka-Hub, ingesting books, theses, technical reports, and research papers requires strict bibliographic attribution and intellectual property provenance tracking.
+
+When an international work is translated or republished under license, it is essential to preserve:
+1. **Intellectual Contributors**: Original authors and Translators.
+2. **Current Published Edition**: Publisher, edition number/version, publication date/year, ISBN/DOI, and edition copyright statement.
+3. **Original Work Lineage**: Original title, original language, original publisher, original year of first edition, and original copyright statement.
+4. **Standard Citation**: Formatted bibliographic citation string (APA / ISO 690 format) for automated reference lists.
+
+---
+
+## 🏗️ OKF v0.1 Metadata Schema
+
+These attributes are persisted directly into the YAML frontmatter of the markdown document:
 
 ```yaml
 ---
@@ -31,29 +31,29 @@ type: book
 title: Précis d'Agroécologie Viticole
 soa: bradtech/world-agronomy
 revision: rev-1.0.0
-# --- Références Bibliographiques de l'Édition ---
+# --- Current Edition References ---
 authors:
   - David R. Montgomery
   - Anne Biklé
 translators:
   - Olivier Lépine
 publisher: Éditions France Agricole
-edition: 2e édition revue et augmentée
+edition: 2nd Edition revised and expanded
 publicationYear: 2024
 language: fr
 isbn: 978-2-85557-890-1
 doi: 10.1016/j.agee.2024.108542
 copyright: "© 2024 Éditions France Agricole, Paris"
-# --- Traçabilité de l'Œuvre Originale (si traduction/réédition) ---
+# --- Original Work Lineage (Translation / Licensed Reprint) ---
 originalTitle: "The Hidden Half of Nature: The Microbial Roots of Life and Health"
 originalLanguage: en
 originalPublisher: W. W. Norton & Company
 originalYear: 2016
 originalCopyright: "© 2016 David R. Montgomery and Anne Biklé"
-citation: "Montgomery, D. R., & Biklé, A. (2024). Précis d'Agroécologie Viticole (Trad. O. Lépine, 2e éd.). Éditions France Agricole. (Ouvrage original publié en 2016 sous le titre The Hidden Half of Nature)."
-# --- Taxonomies & Fichiers ---
+citation: "Montgomery, D. R., & Biklé, A. (2024). Précis d'Agroécologie Viticole (Trans. O. Lépine, 2nd ed.). Éditions France Agricole. (Original work published 2016 under the title The Hidden Half of Nature)."
+# --- Taxonomies & Asset Integrity ---
 category: itineraries
-tags: [agroecologie, microbiote-du-sol, viticulture]
+tags: [agroecology, soil-microbiome, viticulture]
 originalFileUri: assets/documents/precis-agroecologie-viticole.pdf
 fileHash: a1b2c3d4e5f6...
 ---
@@ -61,10 +61,12 @@ fileHash: a1b2c3d4e5f6...
 
 ---
 
-## 📋 Modifications Appliquées
+## 📋 Implemented Scope
 
-1. **Modèle de données ([`src/lib/models/ContentItem.ts`](file:///Users/crapougnax/CODE/CRAPOUGNAX/modaka-hub/src/lib/models/ContentItem.ts))** :
-   - Ajout des définitions de propriétés strictement typées pour tous les champs bibliographiques et de propriété intellectuelle.
-2. **Worker d'Ingestion ([`src/lib/queue.ts`](file:///Users/crapougnax/CODE/CRAPOUGNAX/modaka-hub/src/lib/queue.ts))** :
-   - Enrichissement du prompt sémantique Gemini pour scanner la page de titre, le verso (colophon) et les mentions légales.
-   - Injection des champs bibliographiques dans `ContentItem.factory(...)` lors de la persistance OKF.
+1. **Data Model ([`src/lib/models/ContentItem.ts`](file:///Users/crapougnax/CODE/CRAPOUGNAX/modaka-hub/src/lib/models/ContentItem.ts))**:
+   - Strongly-typed property definitions declared for all 15 bibliographic, translation, and copyright fields.
+2. **Ingestion Worker ([`src/lib/queue.ts`](file:///Users/crapougnax/CODE/CRAPOUGNAX/modaka-hub/src/lib/queue.ts))**:
+   - Multimodal prompt enriched to analyze the title page, colophon, and legal imprint to extract bibliographic metadata automatically.
+   - Field values injected into `ContentItem.factory(...)` on persistence.
+3. **Curation API ([`src/pages/api/curate.ts`](file:///Users/crapougnax/CODE/CRAPOUGNAX/modaka-hub/src/pages/api/curate.ts))**:
+   - Full persistence support when curators adjust metadata manually in the workbench.
