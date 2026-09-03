@@ -104,7 +104,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const gitStatus = await gitSync.getStatus();
     const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
     // If soa or revision were stripped by FLS for non-admin, fallback to canonical values
-    const soa = (sanitized.soa) || 'bradtech/world-agronomy';
+    const soa = (sanitized.soa) || process.env.DEFAULT_SOA || 'bradtech/world-agronomy';
     const revision = (sanitized.revision) || currentRev;
 
     const contentItem = await ContentItem.factory({

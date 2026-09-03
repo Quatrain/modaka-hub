@@ -21,10 +21,10 @@ export const modakaRoles: RoleDefinition[] = [
     ]
   },
 
-  // 2. Standard Bradtech Curator (user-brad)
+  // 2. Canonical Curator Role
   {
-    id: 'user-brad',
-    name: 'Bradtech Curator',
+    id: 'curator',
+    name: 'Content Curator',
     inherits: ['anonymous'],
     routes: [
       { pattern: '/', actions: ['READ'], access: 'allow' },
@@ -42,25 +42,25 @@ export const modakaRoles: RoleDefinition[] = [
       document: {
         defaultMode: 'readwrite',
         fields: {
-          soa: 'readonly', // Immutable authority source for regular curateurs
+          soa: 'readonly', // Immutable authority source for standard curators
           revision: 'readonly' // Revision managed centrally
         }
       }
     }
   },
 
-  // Role alias for curator
+  // Downstream role alias for Bradtech deployment
   {
-    id: 'curator',
-    name: 'Curator',
-    inherits: ['user-brad']
+    id: 'user-brad',
+    name: 'Bradtech Curator',
+    inherits: ['curator']
   },
 
-  // 3. Bradtech Administrator (admin-brad)
+  // 3. Canonical Administrator Role
   {
-    id: 'admin-brad',
-    name: 'Bradtech Administrator',
-    inherits: ['user-brad'],
+    id: 'admin',
+    name: 'System Administrator',
+    inherits: ['curator'],
     routes: [
       { pattern: '/**', actions: ['*'], access: 'allow' }
     ],
@@ -75,11 +75,11 @@ export const modakaRoles: RoleDefinition[] = [
     }
   },
 
-  // Role alias for admin
+  // Downstream role alias for Bradtech deployment
   {
-    id: 'admin',
-    name: 'Administrator',
-    inherits: ['admin-brad']
+    id: 'admin-brad',
+    name: 'Bradtech Administrator',
+    inherits: ['admin']
   }
 ];
 

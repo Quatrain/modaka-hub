@@ -160,7 +160,7 @@ class ModakaHubQueueManager {
 
       const gitStatus = await gitSync.getStatus();
       const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
-      const soa = task.soa || 'bradtech/world-agronomy';
+      const soa = task.soa || process.env.DEFAULT_SOA || 'bradtech/world-agronomy';
 
       const fileHash = buffer ? crypto.createHash('sha256').update(buffer).digest('hex') : undefined;
       const originalFileName = task.name || `${slugify(title)}.pdf`;

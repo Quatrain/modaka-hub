@@ -12,7 +12,12 @@ const PUBLIC_PATHS = [
   '/favicon.svg'
 ];
 
-const ALLOWED_DOMAIN = '@brad.ag';
+const rawAllowedDomains =
+  import.meta.env.ALLOWED_EMAIL_DOMAINS || process.env.ALLOWED_EMAIL_DOMAINS || '@brad.ag';
+const ALLOWED_DOMAINS = rawAllowedDomains
+  .split(',')
+  .map((d: string) => d.trim().toLowerCase())
+  .filter(Boolean);
 
 /**
  * Authentication Middleware: Resolves Supabase session, performs silent token refresh,
@@ -133,14 +138,21 @@ const authMiddleware = defineMiddleware(async (context, next) => {
 
   const email = (user.email || '').toLowerCase().trim();
 
-  // 6. Strict @brad.ag email check
-  if (!email.endsWith(ALLOWED_DOMAIN)) {
+  // 6. Strict email domain check against configured ALLOWED_DOMAINS
+  const isDomainAllowed =
+    ALLOWED_DOMAINS.includes('*') ||
+    ALLOWED_DOMAINS.some((allowed) => email.endsWith(allowed));
+
+  if (!isDomainAllowed) {
     context.cookies.delete('sb-access-token', { path: '/' });
     context.cookies.delete('sb-refresh-token', { path: '/' });
 
     if (pathname.startsWith('/api/')) {
       return new Response(
-        JSON.stringify({ error: 'Forbidden', message: 'Accès réservé au domaine @brad.ag' }),
+        JSON.stringify({
+          error: 'Forbidden',
+          message: `Accès réservé aux domaines autorisés (${ALLOWED_DOMAINS.join(', ')})`
+        }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
