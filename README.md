@@ -1,10 +1,10 @@
-# Anemorph 🌀📚
+# Modaka Hub 🌀📚
 
 > Open-Source Multi-Source Knowledge Curation & OKF Structuring Platform powered by Quatrain.
 
 ## Overview
 
-Anemorph is a content curation workbench designed to ingest heterogeneous documents (PDF scientific papers, field reports, web articles, raw notes) and organize them into standardized, version-controlled **Open Knowledge Format (OKF v0.1)** repositories.
+Modaka Hub is a content curation workbench designed to ingest heterogeneous documents (PDF scientific papers, field reports, web articles, raw notes) and organize them into standardized, version-controlled **Open Knowledge Format (OKF v0.1)** repositories.
 
 ## Core Features
 
