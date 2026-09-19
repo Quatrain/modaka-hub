@@ -11,7 +11,7 @@ export const ContentItemProperties = [
       name: 'soa',
       type: StringProperty.TYPE,
       mandatory: false,
-      defaultValue: process.env.DEFAULT_SOA || 'modaka/authority'
+      defaultValue: process.env.DEFAULT_SOA
    },
    {
       name: 'revision',

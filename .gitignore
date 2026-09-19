@@ -11,3 +11,5 @@ dist/
 .modaka-hub-queue/
 .modaka-hub-hashes.json
 *.pdf
+modaka-hub.config.json
+!modaka-hub.config.json.dist

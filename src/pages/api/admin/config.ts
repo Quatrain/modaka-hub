@@ -20,10 +20,18 @@ export const GET: APIRoute = async ({ locals }) => {
     );
   }
 
+  const supabaseUrl = process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  if (!supabaseUrl) {
+    return new Response(
+      JSON.stringify({ error: 'ConfigurationError', message: 'Missing required environment variable: "PUBLIC_SUPABASE_URL"' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   const config = {
     llm: {
       provider: appConfig.aiProvider,
-      model: appConfig.aiModel || 'gemini-2.5-flash',
+      model: appConfig.aiModel,
       apiKey: maskKey(appConfig.aiApiKey),
       hasApiKey: Boolean(appConfig.aiApiKey)
     },
@@ -44,9 +52,8 @@ export const GET: APIRoute = async ({ locals }) => {
       mode: appConfig.gitMode
     },
     auth: {
-      supabaseUrl: process.env.PUBLIC_SUPABASE_URL || 'https://qthlhrtxnuzibnzimoao.supabase.co',
-      allowedDomain: appConfig.allowedEmailDomains.join(', '),
-      betaAccessCodesCount: appConfig.betaAccessCodes.length
+      supabaseUrl,
+      allowedDomain: appConfig.allowedEmailDomains.join(', ')
     }
   };
 

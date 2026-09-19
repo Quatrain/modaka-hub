@@ -21,44 +21,66 @@ export interface ModakaConfig {
   gitRepoOwner: string;
   gitRepoName: string;
   gitBranch: string;
-  gitMode: string;
+  gitMode: 'local' | 'remote';
   documentStoragePath: string;
   storageType: 'local' | 's3';
-  s3Bucket: string;
-  s3Region: string;
+  s3Bucket?: string;
+  s3Region?: string;
   s3Endpoint?: string;
   s3AccessKey?: string;
   s3SecretKey?: string;
   allowedEmailDomains: string[];
-  betaAccessCodes: string[];
   aiProvider: AiProviderType;
-  aiModel?: string;
-  aiApiKey?: string;
+  aiModel: string;
+  aiApiKey: string;
   aiBaseUrl?: string;
   axes: AxisDefinition[];
 }
 
-const DEFAULT_AXES: AxisDefinition[] = [
-  { id: 'concepts', label: 'Concepts & Notions Clés', folder: 'concepts', color: 'blue' },
-  { id: 'guides', label: 'Guides & Itinéraires', folder: 'guides', color: 'green' },
-  { id: 'references', label: 'Références & Standards', folder: 'references', color: 'amber' }
-];
+export class ConfigurationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ConfigurationError';
+  }
+}
 
-export function loadConfig(): ModakaConfig {
+/**
+ * Requires an explicit configuration parameter from environment variable or JSON config file.
+ * Throws ConfigurationError immediately (fail-fast) without silent defaults.
+ */
+function requireParam<T = string>(
+  name: string,
+  envKey: string,
+  fileValue: any,
+  helpText: string
+): T {
+  const envVal = process.env[envKey];
+  const value = envVal !== undefined && envVal !== '' ? envVal : fileValue;
+
+  if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+    throw new ConfigurationError(
+      `[Bootstrap] Missing required configuration parameter: '${name}' (env: '${envKey}'). ${helpText}`
+    );
+  }
+
+  return (typeof value === 'string' ? value.trim() : value) as T;
+}
+
+export function loadConfig(options?: { ignoreConfigFile?: boolean; configFilePath?: string }): ModakaConfig {
   const env = process.env;
 
-  // 1. Resolve local git path
-  const gitLocalPath =
-    env.GIT_LOCAL_PATH ||
-    path.resolve(process.cwd(), 'data/okf');
-
-  // 2. Check for optional JSON config file in git local path or project root
+  // 1. Locate and parse configuration file if candidate exists
   let fileConfig: Partial<ModakaConfig> = {};
-  const configCandidatePaths = [
-    path.join(gitLocalPath, 'modaka-hub.config.json'),
-    path.resolve(process.cwd(), 'modaka-hub.config.json'),
-    path.resolve(process.cwd(), 'src/config/admin_settings.json')
-  ];
+  const rootDir = process.cwd();
+
+  const configCandidatePaths = options?.configFilePath
+    ? [options.configFilePath]
+    : options?.ignoreConfigFile
+      ? []
+      : [
+          path.resolve(rootDir, 'modaka-hub.config.json'),
+          path.resolve(rootDir, 'src/config/admin_settings.json')
+        ];
 
   for (const candidate of configCandidatePaths) {
     if (fs.existsSync(candidate)) {
@@ -67,84 +89,276 @@ export function loadConfig(): ModakaConfig {
         const parsed = JSON.parse(raw);
         fileConfig = { ...fileConfig, ...parsed };
         break;
-      } catch {
-        // ignore parse error and proceed to fallbacks
+      } catch (err: any) {
+        throw new ConfigurationError(
+          `[Bootstrap] Failed to parse configuration file at '${candidate}': ${err.message}`
+        );
       }
     }
   }
 
-  // 3. Resolve Allowed Email Domains
+  // 2. Validate Core Metadata (Fail-Fast)
+  const appTitle = requireParam<string>(
+    'appTitle',
+    'APP_TITLE',
+    fileConfig.appTitle,
+    'Set APP_TITLE in .env or appTitle in modaka-hub.config.json.'
+  );
+
+  const appSubtitle = requireParam<string>(
+    'appSubtitle',
+    'APP_SUBTITLE',
+    fileConfig.appSubtitle,
+    'Set APP_SUBTITLE in .env or appSubtitle in modaka-hub.config.json.'
+  );
+
+  const badgeLabel = env.APP_BADGE_LABEL || fileConfig.badgeLabel;
+
+  const soa = requireParam<string>(
+    'soa',
+    'DEFAULT_SOA',
+    fileConfig.soa,
+    'Set DEFAULT_SOA in .env or soa in modaka-hub.config.json.'
+  );
+
+  // 3. Validate Git & Local Storage (Fail-Fast)
+  const gitLocalPath = requireParam<string>(
+    'gitLocalPath',
+    'GIT_LOCAL_PATH',
+    fileConfig.gitLocalPath,
+    'Set GIT_LOCAL_PATH in .env or gitLocalPath in modaka-hub.config.json.'
+  );
+
+  const gitRepoOwner = requireParam<string>(
+    'gitRepoOwner',
+    'GIT_REPO_OWNER',
+    fileConfig.gitRepoOwner,
+    'Set GIT_REPO_OWNER in .env or gitRepoOwner in modaka-hub.config.json.'
+  );
+
+  const gitRepoName = requireParam<string>(
+    'gitRepoName',
+    'GIT_REPO_NAME',
+    fileConfig.gitRepoName,
+    'Set GIT_REPO_NAME in .env or gitRepoName in modaka-hub.config.json.'
+  );
+
+  const gitBranch = requireParam<string>(
+    'gitBranch',
+    'GIT_BRANCH',
+    fileConfig.gitBranch,
+    'Set GIT_BRANCH in .env or gitBranch in modaka-hub.config.json.'
+  );
+
+  const gitModeRaw = requireParam<string>(
+    'gitMode',
+    'GIT_MODE',
+    fileConfig.gitMode,
+    'Set GIT_MODE in .env ("local" or "remote") or gitMode in modaka-hub.config.json.'
+  );
+  if (gitModeRaw !== 'local' && gitModeRaw !== 'remote') {
+    throw new ConfigurationError(
+      `[Bootstrap] Invalid GIT_MODE '${gitModeRaw}'. Must be explicitly declared as 'local' or 'remote'.`
+    );
+  }
+  const gitMode = gitModeRaw as 'local' | 'remote';
+
+  // 4. Validate Storage Subsystem (Fail-Fast)
+  const storageTypeRaw = requireParam<string>(
+    'storageType',
+    'STORAGE_TYPE',
+    fileConfig.storageType,
+    'Set STORAGE_TYPE in .env ("local" or "s3") or storageType in modaka-hub.config.json.'
+  );
+  if (storageTypeRaw !== 'local' && storageTypeRaw !== 's3') {
+    throw new ConfigurationError(
+      `[Bootstrap] Invalid STORAGE_TYPE '${storageTypeRaw}'. Must be explicitly declared as 'local' or 's3'.`
+    );
+  }
+  const storageType = storageTypeRaw as 'local' | 's3';
+
+  let documentStoragePath: string;
+  let s3Bucket: string | undefined;
+  let s3Region: string | undefined;
+  let s3Endpoint: string | undefined;
+  let s3AccessKey: string | undefined;
+  let s3SecretKey: string | undefined;
+
+  if (storageType === 's3') {
+    s3Bucket = requireParam<string>(
+      's3Bucket',
+      'S3_BUCKET',
+      fileConfig.s3Bucket,
+      'When STORAGE_TYPE is "s3", S3_BUCKET must be explicitly configured.'
+    );
+    s3Region = requireParam<string>(
+      's3Region',
+      'S3_REGION',
+      fileConfig.s3Region,
+      'When STORAGE_TYPE is "s3", S3_REGION must be explicitly configured.'
+    );
+    s3AccessKey = requireParam<string>(
+      's3AccessKey',
+      'S3_ACCESS_KEY',
+      fileConfig.s3AccessKey,
+      'When STORAGE_TYPE is "s3", S3_ACCESS_KEY must be explicitly configured.'
+    );
+    s3SecretKey = requireParam<string>(
+      's3SecretKey',
+      'S3_SECRET_KEY',
+      fileConfig.s3SecretKey,
+      'When STORAGE_TYPE is "s3", S3_SECRET_KEY must be explicitly configured.'
+    );
+    s3Endpoint = env.S3_ENDPOINT || fileConfig.s3Endpoint;
+    documentStoragePath = env.DOCUMENT_STORAGE_PATH || fileConfig.documentStoragePath || path.join(gitLocalPath, 'assets');
+  } else {
+    documentStoragePath = requireParam<string>(
+      'documentStoragePath',
+      'DOCUMENT_STORAGE_PATH',
+      fileConfig.documentStoragePath,
+      'When STORAGE_TYPE is "local", DOCUMENT_STORAGE_PATH must be explicitly configured in .env or config file.'
+    );
+  }
+
+  // 5. Validate Auth Allowed Domains (Fail-Fast)
   const rawDomains =
     env.ALLOWED_EMAIL_DOMAINS ||
     (fileConfig as any)?.auth?.allowedDomain ||
-    '';
-  const allowedEmailDomains = rawDomains
-    .split(',')
+    fileConfig.allowedEmailDomains;
+
+  if (!rawDomains || (Array.isArray(rawDomains) && rawDomains.length === 0)) {
+    throw new ConfigurationError(
+      `[Bootstrap] Missing required configuration parameter: 'allowedEmailDomains' (env: 'ALLOWED_EMAIL_DOMAINS'). Set to '*' to allow all domains, or comma-separated domains (e.g. '@brad.ag').`
+    );
+  }
+
+  const allowedEmailDomains = (typeof rawDomains === 'string' ? rawDomains.split(',') : rawDomains)
     .map((d: string) => d.trim().toLowerCase())
     .filter(Boolean);
 
-  // 4. Resolve Beta Access Codes
-  const rawBetaCodes =
-    env.BETA_ACCESS_CODES ||
-    (fileConfig as any)?.auth?.betaAccessCodes ||
-    '';
-  const betaAccessCodes = (typeof rawBetaCodes === 'string' ? rawBetaCodes.split(',') : (Array.isArray(rawBetaCodes) ? rawBetaCodes : []))
-    .map((c: string) => c.trim().toUpperCase())
-    .filter(Boolean);
+  // 6. Validate AI Provider & Credentials (Fail-Fast)
+  const rawAiProvider = requireParam<string>(
+    'aiProvider',
+    'AI_PROVIDER',
+    fileConfig.aiProvider,
+    'Set AI_PROVIDER in .env ("gemini", "deepseek", "qwen", "openai") or aiProvider in modaka-hub.config.json.'
+  ).toLowerCase();
 
-  // 5. Resolve AI Provider and Credentials
-  const aiProvider = ((env.AI_PROVIDER || env.LLM_PROVIDER || fileConfig.aiProvider || 'gemini') as string).toLowerCase() as AiProviderType;
+  if (!['gemini', 'deepseek', 'qwen', 'openai'].includes(rawAiProvider)) {
+    throw new ConfigurationError(
+      `[Bootstrap] Invalid AI_PROVIDER '${rawAiProvider}'. Must be one of: 'gemini', 'deepseek', 'qwen', 'openai'.`
+    );
+  }
+  const aiProvider = rawAiProvider as AiProviderType;
 
-  let aiModel: string | undefined;
-  let aiApiKey: string | undefined;
+  let aiModel: string;
+  let aiApiKey: string;
   let aiBaseUrl: string | undefined;
 
-  if (aiProvider === 'deepseek') {
-    aiModel = env.DEEPSEEK_MODEL || 'deepseek-chat';
-    aiApiKey = env.DEEPSEEK_API_KEY;
-    aiBaseUrl = env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1';
+  if (aiProvider === 'gemini') {
+    aiModel = requireParam<string>(
+      'aiModel',
+      'GEMINI_MODEL',
+      fileConfig.aiModel,
+      'When AI_PROVIDER is "gemini", GEMINI_MODEL must be explicitly configured.'
+    );
+    aiApiKey = requireParam<string>(
+      'aiApiKey',
+      'GEMINI_API_KEY',
+      fileConfig.aiApiKey,
+      'When AI_PROVIDER is "gemini", GEMINI_API_KEY must be explicitly configured.'
+    );
+  } else if (aiProvider === 'deepseek') {
+    aiModel = requireParam<string>(
+      'aiModel',
+      'DEEPSEEK_MODEL',
+      fileConfig.aiModel,
+      'When AI_PROVIDER is "deepseek", DEEPSEEK_MODEL must be explicitly configured.'
+    );
+    aiApiKey = requireParam<string>(
+      'aiApiKey',
+      'DEEPSEEK_API_KEY',
+      fileConfig.aiApiKey,
+      'When AI_PROVIDER is "deepseek", DEEPSEEK_API_KEY must be explicitly configured.'
+    );
+    aiBaseUrl = requireParam<string>(
+      'aiBaseUrl',
+      'DEEPSEEK_BASE_URL',
+      fileConfig.aiBaseUrl,
+      'When AI_PROVIDER is "deepseek", DEEPSEEK_BASE_URL must be explicitly configured.'
+    );
   } else if (aiProvider === 'qwen') {
-    aiModel = env.QWEN_MODEL || 'qwen-plus';
-    aiApiKey = env.QWEN_API_KEY;
-    aiBaseUrl = env.QWEN_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
-  } else if (aiProvider === 'openai') {
-    aiModel = env.OPENAI_MODEL || 'gpt-4o';
-    aiApiKey = env.OPENAI_API_KEY;
-    aiBaseUrl = env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+    aiModel = requireParam<string>(
+      'aiModel',
+      'QWEN_MODEL',
+      fileConfig.aiModel,
+      'When AI_PROVIDER is "qwen", QWEN_MODEL must be explicitly configured.'
+    );
+    aiApiKey = requireParam<string>(
+      'aiApiKey',
+      'QWEN_API_KEY',
+      fileConfig.aiApiKey,
+      'When AI_PROVIDER is "qwen", QWEN_API_KEY must be explicitly configured.'
+    );
+    aiBaseUrl = requireParam<string>(
+      'aiBaseUrl',
+      'QWEN_BASE_URL',
+      fileConfig.aiBaseUrl,
+      'When AI_PROVIDER is "qwen", QWEN_BASE_URL must be explicitly configured.'
+    );
   } else {
-    // gemini
-    aiModel = env.GEMINI_MODEL || 'gemini-2.5-flash';
-    aiApiKey = env.GEMINI_API_KEY;
+    // openai
+    aiModel = requireParam<string>(
+      'aiModel',
+      'OPENAI_MODEL',
+      fileConfig.aiModel,
+      'When AI_PROVIDER is "openai", OPENAI_MODEL must be explicitly configured.'
+    );
+    aiApiKey = requireParam<string>(
+      'aiApiKey',
+      'OPENAI_API_KEY',
+      fileConfig.aiApiKey,
+      'When AI_PROVIDER is "openai", OPENAI_API_KEY must be explicitly configured.'
+    );
+    aiBaseUrl = requireParam<string>(
+      'aiBaseUrl',
+      'OPENAI_BASE_URL',
+      fileConfig.aiBaseUrl,
+      'When AI_PROVIDER is "openai", OPENAI_BASE_URL must be explicitly configured.'
+    );
   }
 
-  // 6. Assemble configuration
+  // 7. Validate Taxonomy Axes (Fail-Fast)
+  const axes = fileConfig.axes;
+  if (!Array.isArray(axes) || axes.length === 0) {
+    throw new ConfigurationError(
+      `[Bootstrap] Missing required configuration parameter: 'axes'. modaka-hub.config.json must declare a non-empty 'axes' array defining taxonomy dimensions.`
+    );
+  }
+
   return {
-    appTitle: env.APP_TITLE || fileConfig.appTitle || 'Modaka-Hub',
-    appSubtitle: env.APP_SUBTITLE || fileConfig.appSubtitle || 'Centre d’autorité & structuration OKF v0.1',
-    badgeLabel: env.APP_BADGE_LABEL || fileConfig.badgeLabel,
-    soa: env.DEFAULT_SOA || fileConfig.soa || 'modaka/authority',
+    appTitle,
+    appSubtitle,
+    badgeLabel,
+    soa,
     gitLocalPath,
-    gitRepoOwner: env.GIT_REPO_OWNER || fileConfig.gitRepoOwner || 'modaka',
-    gitRepoName: env.GIT_REPO_NAME || fileConfig.gitRepoName || 'knowledge',
-    gitBranch: env.GIT_BRANCH || fileConfig.gitBranch || 'develop',
-    gitMode: env.GIT_MODE || fileConfig.gitMode || 'local',
-    documentStoragePath:
-      env.DOCUMENT_STORAGE_PATH ||
-      fileConfig.documentStoragePath ||
-      path.join(gitLocalPath, 'assets'),
-    storageType: (env.STORAGE_TYPE as 'local' | 's3') || (env.S3_ACCESS_KEY ? 's3' : 'local'),
-    s3Bucket: env.S3_BUCKET || fileConfig.s3Bucket || 'modaka-knowledge',
-    s3Region: env.S3_REGION || fileConfig.s3Region || 'us-east-1',
-    s3Endpoint: env.S3_ENDPOINT || fileConfig.s3Endpoint,
-    s3AccessKey: env.S3_ACCESS_KEY || fileConfig.s3AccessKey,
-    s3SecretKey: env.S3_SECRET_KEY || fileConfig.s3SecretKey,
+    gitRepoOwner,
+    gitRepoName,
+    gitBranch,
+    gitMode,
+    documentStoragePath,
+    storageType,
+    s3Bucket,
+    s3Region,
+    s3Endpoint,
+    s3AccessKey,
+    s3SecretKey,
     allowedEmailDomains,
-    betaAccessCodes,
     aiProvider,
     aiModel,
     aiApiKey,
     aiBaseUrl,
-    axes: fileConfig.axes && fileConfig.axes.length > 0 ? fileConfig.axes : DEFAULT_AXES
+    axes
   };
 }
 
@@ -153,6 +367,10 @@ let _cachedConfig: ModakaConfig | null = null;
 export function reloadConfig(): ModakaConfig {
   _cachedConfig = loadConfig();
   return _cachedConfig;
+}
+
+export function resetConfigForTests(): void {
+  _cachedConfig = null;
 }
 
 export function getConfig(): ModakaConfig {
@@ -170,14 +388,14 @@ export const config = new Proxy({} as ModakaConfig, {
 
 /**
  * Checks if a given email is allowed according to domain policy.
- * If allowedEmailDomains is empty or contains '*', all domains are allowed.
+ * If allowedEmailDomains contains '*', all domains are allowed.
  */
 export function isEmailDomainAllowed(email: string): boolean {
   if (!email) return false;
   const lower = email.toLowerCase().trim();
   const domains = config.allowedEmailDomains;
 
-  if (domains.length === 0 || domains.includes('*')) {
+  if (domains.includes('*')) {
     return true;
   }
 
@@ -185,13 +403,4 @@ export function isEmailDomainAllowed(email: string): boolean {
     const d = domain.startsWith('@') ? domain : `@${domain}`;
     return lower.endsWith(d);
   });
-}
-
-/**
- * Validates a submitted beta access code.
- */
-export function isBetaAccessCodeValid(code: string): boolean {
-  if (!code) return false;
-  const clean = code.trim().toUpperCase();
-  return config.betaAccessCodes.includes(clean);
 }

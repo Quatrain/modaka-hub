@@ -1,62 +1,59 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { loadConfig, isEmailDomainAllowed, isBetaAccessCodeValid } from '../config';
+import { loadConfig, isEmailDomainAllowed, ConfigurationError, resetConfigForTests } from '../config';
 
-describe('Configuration Layer', () => {
+describe('Configuration Layer & Fail-Fast Contract', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
     process.env = { ...originalEnv };
+    process.env.GEMINI_API_KEY = 'test-gemini-key';
+    process.env.GEMINI_MODEL = 'gemini-2.5-flash';
+    resetConfigForTests();
   });
 
   afterEach(() => {
     process.env = originalEnv;
+    resetConfigForTests();
   });
 
-  it('loads default values when environment variables are unset', () => {
+  it('fails fast and throws ConfigurationError when required parameters are unset', () => {
     delete process.env.APP_TITLE;
     delete process.env.DEFAULT_SOA;
     delete process.env.AI_PROVIDER;
 
+    expect(() => loadConfig({ ignoreConfigFile: true })).toThrowError(ConfigurationError);
+    expect(() => loadConfig({ ignoreConfigFile: true })).toThrow(/Missing required configuration parameter/);
+  });
+
+  it('loads valid configuration when all required parameters are provided in config file', () => {
     const conf = loadConfig();
-    expect(conf.appTitle).toBe('Modaka-Hub');
+    expect(conf.appTitle).toBe('Modaka Hub');
     expect(conf.soa).toBe('modaka/authority');
     expect(conf.aiProvider).toBe('gemini');
     expect(conf.storageType).toBe('local');
+    expect(conf.axes.length).toBeGreaterThan(0);
   });
 
-  it('loads customized values from environment variables', () => {
-    process.env.APP_TITLE = 'Hey Brad';
-    process.env.DEFAULT_SOA = 'bradtech/world-agronomy';
+  it('fails fast when AI provider credentials are missing', () => {
     process.env.AI_PROVIDER = 'deepseek';
-    process.env.DEEPSEEK_API_KEY = 'sk-deepseek-test-123';
-    process.env.BETA_ACCESS_CODES = 'CODE-ALPHA,CODE-BETA';
-    process.env.ALLOWED_EMAIL_DOMAINS = '@brad.ag,@community.org';
+    delete process.env.DEEPSEEK_API_KEY;
+    delete process.env.DEEPSEEK_MODEL;
+    delete process.env.DEEPSEEK_BASE_URL;
 
-    const conf = loadConfig();
-    expect(conf.appTitle).toBe('Hey Brad');
-    expect(conf.soa).toBe('bradtech/world-agronomy');
-    expect(conf.aiProvider).toBe('deepseek');
-    expect(conf.aiApiKey).toBe('sk-deepseek-test-123');
-    expect(conf.betaAccessCodes).toEqual(['CODE-ALPHA', 'CODE-BETA']);
-    expect(conf.allowedEmailDomains).toEqual(['@brad.ag', '@community.org']);
+    expect(() => loadConfig()).toThrowError(ConfigurationError);
+    expect(() => loadConfig()).toThrow(/When AI_PROVIDER is "deepseek"/);
   });
 
   it('validates email domains properly according to policy', () => {
-    // If domains is empty or contains '*'
+    process.env.ALLOWED_EMAIL_DOMAINS = '*';
+    resetConfigForTests();
     expect(isEmailDomainAllowed('john@anywhere.com')).toBe(true);
 
-    // If specific domains configured
     process.env.ALLOWED_EMAIL_DOMAINS = '@brad.ag';
+    resetConfigForTests();
     const conf = loadConfig();
-    // Helper function checks against active config
     expect(conf.allowedEmailDomains).toEqual(['@brad.ag']);
-  });
-
-  it('validates beta access codes in uppercase and trimmed', () => {
-    process.env.BETA_ACCESS_CODES = 'BETA-2026,AGRO-TEST';
-    // reload config so helper uses updated env
-    const conf = loadConfig();
-    expect(conf.betaAccessCodes).toContain('BETA-2026');
-    expect(conf.betaAccessCodes).toContain('AGRO-TEST');
+    expect(isEmailDomainAllowed('curator@brad.ag')).toBe(true);
+    expect(isEmailDomainAllowed('stranger@external.com')).toBe(false);
   });
 });
