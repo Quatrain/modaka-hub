@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { config as appConfig } from '../../../lib/config';
 
 function maskKey(val?: string): string {
   if (!val) return '';
@@ -21,32 +22,31 @@ export const GET: APIRoute = async ({ locals }) => {
 
   const config = {
     llm: {
-      provider: process.env.LLM_PROVIDER || 'gemini',
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-      apiKey: maskKey(process.env.GEMINI_API_KEY),
-      hasApiKey: Boolean(process.env.GEMINI_API_KEY)
+      provider: appConfig.aiProvider,
+      model: appConfig.aiModel || 'gemini-2.5-flash',
+      apiKey: maskKey(appConfig.aiApiKey),
+      hasApiKey: Boolean(appConfig.aiApiKey)
     },
     storage: {
-      type: process.env.STORAGE_TYPE || 'local',
-      documentStoragePath:
-        process.env.DOCUMENT_STORAGE_PATH ||
-        path.join(process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy', 'assets'),
-      s3Bucket: process.env.S3_BUCKET || 'world-agronomy',
-      s3Region: process.env.S3_REGION || 'us-east-1',
-      s3Endpoint: process.env.S3_ENDPOINT || '',
-      s3AccessKey: maskKey(process.env.S3_ACCESS_KEY),
-      hasSecretKey: Boolean(process.env.S3_SECRET_KEY)
+      type: appConfig.storageType,
+      documentStoragePath: appConfig.documentStoragePath,
+      s3Bucket: appConfig.s3Bucket,
+      s3Region: appConfig.s3Region,
+      s3Endpoint: appConfig.s3Endpoint || '',
+      s3AccessKey: maskKey(appConfig.s3AccessKey),
+      hasSecretKey: Boolean(appConfig.s3SecretKey)
     },
     git: {
-      localPath: process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy',
-      repoOwner: process.env.GIT_REPO_OWNER || 'bradtech',
-      repoName: process.env.GIT_REPO_NAME || 'world-agronomy',
-      branch: process.env.GIT_BRANCH || 'feat/bookworm-poc',
-      mode: process.env.GIT_MODE || 'local'
+      localPath: appConfig.gitLocalPath,
+      repoOwner: appConfig.gitRepoOwner,
+      repoName: appConfig.gitRepoName,
+      branch: appConfig.gitBranch,
+      mode: appConfig.gitMode
     },
     auth: {
       supabaseUrl: process.env.PUBLIC_SUPABASE_URL || 'https://qthlhrtxnuzibnzimoao.supabase.co',
-      allowedDomain: '@brad.ag'
+      allowedDomain: appConfig.allowedEmailDomains.join(', '),
+      betaAccessCodesCount: appConfig.betaAccessCodes.length
     }
   };
 

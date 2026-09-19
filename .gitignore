@@ -9,4 +9,5 @@ dist/
 .env
 .anemorph-queue/
 .modaka-hub-queue/
+.modaka-hub-hashes.json
 *.pdf

@@ -1,6 +1,8 @@
 import { defineMiddleware, sequence } from 'astro:middleware';
 import { AstroRbacMiddleware } from '@quatrain/auth-rbac';
 import { rbacEngine } from './rbac/roles';
+import { verifyBetaToken } from './pages/api/auth/beta-login';
+import { isEmailDomainAllowed, config } from './lib/config';
 
 const PUBLIC_PATHS = [
   '/login',
@@ -8,20 +10,14 @@ const PUBLIC_PATHS = [
   '/api/auth/callback',
   '/api/auth/logout',
   '/api/auth/password-login',
+  '/api/auth/beta-login',
   '/favicon.ico',
   '/favicon.svg'
 ];
 
-const rawAllowedDomains =
-  import.meta.env.ALLOWED_EMAIL_DOMAINS || process.env.ALLOWED_EMAIL_DOMAINS || '@brad.ag';
-const ALLOWED_DOMAINS = rawAllowedDomains
-  .split(',')
-  .map((d: string) => d.trim().toLowerCase())
-  .filter(Boolean);
-
 /**
- * Authentication Middleware: Resolves Supabase session, performs silent token refresh,
- * enforces @brad.ag domain restriction, and populates context.locals.user.
+ * Authentication Middleware: Resolves Beta Access tokens or Supabase sessions,
+ * performs silent token refresh, enforces domain restrictions, and populates context.locals.user.
  */
 const authMiddleware = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
@@ -34,6 +30,29 @@ const authMiddleware = defineMiddleware(async (context, next) => {
     pathname.startsWith('/assets/')
   ) {
     return next();
+  }
+
+  // 2. Check for Beta Access Code cookie
+  const betaCookie =
+    context.cookies.get('modaka-beta-token')?.value ||
+    context.cookies.get('hey-brad-beta-token')?.value;
+
+  if (betaCookie) {
+    const betaUser = verifyBetaToken(betaCookie);
+    if (betaUser) {
+      context.locals.user = {
+        id: `beta-${betaUser.code.toLowerCase()}`,
+        email: `${betaUser.code.toLowerCase()}@beta.community`,
+        name: betaUser.name || `Bêta Testeur (${betaUser.code})`,
+        roles: ['curator', 'user-brad'],
+        customClaims: { beta: true, code: betaUser.code },
+        subjectType: 'human'
+      };
+      return next();
+    } else {
+      context.cookies.delete('modaka-beta-token', { path: '/' });
+      context.cookies.delete('hey-brad-beta-token', { path: '/' });
+    }
   }
 
   const supabaseUrl =
@@ -138,12 +157,10 @@ const authMiddleware = defineMiddleware(async (context, next) => {
 
   const email = (user.email || '').toLowerCase().trim();
 
-  // 6. Strict email domain check against configured ALLOWED_DOMAINS
-  const isDomainAllowed =
-    ALLOWED_DOMAINS.includes('*') ||
-    ALLOWED_DOMAINS.some((allowed) => email.endsWith(allowed));
+  // 6. Email domain check against configured policy
+  const domainAllowed = isEmailDomainAllowed(email);
 
-  if (!isDomainAllowed) {
+  if (!domainAllowed) {
     context.cookies.delete('sb-access-token', { path: '/' });
     context.cookies.delete('sb-refresh-token', { path: '/' });
 
@@ -151,7 +168,7 @@ const authMiddleware = defineMiddleware(async (context, next) => {
       return new Response(
         JSON.stringify({
           error: 'Forbidden',
-          message: `Accès réservé aux domaines autorisés (${ALLOWED_DOMAINS.join(', ')})`
+          message: `Accès réservé aux domaines autorisés (${config.allowedEmailDomains.join(', ')})`
         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
