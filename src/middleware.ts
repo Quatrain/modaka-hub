@@ -1,6 +1,7 @@
 import { defineMiddleware, sequence } from 'astro:middleware';
 import { AstroRbacMiddleware } from '@quatrain/auth-rbac';
 import { rbacEngine } from './rbac/roles';
+import { isEmailDomainAllowed, config } from './lib/config';
 
 const PUBLIC_PATHS = [
   '/login',
@@ -12,16 +13,9 @@ const PUBLIC_PATHS = [
   '/favicon.svg'
 ];
 
-const rawAllowedDomains =
-  import.meta.env.ALLOWED_EMAIL_DOMAINS || process.env.ALLOWED_EMAIL_DOMAINS || '@brad.ag';
-const ALLOWED_DOMAINS = rawAllowedDomains
-  .split(',')
-  .map((d: string) => d.trim().toLowerCase())
-  .filter(Boolean);
-
 /**
- * Authentication Middleware: Resolves Supabase session, performs silent token refresh,
- * enforces @brad.ag domain restriction, and populates context.locals.user.
+ * Authentication Middleware: Resolves Supabase sessions,
+ * performs silent token refresh, enforces domain restrictions, and populates context.locals.user.
  */
 const authMiddleware = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;
@@ -138,12 +132,10 @@ const authMiddleware = defineMiddleware(async (context, next) => {
 
   const email = (user.email || '').toLowerCase().trim();
 
-  // 6. Strict email domain check against configured ALLOWED_DOMAINS
-  const isDomainAllowed =
-    ALLOWED_DOMAINS.includes('*') ||
-    ALLOWED_DOMAINS.some((allowed) => email.endsWith(allowed));
+  // 6. Email domain check against configured policy
+  const domainAllowed = isEmailDomainAllowed(email);
 
-  if (!isDomainAllowed) {
+  if (!domainAllowed) {
     context.cookies.delete('sb-access-token', { path: '/' });
     context.cookies.delete('sb-refresh-token', { path: '/' });
 
@@ -151,7 +143,7 @@ const authMiddleware = defineMiddleware(async (context, next) => {
       return new Response(
         JSON.stringify({
           error: 'Forbidden',
-          message: `Accès réservé aux domaines autorisés (${ALLOWED_DOMAINS.join(', ')})`
+          message: `Accès réservé aux domaines autorisés (${config.allowedEmailDomains.join(', ')})`
         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
@@ -163,35 +155,42 @@ const authMiddleware = defineMiddleware(async (context, next) => {
   }
 
   // 7. 🛡️ Custom Claims & Roles Extraction
+  const appMeta = user.app_metadata || {};
+  const userMeta = user.user_metadata || {};
+  const customClaims = appMeta.custom_claims || userMeta.custom_claims || {};
+
   const extractedRoles: string[] = [];
 
-  if (Array.isArray(user.app_metadata?.roles)) {
-    extractedRoles.push(...user.app_metadata.roles);
-  } else if (typeof user.app_metadata?.role === 'string') {
-    extractedRoles.push(user.app_metadata.role);
+  if (Array.isArray(appMeta.roles)) {
+    extractedRoles.push(...appMeta.roles);
+  } else if (typeof appMeta.role === 'string') {
+    extractedRoles.push(appMeta.role);
+  } else if (typeof user.role === 'string') {
+    extractedRoles.push(user.role);
   }
 
-  const customClaims = user.app_metadata?.custom_claims || user.user_metadata?.custom_claims;
-  if (customClaims) {
-    if (Array.isArray(customClaims.roles)) extractedRoles.push(...customClaims.roles);
-    if (typeof customClaims.role === 'string') extractedRoles.push(customClaims.role);
-  }
+  if (Array.isArray(customClaims.roles)) extractedRoles.push(...customClaims.roles);
+  if (typeof customClaims.role === 'string') extractedRoles.push(customClaims.role);
+  if (typeof userMeta.role === 'string') extractedRoles.push(userMeta.role);
 
-  if (typeof user.user_metadata?.role === 'string') {
-    extractedRoles.push(user.user_metadata.role);
-  }
-
-  // Fallback defaults if no specific role is defined
+  // If no specific role is defined in claims, assign minimal guest role
   const finalRoles =
-    extractedRoles.length > 0 ? Array.from(new Set(extractedRoles)) : ['user-brad', 'curator'];
+    extractedRoles.length > 0 ? Array.from(new Set(extractedRoles)) : ['guest'];
+
+  const companyId = appMeta.company_id || customClaims.company_id;
+  const companyName = appMeta.company_name || customClaims.company_name;
 
   // 8. Inject authenticated user into context.locals
   context.locals.user = {
     id: user.id,
     email: user.email,
-    name: user.user_metadata?.full_name || user.user_metadata?.name || email.split('@')[0],
+    name: userMeta.full_name || userMeta.name || email.split('@')[0],
     roles: finalRoles,
-    customClaims: customClaims || {},
+    company: companyId ? { id: companyId, name: companyName } : undefined,
+    customClaims: {
+      ...customClaims,
+      ...(companyId ? { company_id: companyId, company_name: companyName } : {})
+    },
     subjectType: 'human'
   };
 

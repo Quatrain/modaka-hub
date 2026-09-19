@@ -37,6 +37,9 @@ const localAliases = {
   '@quatrain/ux-curation': path.join(coreUxDir, 'ux-curation/src/index.ts')
 };
 
+const hasLocalCore = fs.existsSync(coreDir) && fs.existsSync(coreUxDir);
+const aliases = hasLocalCore ? localAliases : {};
+
 export default defineConfig({
   output: 'server',
   adapter: node({
@@ -59,9 +62,7 @@ export default defineConfig({
     },
     resolve: {
       dedupe: ['react', 'react-dom'],
-      alias: {
-        ...localAliases
-      }
+      alias: aliases
     }
   }
 });

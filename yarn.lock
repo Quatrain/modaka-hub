@@ -2112,7 +2112,7 @@ __metadata:
   resolution: "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/api": "workspace:*"
-    "@quatrain/backend": "npm:^1.2.17"
+    "@quatrain/backend": "npm:^1.2.20"
     "@quatrain/core": "npm:^1.2.18"
     "@quatrain/http": "workspace:*"
   languageName: node
@@ -2319,7 +2319,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.337.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.342.0"
-    "@quatrain/storage": "npm:^1.2.13"
+    "@quatrain/storage": "npm:^1.2.14"
     fs-extra: "npm:^11.2.0"
   languageName: node
   linkType: soft

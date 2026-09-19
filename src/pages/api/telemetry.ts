@@ -5,10 +5,11 @@ import * as path from 'node:path';
 import * as crypto from 'node:crypto';
 import { initBackend } from '../../lib/backend';
 import { Log } from '@quatrain/log';
+import { config } from '../../lib/config';
 
 export const GET: APIRoute = async () => {
   await initBackend();
-  const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
+  const gitLocalPath = config.gitLocalPath;
   const telemetryDir = path.join(gitLocalPath, 'telemetry');
 
   try {
@@ -44,7 +45,7 @@ export const GET: APIRoute = async () => {
                     if (!documentStats[uid]) {
                       documentStats[uid] = {
                         documentUid: uid,
-                        soa: entry.soa || 'bradtech/world-agronomy',
+                        soa: entry.soa || config.soa,
                         revision: entry.revision || 'rev-1.0.0',
                         totalUsages: 0,
                         helpfulVotes: 0,
@@ -86,7 +87,7 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
   await initBackend();
-  const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
+  const gitLocalPath = config.gitLocalPath;
 
   try {
     const payload = await request.json();
