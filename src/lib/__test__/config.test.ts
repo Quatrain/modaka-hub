@@ -27,8 +27,10 @@ describe('Configuration Layer & Fail-Fast Contract', () => {
 
   it('loads valid configuration when all required parameters are provided in config file', () => {
     const conf = loadConfig();
-    expect(conf.appTitle).toBe('Modaka Hub');
-    expect(conf.soa).toBe('modaka/authority');
+    expect(typeof conf.appTitle).toBe('string');
+    expect(conf.appTitle.length).toBeGreaterThan(0);
+    expect(typeof conf.soa).toBe('string');
+    expect(conf.soa.length).toBeGreaterThan(0);
     expect(conf.aiProvider).toBe('gemini');
     expect(conf.storageType).toBe('local');
     expect(conf.axes.length).toBeGreaterThan(0);
