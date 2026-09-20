@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { Config } from '@quatrain/config';
 import { loadConfig, isEmailDomainAllowed, ConfigurationError, resetConfigForTests } from '../config';
 
 describe('Configuration Layer & Fail-Fast Contract', () => {
@@ -57,5 +58,16 @@ describe('Configuration Layer & Fail-Fast Contract', () => {
     expect(conf.allowedEmailDomains).toEqual(['@brad.ag']);
     expect(isEmailDomainAllowed('curator@brad.ag')).toBe(true);
     expect(isEmailDomainAllowed('stranger@external.com')).toBe(false);
+  });
+
+  it('registers in @quatrain/config registry and allows environment overrides', () => {
+    process.env.APP_TITLE = 'Overridden Title';
+    const conf = loadConfig();
+    expect(conf.appTitle).toBe('Overridden Title');
+
+    const container = Config.getConfig('modaka-hub');
+    expect(container).toBeDefined();
+    expect(container.getString('appTitle')).toBe('Overridden Title');
+    expect(container.requireString('soa')).toBe(conf.soa);
   });
 });
