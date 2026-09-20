@@ -21,6 +21,7 @@ export const modakaHubComposition: AppCompositionInterface<PWAContentInterface> 
    adapters: {
       ai: {
          default: { package: '@quatrain/ai-gemini', adapter: 'GeminiAdapter' },
+         openai: { package: '@quatrain/ai-openai', adapter: 'OpenAiAdapter' },
          ocr: { package: '@quatrain/ingestion-ocr', adapter: 'OcrIngestionAdapter' },
          audio: { package: '@quatrain/ingestion-audio', adapter: 'AudioIngestionAdapter' }
       },

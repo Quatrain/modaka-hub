@@ -27,6 +27,7 @@
     "@mantine/hooks": "^7.10.0",
     "@quatrain/ai": "^1.1.4",
     "@quatrain/ai-gemini": "^1.1.4",
+    "@quatrain/ai-openai": "^1.1.0",
     "@quatrain/api-client": "^1.1.7",
     "@quatrain/api-server": "^1.1.11",
     "@quatrain/api-server-astro": "^1.1.15",
@@ -76,6 +77,7 @@
   },
   "resolutions": {
     "@quatrain/ai-gemini": "portal:../../QUATRAIN/Core/packages/ai-gemini",
+    "@quatrain/ai-openai": "portal:../../QUATRAIN/Core/packages/ai-openai",
     "@quatrain/ai": "portal:../../QUATRAIN/Core/packages/ai",
     "@quatrain/api-client": "portal:../../QUATRAIN/Core/packages/api-client",
     "@quatrain/api-server-astro": "portal:../../QUATRAIN/Core/packages/api-server-astro",

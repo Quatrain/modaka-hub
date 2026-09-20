@@ -2050,6 +2050,15 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@quatrain/ai-openai@portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ai-openai@portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/ai": "workspace:*"
+    "@quatrain/core": "workspace:*"
+  languageName: node
+  linkType: soft
+
 "@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
   version: 0.0.0-use.local
   resolution: "@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
@@ -2208,6 +2217,7 @@ __metadata:
     "@mantine/hooks": "npm:^7.10.0"
     "@quatrain/ai": "npm:^1.1.4"
     "@quatrain/ai-gemini": "npm:^1.1.4"
+    "@quatrain/ai-openai": "npm:^1.1.0"
     "@quatrain/api-client": "npm:^1.1.7"
     "@quatrain/api-server": "npm:^1.1.11"
     "@quatrain/api-server-astro": "npm:^1.1.15"

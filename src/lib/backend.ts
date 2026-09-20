@@ -15,7 +15,7 @@ import { Queue } from '@quatrain/queue';
 import { SQLiteQueueAdapter } from '@quatrain/queue-sqlite';
 import { queueManager } from './queue';
 import { config } from './config';
-import { OpenAiCompatibleAiAdapter } from './ai/OpenAiCompatibleAiAdapter';
+import { OpenAiAdapter } from '@quatrain/ai-openai';
 
 dotenv.config();
 
@@ -68,13 +68,13 @@ export async function initBackend() {
       Log.info(`AI Gemini adapter registered (model: ${config.aiModel || 'gemini-2.5-flash'})`);
    } else if (config.aiApiKey) {
       Ai.setAdapter(
-         new OpenAiCompatibleAiAdapter({
+         new OpenAiAdapter({
             apiKey: config.aiApiKey,
             baseUrl: config.aiBaseUrl,
             defaultModel: config.aiModel
          })
       );
-      Log.info(`AI OpenAI-compatible adapter registered (provider: ${config.aiProvider}, model: ${config.aiModel}, endpoint: ${config.aiBaseUrl})`);
+      Log.info(`AI OpenAI adapter registered (provider: ${config.aiProvider}, model: ${config.aiModel}, endpoint: ${config.aiBaseUrl})`);
    } else {
       Log.warn(`[${config.appTitle}] No AI API key provided. AI structuring will run in fallback heuristic mode.`);
    }

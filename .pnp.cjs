@@ -35,6 +35,7 @@ const RAW_RUNTIME_STATE =
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ai-gemini", "portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-client", "portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
@@ -2372,6 +2373,17 @@ const RAW_RUNTIME_STATE =
         "linkType": "SOFT"\
       }]\
     ]],\
+    ["@quatrain/ai-openai", [\
+      ["portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
+        "packageLocation": "../../QUATRAIN/Core/packages/ai-openai/",\
+        "packageDependencies": [\
+          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+        ],\
+        "linkType": "SOFT"\
+      }]\
+    ]],\
     ["@quatrain/api", [\
       ["portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
         "packageLocation": "../../QUATRAIN/Core/packages/api/",\
@@ -2551,6 +2563,7 @@ const RAW_RUNTIME_STATE =
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ai-gemini", "portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-client", "portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
