@@ -42,6 +42,7 @@ const RAW_RUNTIME_STATE =
           ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion-audio", "portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
@@ -2469,6 +2470,17 @@ const RAW_RUNTIME_STATE =
         "linkType": "SOFT"\
       }]\
     ]],\
+    ["@quatrain/config", [\
+      ["portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
+        "packageLocation": "../../QUATRAIN/Core/packages/config/",\
+        "packageDependencies": [\
+          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+        ],\
+        "linkType": "SOFT"\
+      }]\
+    ]],\
     ["@quatrain/core", [\
       ["portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
         "packageLocation": "../../QUATRAIN/Core/packages/core/",\
@@ -2570,6 +2582,7 @@ const RAW_RUNTIME_STATE =
           ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
           ["@quatrain/ingestion-audio", "portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\

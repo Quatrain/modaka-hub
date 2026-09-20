@@ -1,5 +1,14 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+import {
+  Config,
+  ConfigContainer,
+  EnvConfigSource,
+  ObjectConfigSource,
+  ConfigurationError
+} from '@quatrain/config';
+
+export { ConfigurationError };
 
 export type AiProviderType = 'gemini' | 'openai' | 'deepseek' | 'qwen';
 
@@ -37,41 +46,11 @@ export interface ModakaConfig {
   axes: AxisDefinition[];
 }
 
-export class ConfigurationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ConfigurationError';
-  }
-}
-
-/**
- * Requires an explicit configuration parameter from environment variable or JSON config file.
- * Throws ConfigurationError immediately (fail-fast) without silent defaults.
- */
-function requireParam<T = string>(
-  name: string,
-  envKey: string,
-  fileValue: any,
-  helpText: string
-): T {
-  const envVal = process.env[envKey];
-  const value = envVal !== undefined && envVal !== '' ? envVal : fileValue;
-
-  if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
-    throw new ConfigurationError(
-      `[Bootstrap] Missing required configuration parameter: '${name}' (env: '${envKey}'). ${helpText}`
-    );
-  }
-
-  return (typeof value === 'string' ? value.trim() : value) as T;
-}
-
 export function loadConfig(options?: { ignoreConfigFile?: boolean; configFilePath?: string }): ModakaConfig {
-  const env = process.env;
+  const rootDir = process.cwd();
 
   // 1. Locate and parse configuration file if candidate exists
-  let fileConfig: Partial<ModakaConfig> = {};
-  const rootDir = process.cwd();
+  let fileConfig: Record<string, unknown> = {};
 
   const configCandidatePaths = options?.configFilePath
     ? [options.configFilePath]
@@ -86,96 +65,76 @@ export function loadConfig(options?: { ignoreConfigFile?: boolean; configFilePat
     if (fs.existsSync(candidate)) {
       try {
         const raw = fs.readFileSync(candidate, 'utf-8');
-        const parsed = JSON.parse(raw);
-        fileConfig = { ...fileConfig, ...parsed };
+        fileConfig = JSON.parse(raw);
         break;
       } catch (err: any) {
         throw new ConfigurationError(
-          `[Bootstrap] Failed to parse configuration file at '${candidate}': ${err.message}`
+          'configFilePath',
+          'modaka-hub',
+          `Failed to parse configuration file at '${candidate}': ${err.message}`
         );
       }
     }
   }
 
-  // 2. Validate Core Metadata (Fail-Fast)
-  const appTitle = requireParam<string>(
+  // 2. Initialize Config container for modaka-hub
+  const sources = [new EnvConfigSource({ priority: 50 })];
+  if (fileConfig && Object.keys(fileConfig).length > 0) {
+    sources.push(new ObjectConfigSource(fileConfig, 'modaka-hub.config.json', 10));
+  }
+  const container = new ConfigContainer('modaka-hub', sources);
+  Config.addConfig('modaka-hub', container, true);
+
+  // 3. Validate Core Metadata (Fail-Fast)
+  const appTitle = container.requireString(
     'appTitle',
-    'APP_TITLE',
-    fileConfig.appTitle,
     'Set APP_TITLE in .env or appTitle in modaka-hub.config.json.'
   );
 
-  const appSubtitle = requireParam<string>(
+  const appSubtitle = container.requireString(
     'appSubtitle',
-    'APP_SUBTITLE',
-    fileConfig.appSubtitle,
     'Set APP_SUBTITLE in .env or appSubtitle in modaka-hub.config.json.'
   );
 
-  const badgeLabel = env.APP_BADGE_LABEL || fileConfig.badgeLabel;
+  const badgeLabel = container.getString('badgeLabel') || container.getString('APP_BADGE_LABEL');
 
-  const soa = requireParam<string>(
-    'soa',
-    'DEFAULT_SOA',
-    fileConfig.soa,
-    'Set DEFAULT_SOA in .env or soa in modaka-hub.config.json.'
-  );
+  const soa =
+    container.getString('DEFAULT_SOA') ||
+    container.requireString('soa', 'Set DEFAULT_SOA in .env or soa in modaka-hub.config.json.');
 
-  // 3. Validate Git & Local Storage (Fail-Fast)
-  const gitLocalPath = requireParam<string>(
+  // 4. Validate Git & Local Storage (Fail-Fast)
+  const gitLocalPath = container.requireString(
     'gitLocalPath',
-    'GIT_LOCAL_PATH',
-    fileConfig.gitLocalPath,
     'Set GIT_LOCAL_PATH in .env or gitLocalPath in modaka-hub.config.json.'
   );
 
-  const gitRepoOwner = requireParam<string>(
+  const gitRepoOwner = container.requireString(
     'gitRepoOwner',
-    'GIT_REPO_OWNER',
-    fileConfig.gitRepoOwner,
     'Set GIT_REPO_OWNER in .env or gitRepoOwner in modaka-hub.config.json.'
   );
 
-  const gitRepoName = requireParam<string>(
+  const gitRepoName = container.requireString(
     'gitRepoName',
-    'GIT_REPO_NAME',
-    fileConfig.gitRepoName,
     'Set GIT_REPO_NAME in .env or gitRepoName in modaka-hub.config.json.'
   );
 
-  const gitBranch = requireParam<string>(
+  const gitBranch = container.requireString(
     'gitBranch',
-    'GIT_BRANCH',
-    fileConfig.gitBranch,
     'Set GIT_BRANCH in .env or gitBranch in modaka-hub.config.json.'
   );
 
-  const gitModeRaw = requireParam<string>(
+  const gitMode = container.requireEnum<'local' | 'remote'>(
     'gitMode',
-    'GIT_MODE',
-    fileConfig.gitMode,
+    ['local', 'remote'],
     'Set GIT_MODE in .env ("local" or "remote") or gitMode in modaka-hub.config.json.'
   );
-  if (gitModeRaw !== 'local' && gitModeRaw !== 'remote') {
-    throw new ConfigurationError(
-      `[Bootstrap] Invalid GIT_MODE '${gitModeRaw}'. Must be explicitly declared as 'local' or 'remote'.`
-    );
-  }
-  const gitMode = gitModeRaw as 'local' | 'remote';
 
-  // 4. Validate Storage Subsystem (Fail-Fast)
-  const storageTypeRaw = requireParam<string>(
+  // 5. Validate Storage Subsystem (Fail-Fast)
+  const storageType = container.requireEnum<'local' | 's3'>(
     'storageType',
-    'STORAGE_TYPE',
-    fileConfig.storageType,
+    ['local', 's3'],
     'Set STORAGE_TYPE in .env ("local" or "s3") or storageType in modaka-hub.config.json.'
   );
-  if (storageTypeRaw !== 'local' && storageTypeRaw !== 's3') {
-    throw new ConfigurationError(
-      `[Bootstrap] Invalid STORAGE_TYPE '${storageTypeRaw}'. Must be explicitly declared as 'local' or 's3'.`
-    );
-  }
-  const storageType = storageTypeRaw as 'local' | 's3';
 
   let documentStoragePath: string;
   let s3Bucket: string | undefined;
@@ -185,154 +144,115 @@ export function loadConfig(options?: { ignoreConfigFile?: boolean; configFilePat
   let s3SecretKey: string | undefined;
 
   if (storageType === 's3') {
-    s3Bucket = requireParam<string>(
+    s3Bucket = container.requireString(
       's3Bucket',
-      'S3_BUCKET',
-      fileConfig.s3Bucket,
       'When STORAGE_TYPE is "s3", S3_BUCKET must be explicitly configured.'
     );
-    s3Region = requireParam<string>(
+    s3Region = container.requireString(
       's3Region',
-      'S3_REGION',
-      fileConfig.s3Region,
       'When STORAGE_TYPE is "s3", S3_REGION must be explicitly configured.'
     );
-    s3AccessKey = requireParam<string>(
+    s3AccessKey = container.requireString(
       's3AccessKey',
-      'S3_ACCESS_KEY',
-      fileConfig.s3AccessKey,
       'When STORAGE_TYPE is "s3", S3_ACCESS_KEY must be explicitly configured.'
     );
-    s3SecretKey = requireParam<string>(
+    s3SecretKey = container.requireString(
       's3SecretKey',
-      'S3_SECRET_KEY',
-      fileConfig.s3SecretKey,
       'When STORAGE_TYPE is "s3", S3_SECRET_KEY must be explicitly configured.'
     );
-    s3Endpoint = env.S3_ENDPOINT || fileConfig.s3Endpoint;
-    documentStoragePath = env.DOCUMENT_STORAGE_PATH || fileConfig.documentStoragePath || path.join(gitLocalPath, 'assets');
+    s3Endpoint = container.getString('s3Endpoint') || container.getString('S3_ENDPOINT');
+    documentStoragePath =
+      container.getString('documentStoragePath') ||
+      container.getString('DOCUMENT_STORAGE_PATH') ||
+      path.join(gitLocalPath, 'assets');
   } else {
-    documentStoragePath = requireParam<string>(
+    documentStoragePath = container.requireString(
       'documentStoragePath',
-      'DOCUMENT_STORAGE_PATH',
-      fileConfig.documentStoragePath,
       'When STORAGE_TYPE is "local", DOCUMENT_STORAGE_PATH must be explicitly configured in .env or config file.'
     );
   }
 
-  // 5. Validate Auth Allowed Domains (Fail-Fast)
+  // 6. Validate Auth Allowed Domains (Fail-Fast)
   const rawDomains =
-    env.ALLOWED_EMAIL_DOMAINS ||
-    (fileConfig as any)?.auth?.allowedDomain ||
-    fileConfig.allowedEmailDomains;
+    container.get('ALLOWED_EMAIL_DOMAINS') ||
+    container.get('auth.allowedDomain') ||
+    container.get('allowedEmailDomains');
 
   if (!rawDomains || (Array.isArray(rawDomains) && rawDomains.length === 0)) {
     throw new ConfigurationError(
-      `[Bootstrap] Missing required configuration parameter: 'allowedEmailDomains' (env: 'ALLOWED_EMAIL_DOMAINS'). Set to '*' to allow all domains, or comma-separated domains (e.g. '@brad.ag').`
+      'allowedEmailDomains',
+      'modaka-hub',
+      'Missing required configuration parameter',
+      'Set to \'*\' to allow all domains, or comma-separated domains (e.g. \'@brad.ag\').'
     );
   }
 
-  const allowedEmailDomains = (typeof rawDomains === 'string' ? rawDomains.split(',') : rawDomains)
+  const allowedEmailDomains = (typeof rawDomains === 'string' ? rawDomains.split(',') : (rawDomains as string[]))
     .map((d: string) => d.trim().toLowerCase())
     .filter(Boolean);
 
-  // 6. Validate AI Provider & Credentials (Fail-Fast)
-  const rawAiProvider = requireParam<string>(
+  // 7. Validate AI Provider & Credentials (Fail-Fast)
+  const aiProvider = container.requireEnum<AiProviderType>(
     'aiProvider',
-    'AI_PROVIDER',
-    fileConfig.aiProvider,
+    ['gemini', 'deepseek', 'qwen', 'openai'],
     'Set AI_PROVIDER in .env ("gemini", "deepseek", "qwen", "openai") or aiProvider in modaka-hub.config.json.'
-  ).toLowerCase();
-
-  if (!['gemini', 'deepseek', 'qwen', 'openai'].includes(rawAiProvider)) {
-    throw new ConfigurationError(
-      `[Bootstrap] Invalid AI_PROVIDER '${rawAiProvider}'. Must be one of: 'gemini', 'deepseek', 'qwen', 'openai'.`
-    );
-  }
-  const aiProvider = rawAiProvider as AiProviderType;
+  );
 
   let aiModel: string;
   let aiApiKey: string;
   let aiBaseUrl: string | undefined;
 
   if (aiProvider === 'gemini') {
-    aiModel = requireParam<string>(
-      'aiModel',
-      'GEMINI_MODEL',
-      fileConfig.aiModel,
-      'When AI_PROVIDER is "gemini", GEMINI_MODEL must be explicitly configured.'
-    );
-    aiApiKey = requireParam<string>(
-      'aiApiKey',
-      'GEMINI_API_KEY',
-      fileConfig.aiApiKey,
-      'When AI_PROVIDER is "gemini", GEMINI_API_KEY must be explicitly configured.'
-    );
+    aiModel =
+      container.getString('GEMINI_MODEL') ||
+      container.requireString('aiModel', 'When AI_PROVIDER is "gemini", GEMINI_MODEL must be explicitly configured.');
+    aiApiKey =
+      container.getString('GEMINI_API_KEY') ||
+      container.requireString('aiApiKey', 'When AI_PROVIDER is "gemini", GEMINI_API_KEY must be explicitly configured.');
   } else if (aiProvider === 'deepseek') {
-    aiModel = requireParam<string>(
-      'aiModel',
-      'DEEPSEEK_MODEL',
-      fileConfig.aiModel,
-      'When AI_PROVIDER is "deepseek", DEEPSEEK_MODEL must be explicitly configured.'
-    );
-    aiApiKey = requireParam<string>(
-      'aiApiKey',
-      'DEEPSEEK_API_KEY',
-      fileConfig.aiApiKey,
-      'When AI_PROVIDER is "deepseek", DEEPSEEK_API_KEY must be explicitly configured.'
-    );
-    aiBaseUrl = requireParam<string>(
-      'aiBaseUrl',
-      'DEEPSEEK_BASE_URL',
-      fileConfig.aiBaseUrl,
-      'When AI_PROVIDER is "deepseek", DEEPSEEK_BASE_URL must be explicitly configured.'
-    );
+    aiModel =
+      container.getString('DEEPSEEK_MODEL') ||
+      container.requireString('aiModel', 'When AI_PROVIDER is "deepseek", DEEPSEEK_MODEL must be explicitly configured.');
+    aiApiKey =
+      container.getString('DEEPSEEK_API_KEY') ||
+      container.requireString('aiApiKey', 'When AI_PROVIDER is "deepseek", DEEPSEEK_API_KEY must be explicitly configured.');
+    aiBaseUrl =
+      container.getString('DEEPSEEK_BASE_URL') ||
+      container.requireString('aiBaseUrl', 'When AI_PROVIDER is "deepseek", DEEPSEEK_BASE_URL must be explicitly configured.');
   } else if (aiProvider === 'qwen') {
-    aiModel = requireParam<string>(
-      'aiModel',
-      'QWEN_MODEL',
-      fileConfig.aiModel,
-      'When AI_PROVIDER is "qwen", QWEN_MODEL must be explicitly configured.'
-    );
-    aiApiKey = requireParam<string>(
-      'aiApiKey',
-      'QWEN_API_KEY',
-      fileConfig.aiApiKey,
-      'When AI_PROVIDER is "qwen", QWEN_API_KEY must be explicitly configured.'
-    );
-    aiBaseUrl = requireParam<string>(
-      'aiBaseUrl',
-      'QWEN_BASE_URL',
-      fileConfig.aiBaseUrl,
-      'When AI_PROVIDER is "qwen", QWEN_BASE_URL must be explicitly configured.'
-    );
+    aiModel =
+      container.getString('QWEN_MODEL') ||
+      container.requireString('aiModel', 'When AI_PROVIDER is "qwen", QWEN_MODEL must be explicitly configured.');
+    aiApiKey =
+      container.getString('QWEN_API_KEY') ||
+      container.requireString('aiApiKey', 'When AI_PROVIDER is "qwen", QWEN_API_KEY must be explicitly configured.');
+    aiBaseUrl =
+      container.getString('QWEN_BASE_URL') ||
+      container.requireString('aiBaseUrl', 'When AI_PROVIDER is "qwen", QWEN_BASE_URL must be explicitly configured.');
   } else {
     // openai
-    aiModel = requireParam<string>(
-      'aiModel',
-      'OPENAI_MODEL',
-      fileConfig.aiModel,
-      'When AI_PROVIDER is "openai", OPENAI_MODEL must be explicitly configured.'
-    );
-    aiApiKey = requireParam<string>(
-      'aiApiKey',
-      'OPENAI_API_KEY',
-      fileConfig.aiApiKey,
-      'When AI_PROVIDER is "openai", OPENAI_API_KEY must be explicitly configured.'
-    );
-    aiBaseUrl = requireParam<string>(
-      'aiBaseUrl',
-      'OPENAI_BASE_URL',
-      fileConfig.aiBaseUrl,
-      'When AI_PROVIDER is "openai", OPENAI_BASE_URL must be explicitly configured.'
-    );
+    aiModel =
+      container.getString('OPENAI_MODEL') ||
+      container.requireString('aiModel', 'When AI_PROVIDER is "openai", OPENAI_MODEL must be explicitly configured.');
+    aiApiKey =
+      container.getString('OPENAI_API_KEY') ||
+      container.requireString('aiApiKey', 'When AI_PROVIDER is "openai", OPENAI_API_KEY must be explicitly configured.');
+    aiBaseUrl =
+      container.getString('OPENAI_BASE_URL') ||
+      container.requireString('aiBaseUrl', 'When AI_PROVIDER is "openai", OPENAI_BASE_URL must be explicitly configured.');
   }
 
-  // 7. Validate Taxonomy Axes (Fail-Fast)
-  const axes = fileConfig.axes;
-  if (!Array.isArray(axes) || axes.length === 0) {
+  // 8. Validate Taxonomy Axes (Fail-Fast)
+  const axes = container.requireArray<AxisDefinition>(
+    'axes',
+    'modaka-hub.config.json must declare a non-empty \'axes\' array defining taxonomy dimensions.'
+  );
+  if (axes.length === 0) {
     throw new ConfigurationError(
-      `[Bootstrap] Missing required configuration parameter: 'axes'. modaka-hub.config.json must declare a non-empty 'axes' array defining taxonomy dimensions.`
+      'axes',
+      'modaka-hub',
+      'Missing required configuration parameter',
+      'modaka-hub.config.json must declare a non-empty \'axes\' array defining taxonomy dimensions.'
     );
   }
 
@@ -371,6 +291,7 @@ export function reloadConfig(): ModakaConfig {
 
 export function resetConfigForTests(): void {
   _cachedConfig = null;
+  Config.clear();
 }
 
 export function getConfig(): ModakaConfig {
