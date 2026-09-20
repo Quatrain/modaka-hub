@@ -48,20 +48,20 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
 
   const [storageType, setStorageType] = useState('local');
   const [docStoragePath, setDocStoragePath] = useState('');
-  const [s3Bucket, setS3Bucket] = useState('world-agronomy');
+  const [s3Bucket, setS3Bucket] = useState('');
   const [s3Region, setS3Region] = useState('us-east-1');
   const [s3Endpoint, setS3Endpoint] = useState('');
   const [s3AccessKey, setS3AccessKey] = useState('');
   const [s3SecretKey, setS3SecretKey] = useState('');
 
   const [gitLocalPath, setGitLocalPath] = useState('');
-  const [gitRepoOwner, setGitRepoOwner] = useState('bradtech');
-  const [gitRepoName, setGitRepoName] = useState('world-agronomy');
-  const [gitBranch, setGitBranch] = useState('feat/bookworm-poc');
+  const [gitRepoOwner, setGitRepoOwner] = useState('');
+  const [gitRepoName, setGitRepoName] = useState('');
+  const [gitBranch, setGitBranch] = useState('develop');
   const [gitMode, setGitMode] = useState('local');
 
   const [supabaseUrl, setSupabaseUrl] = useState('');
-  const [allowedDomain, setAllowedDomain] = useState('@brad.ag');
+  const [allowedDomain, setAllowedDomain] = useState('');
 
   const loadConfig = async () => {
     setLoading(true);
@@ -78,7 +78,7 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
         if (data.storage) {
           setStorageType(data.storage.type || 'local');
           setDocStoragePath(data.storage.documentStoragePath || '');
-          setS3Bucket(data.storage.s3Bucket || 'world-agronomy');
+          setS3Bucket(data.storage.s3Bucket || '');
           setS3Region(data.storage.s3Region || 'us-east-1');
           setS3Endpoint(data.storage.s3Endpoint || '');
           setS3AccessKey(data.storage.s3AccessKey || '');
@@ -86,14 +86,14 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
         }
         if (data.git) {
           setGitLocalPath(data.git.localPath || '');
-          setGitRepoOwner(data.git.repoOwner || 'bradtech');
-          setGitRepoName(data.git.repoName || 'world-agronomy');
-          setGitBranch(data.git.branch || 'feat/bookworm-poc');
+          setGitRepoOwner(data.git.repoOwner || '');
+          setGitRepoName(data.git.repoName || '');
+          setGitBranch(data.git.branch || 'develop');
           setGitMode(data.git.mode || 'local');
         }
         if (data.auth) {
           setSupabaseUrl(data.auth.supabaseUrl || '');
-          setAllowedDomain(data.auth.allowedDomain || '@brad.ag');
+          setAllowedDomain(data.auth.allowedDomain || '');
         }
       } else {
         setError('Impossible de charger la configuration (droits admin requis).');
@@ -228,7 +228,8 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
                   description="Adapter IA actif"
                   data={[
                     { value: 'gemini', label: 'Google Gemini (Natif)' },
-                    { value: 'ollama', label: 'Ollama (Local / On-Premise)' },
+                    { value: 'deepseek', label: 'DeepSeek (V3 / R1)' },
+                    { value: 'qwen', label: 'Alibaba Qwen (2.5)' },
                     { value: 'openai', label: 'OpenAI Compatible' }
                   ]}
                   value={llmProvider}

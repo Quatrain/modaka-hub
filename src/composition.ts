@@ -1,17 +1,18 @@
 import type { AppCompositionInterface, PWAContentInterface } from '@quatrain/types';
+import { config } from './lib/config';
 
 /**
  * Official Modaka-Hub application composition definition.
  * Connects the Modaka-Hub curation UI with Modaka runtime adapters.
  */
-export const modaka-hubComposition: AppCompositionInterface<PWAContentInterface> = {
+export const modakaHubComposition: AppCompositionInterface<PWAContentInterface> = {
    content: {
       type: 'pwa',
       name: 'modaka-hub',
       version: '0.1.0',
       distPath: './dist',
       manifest: {
-         name: 'Modaka-Hub OKF Curation Workbench',
+         name: config.appTitle,
          short_name: 'Modaka-Hub',
          theme_color: '#1a202c',
          background_color: '#1a202c'
@@ -20,6 +21,7 @@ export const modaka-hubComposition: AppCompositionInterface<PWAContentInterface>
    adapters: {
       ai: {
          default: { package: '@quatrain/ai-gemini', adapter: 'GeminiAdapter' },
+         openai: { package: '@quatrain/ai-openai', adapter: 'OpenAiAdapter' },
          ocr: { package: '@quatrain/ingestion-ocr', adapter: 'OcrIngestionAdapter' },
          audio: { package: '@quatrain/ingestion-audio', adapter: 'AudioIngestionAdapter' }
       },
@@ -29,7 +31,7 @@ export const modaka-hubComposition: AppCompositionInterface<PWAContentInterface>
       queue: { package: '@quatrain/queue-sqlite', adapter: 'SQLiteQueueAdapter' }
    },
    config: {
-      okfRoot: process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy',
+      okfRoot: config.gitLocalPath,
       defaultCategory: 'inbox'
    }
 };

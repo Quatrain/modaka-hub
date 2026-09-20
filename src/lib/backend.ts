@@ -14,6 +14,8 @@ import { WebIngestionAdapter } from '@quatrain/ingestion-web';
 import { Queue } from '@quatrain/queue';
 import { SQLiteQueueAdapter } from '@quatrain/queue-sqlite';
 import { queueManager } from './queue';
+import { config } from './config';
+import { OpenAiAdapter } from '@quatrain/ai-openai';
 
 dotenv.config();
 
@@ -24,31 +26,31 @@ export async function initBackend() {
    initialized = true;
 
    Log.addLogger('default', new DefaultLoggerAdapter('', LogLevel.INFO), true);
-   Log.info('[Modaka-Hub] Initializing backend adapters and OKF storage...');
+   Log.info(`[${config.appTitle}] Initializing backend adapters and OKF storage...`);
 
-   const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
-   const documentStoragePath = process.env.DOCUMENT_STORAGE_PATH || path.join(gitLocalPath, 'assets');
+   const gitLocalPath = config.gitLocalPath;
+   const documentStoragePath = config.documentStoragePath;
 
    // 1. Initialize Document Storage
    let docAdapter: any;
-   if (process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY) {
+   if (config.s3AccessKey && config.s3SecretKey) {
       const { S3StorageAdapter } = await import('@quatrain/storage-s3');
       docAdapter = new S3StorageAdapter({
          config: {
-            region: process.env.S3_REGION || 'us-east-1',
-            endpoint: process.env.S3_ENDPOINT,
-            accesskey: process.env.S3_ACCESS_KEY,
-            secret: process.env.S3_SECRET_KEY,
-            bucket: process.env.S3_BUCKET || 'world-agronomy'
+            region: config.s3Region || 'us-east-1',
+            endpoint: config.s3Endpoint,
+            accesskey: config.s3AccessKey,
+            secret: config.s3SecretKey,
+            bucket: config.s3Bucket
          }
       } as any);
-      Log.info(`Document storage configured with S3StorageAdapter on bucket '${process.env.S3_BUCKET || 'world-agronomy'}'`);
+      Log.info(`Document storage configured with S3StorageAdapter on bucket '${config.s3Bucket}'`);
    } else {
       docAdapter = new LocalStorageAdapter({
          config: { bucket: 'documents' },
          basePath: documentStoragePath
       } as any);
-      Log.info('Document storage configured with LocalStorageAdapter');
+      Log.info(`Document storage configured with LocalStorageAdapter at: ${documentStoragePath}`);
    }
    Storage.addStorage(docAdapter, 'document-storage', false);
 
@@ -60,10 +62,21 @@ export async function initBackend() {
    });
    Backend.addBackend(okfAdapter, 'default', true);
 
-   // 3. Configure AI Gemini
-   if (process.env.GEMINI_API_KEY) {
-      Ai.setAdapter(new GeminiAdapter(process.env.GEMINI_API_KEY));
-      Log.info('AI Gemini adapter registered');
+   // 3. Configure Multi-LLM AI Adapter (Gemini, DeepSeek, Qwen, OpenAI)
+   if (config.aiProvider === 'gemini' && config.aiApiKey) {
+      Ai.setAdapter(new GeminiAdapter(config.aiApiKey));
+      Log.info(`AI Gemini adapter registered (model: ${config.aiModel || 'gemini-2.5-flash'})`);
+   } else if (config.aiApiKey) {
+      Ai.setAdapter(
+         new OpenAiAdapter({
+            apiKey: config.aiApiKey,
+            baseUrl: config.aiBaseUrl,
+            defaultModel: config.aiModel
+         })
+      );
+      Log.info(`AI OpenAI adapter registered (provider: ${config.aiProvider}, model: ${config.aiModel}, endpoint: ${config.aiBaseUrl})`);
+   } else {
+      Log.warn(`[${config.appTitle}] No AI API key provided. AI structuring will run in fallback heuristic mode.`);
    }
 
    // 4. Configure Ingestion OCR / Web
@@ -81,10 +94,10 @@ export async function initBackend() {
 
    // 6. Start listening to queue
    await queueManager.startListening();
-   Log.info('[Modaka-Hub] Backend ready. Targeting OKF repo at:', gitLocalPath);
+   Log.info(`[${config.appTitle}] Backend ready. Targeting OKF repo at: ${gitLocalPath}`);
 }
 
 // Auto initialize
 initBackend().catch(err => {
-   Log.error(`[Modaka-Hub] Initialization error: ${err.message}`);
+   Log.error(`[${config.appTitle}] Initialization error: ${err.message}`);
 });

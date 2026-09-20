@@ -20,7 +20,9 @@ const localAliases = {
   '@quatrain/api': path.join(coreDir, 'api/src/index.ts'),
   '@quatrain/http': path.join(coreDir, 'http/src/index.ts'),
   '@quatrain/ai-gemini': path.join(coreDir, 'ai-gemini/src/index.ts'),
+  '@quatrain/ai-openai': path.join(coreDir, 'ai-openai/src/index.ts'),
   '@quatrain/ai': path.join(coreDir, 'ai/src/index.ts'),
+  '@quatrain/config': path.join(coreDir, 'config/src/index.ts'),
   '@quatrain/log': path.join(coreDir, 'log/src/index.ts'),
   '@quatrain/ingestion': path.join(coreDir, 'ingestion/src/index.ts'),
   '@quatrain/ingestion-audio': path.join(coreDir, 'ingestion-audio/src/index.ts'),
@@ -36,6 +38,9 @@ const localAliases = {
   '@quatrain/ux-dropzone': path.join(coreUxDir, 'ux-dropzone/src/index.ts'),
   '@quatrain/ux-curation': path.join(coreUxDir, 'ux-curation/src/index.ts')
 };
+
+const hasLocalCore = fs.existsSync(coreDir) && fs.existsSync(coreUxDir);
+const aliases = hasLocalCore ? localAliases : {};
 
 export default defineConfig({
   output: 'server',
@@ -59,9 +64,7 @@ export default defineConfig({
     },
     resolve: {
       dedupe: ['react', 'react-dom'],
-      alias: {
-        ...localAliases
-      }
+      alias: aliases
     }
   }
 });

@@ -10,15 +10,16 @@ import { ContentItem } from './models/ContentItem';
 import { slugify, extractProperNouns } from './utils';
 import { searchAndCreateConcept } from './concept-autolink';
 import { gitSync } from './git-sync';
+import { initBackend } from './backend';
+import { config } from './config';
 
-let backendPromise: Promise<void> | null = null;
+let backendReady = false;
 function ensureBackend() {
-   if (!backendPromise) {
-      backendPromise = import('./backend').then(({ initBackend }) => {
-         return initBackend();
-      }).catch(e => {
+   if (!backendReady) {
+      initBackend().catch(e => {
          Log.error(`Failed to initialize backend dynamically: ${e.message}`);
       });
+      backendReady = true;
    }
 }
 
@@ -34,6 +35,7 @@ export interface IngestTask {
    completedAt?: string;
    tempFilePath?: string;
    textContent?: string;
+   url?: string;
    category?: string;
    thematics?: string[];
    soils?: string[];
@@ -41,6 +43,7 @@ export interface IngestTask {
    latitudes?: string[];
    altitudes?: string[];
    itineraries?: string[];
+   crops?: string[];
    soa?: string;
    contextNote?: string;
    fileHash?: string;
@@ -67,17 +70,24 @@ class ModakaHubQueueManager {
 
    public async startListening() {
       if (this.isListening) return;
-      this.isListening = true;
-      Log.info('[Modaka-Hub Queue] Starting background queue worker for "ingestion"');
+      ensureBackend();
 
-      const adapter = Queue.getQueue<any>();
-      adapter.listen('ingestion', async (task: any, options: { updateProgress: Function }) => {
-         Log.info(`[Modaka-Hub Queue] Processing ingestion task "${task.name || task.id}"`);
+      const adapter = Queue.getAdapter();
+      if (!adapter) {
+         Log.warn('[Modaka-Hub Queue] Queue adapter not yet registered. Retrying later.');
+         return;
+      }
+
+      this.isListening = true;
+      Log.info('[Modaka-Hub Queue] Starting to listen for incoming ingestion jobs...');
+
+      adapter.listen('ingestion', async (task: IngestTask, options: any) => {
+         Log.info(`[Modaka-Hub Queue] Processing ingestion task "${task.name || task.id}"...`);
          try {
             await this.executeTask(task, async (progress: number) => {
                await options.updateProgress(progress);
             });
-            Log.info(`[Modaka-Hub Queue] Completed task "${task.name || task.id}"`);
+            Log.info(`[Modaka-Hub Queue] Successfully finished task "${task.name || task.id}"`);
          } catch (err: any) {
             Log.error(`[Modaka-Hub Queue] Failed task "${task.name || task.id}": ${err.message}`);
             throw err;
@@ -87,27 +97,30 @@ class ModakaHubQueueManager {
 
    public async getTasks(): Promise<IngestTask[]> {
       ensureBackend();
-      const adapter = Queue.getQueue<any>();
+      const adapter = Queue.getAdapter();
+      if (!adapter) return [];
       return await adapter.getTasks('ingestion');
    }
 
-   public async addTask(task: Omit<IngestTask, 'id' | 'status' | 'progress' | 'createdAt'>): Promise<IngestTask> {
+   public async enqueue(task: IngestTask): Promise<string> {
       ensureBackend();
-      const adapter = Queue.getQueue<any>();
+      const adapter = Queue.getAdapter();
+      if (!adapter) throw new Error('Queue not ready');
       const messageId = await adapter.send(task, 'ingestion');
-      return {
-         ...task,
-         id: messageId,
-         status: 'pending',
-         progress: 0,
-         createdAt: new Date().toISOString()
-      } as IngestTask;
+      return messageId;
+   }
+
+   public async cancelTask(taskId: string): Promise<boolean> {
+      ensureBackend();
+      const adapter = Queue.getAdapter();
+      if (!adapter || typeof adapter.cancelTask !== 'function') return false;
+      return await adapter.cancelTask('ingestion', taskId);
    }
 
    protected async executeTask(task: IngestTask, updateProgress: (progress: number) => Promise<void>): Promise<void> {
       ensureBackend();
 
-      const gitLocalPath = process.env.GIT_LOCAL_PATH || '/Users/crapougnax/CODE/BRAD2026/world-agronomy';
+      const gitLocalPath = config.gitLocalPath;
       const assetsPath = path.join(gitLocalPath, 'assets', 'documents');
       await fs.mkdir(assetsPath, { recursive: true });
 
@@ -137,18 +150,18 @@ class ModakaHubQueueManager {
 
       await updateProgress(45);
 
-      // AI semantic analysis via Gemini adapter with multi-axial prompt
+      // AI semantic analysis via configured adapter
       let aiResult: any = null;
-      const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+      const model = config.aiModel || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
       try {
          const ocrAdapter = Ingestion.getAdapter('ocr');
          if (ocrAdapter && (rawText || buffer)) {
-            Log.info(`[Modaka-Hub Queue] Running Gemini AI multi-axial extraction (model: ${model})...`);
+            Log.info(`[Modaka-Hub Queue] Running AI multi-axial extraction (provider: ${config.aiProvider}, model: ${model})...`);
             aiResult = await ocrAdapter.process(rawText || buffer!, {
                isText: Boolean(rawText),
                mimeType: isPdf ? 'application/pdf' : 'text/plain',
-               contextNote: task.contextNote || 'Ingestion Bradtech pour base agronomique OKF. Extrais les 5 axes: sols (soils), climats (climates), latitudes/altitudes, itinéraires techniques (itineraries), productions végétales (crops). Extrais aussi rigoureusement les métadonnées bibliographiques: auteurs (authors: string[]), traducteurs (translators: string[]), éditeur (publisher: string), édition/version (edition: string), année de publication (publicationYear: string), langue (language: string), ISBN (isbn: string), DOI (doi: string), copyright de cette édition (copyright: string), titre original (originalTitle: string), langue originale (originalLanguage: string), éditeur d\'origine (originalPublisher: string), année originale (originalYear: string), copyright original (originalCopyright: string), et la citation normalisée (citation: string).',
+               contextNote: task.contextNote || 'Ingestion de document pour base de connaissances OKF. Extrais les axes thématiques pertinents, métadonnées, taxonomies et références bibliographiques complètes.',
                model
             });
          }
@@ -159,22 +172,22 @@ class ModakaHubQueueManager {
       await updateProgress(70);
 
       const title = aiResult?.title || task.name.replace(/\.[^/.]+$/, '');
-      const summary = aiResult?.summary || (rawText ? rawText.substring(0, 300).replace(/\s+/g, ' ') + '...' : 'Document agronomique curé.');
-      const tags = Array.isArray(aiResult?.tags) && aiResult.tags.length > 0 ? aiResult.tags : ['agronomie', 'curation'];
+      const summary = aiResult?.summary || (rawText ? rawText.substring(0, 300).replace(/\s+/g, ' ') + '...' : 'Document OKF curé.');
+      const tags = Array.isArray(aiResult?.tags) && aiResult.tags.length > 0 ? aiResult.tags : ['connaissances', 'curation'];
       const properNouns = Array.isArray(aiResult?.properNouns) ? aiResult.properNouns : extractProperNouns(rawText);
-      const deductedCategory = task.category || aiResult?.category || 'soil-health';
+      const deductedCategory = task.category || aiResult?.category || 'general';
 
-      // Deduce 4-axis facets if not provided
-      const soils = task.soils || aiResult?.soils || (rawText.toLowerCase().includes('argil') ? ['argilo-calcaire'] : ['vivant-microbiote']);
-      const climates = task.climates || aiResult?.climates || (rawText.toLowerCase().includes('mediterran') ? ['mediterraneen'] : ['tempere']);
-      const latitudes = task.latitudes || aiResult?.latitudes || ['40-45N'];
-      const altitudes = task.altitudes || aiResult?.altitudes || ['plaine-0-200m'];
-      const itineraries = task.itineraries || aiResult?.itineraries || (rawText.toLowerCase().includes('viti') ? ['viticulture-biologique', 'enherbement-permanent'] : ['agroecologie']);
-      const crops = task.crops || aiResult?.crops || (rawText.toLowerCase().includes('viti') || rawText.toLowerCase().includes('vign') ? ['viticulture'] : (rawText.toLowerCase().includes('arbori') || rawText.toLowerCase().includes('oliv') ? ['arboriculture'] : ['grandes-cultures']));
+      // Deduce facets if not provided
+      const soils = task.soils || aiResult?.soils || [];
+      const climates = task.climates || aiResult?.climates || [];
+      const latitudes = task.latitudes || aiResult?.latitudes || [];
+      const altitudes = task.altitudes || aiResult?.altitudes || [];
+      const itineraries = task.itineraries || aiResult?.itineraries || [];
+      const crops = task.crops || aiResult?.crops || [];
 
       const gitStatus = await gitSync.getStatus();
       const currentRev = gitStatus.lastCommit ? `rev-${gitStatus.lastCommit.split(' ')[0]}` : 'rev-1.0.0';
-      const soa = task.soa || process.env.DEFAULT_SOA || 'bradtech/world-agronomy';
+      const soa = task.soa || config.soa;
 
       const fileHash = buffer ? crypto.createHash('sha256').update(buffer).digest('hex') : undefined;
       const originalFileName = task.name || `${slugify(title)}.pdf`;
@@ -207,7 +220,7 @@ class ModakaHubQueueManager {
          description: summary,
          originalFileUri: relativeAssetUri,
          fileHash,
-         source: task.source || 'Bradtech Modaka-Hub Hub',
+         source: task.source || config.appTitle || 'Modaka-Hub',
          documentDate: aiResult?.deductedDate || new Date().toISOString().split('T')[0],
          // Bibliographic & Intellectual Property References
          authors: task.authors || aiResult?.authors || [],

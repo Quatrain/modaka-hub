@@ -101,6 +101,9 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
   const [selectedItinerary, setSelectedItinerary] = useState<string | null>(null);
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
 
+  const [currentSoa, setCurrentSoa] = useState('modaka/authority');
+  const [hubTitle, setHubTitle] = useState('Modaka-Hub');
+
   const taxonomyController = useMemo(() => {
     return new TaxonomyController({
       initialNodes: thematics,
@@ -115,7 +118,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
-        if (data.authenticated && data.user) {
+        if (data.authenticated) {
           setCurrentUser(data.user);
         }
       }
@@ -128,6 +131,8 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
     try {
       const res = await fetch('/api/taxonomies');
       const data = await res.json();
+      if (data.soa) setCurrentSoa(data.soa);
+      if (data.config?.name) setHubTitle(data.config.name);
       if (data.axes) setAxes(data.axes);
       if (data.thematics) {
         setThematics(data.thematics);
@@ -249,7 +254,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
     files.forEach(f => formData.append('files', f));
     formData.append('category', selectedThematicId === 'all' ? 'soil-health' : selectedThematicId);
     formData.append('thematics', JSON.stringify(transversalThematics.length > 0 ? transversalThematics : [selectedThematicId]));
-    formData.append('soa', 'bradtech/world-agronomy');
+    formData.append('soa', currentSoa);
 
     try {
       const res = await fetch('/api/upload', {
@@ -285,7 +290,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
       if (data.success) {
         setNotification({
           title: 'Fiche OKF enregistrée & commitée',
-          message: `Document "${metadata.title}" mis à jour avec SOA: ${metadata.soa || 'bradtech/world-agronomy'}.`,
+          message: `Document "${metadata.title}" mis à jour avec SOA: ${metadata.soa || currentSoa}.`,
           color: 'green'
         });
         setActiveDocument(null);
@@ -346,7 +351,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
               <IconBook2 size={28} color="var(--mantine-color-green-5)" />
               <div>
                 <Text fw={800} size="lg" c="white" style={{ letterSpacing: -0.5 }}>
-                  Modaka-Hub <Badge size="xs" color="green" variant="filled">Bradtech Hub</Badge>
+                  {hubTitle}
                 </Text>
                 <Text size="xs" c="dimmed">
                   Curation Multi-Axiale & Structuration OKF v0.1
@@ -360,7 +365,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                 color="blue"
                 leftSection={<IconWorld size={12} />}
               >
-                SOA: bradtech/world-agronomy
+                SOA: {currentSoa}
               </Badge>
 
               <Button
@@ -593,7 +598,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                                     {doc.category}
                                   </Badge>
                                   <Badge size="xs" variant="outline" color="gray">
-                                    {doc.soa || 'bradtech/world-agronomy'}
+                                    {doc.soa || currentSoa}
                                   </Badge>
                                   <Text size="xs" c="dimmed">
                                     {doc.revision || 'rev-1.0.0'}
@@ -719,7 +724,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                       </ThemeIcon>
                     </Group>
                     <Text fw={800} size="md" mt="xs">
-                      bradtech/world-agronomy
+                      {currentSoa}
                     </Text>
                     <Text size="xs" c="dimmed">
                       Référentiel souverain OKF v0.1

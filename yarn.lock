@@ -2046,7 +2046,16 @@ __metadata:
   dependencies:
     "@google/genai": "npm:latest"
     "@quatrain/ai": "npm:^1.1.4"
-    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/core": "npm:^1.2.19"
+  languageName: node
+  linkType: soft
+
+"@quatrain/ai-openai@portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/ai-openai@portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/ai": "workspace:*"
+    "@quatrain/core": "workspace:*"
   languageName: node
   linkType: soft
 
@@ -2054,7 +2063,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@quatrain/ai@portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
-    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/core": "npm:^1.2.19"
   languageName: node
   linkType: soft
 
@@ -2112,8 +2121,8 @@ __metadata:
   resolution: "@quatrain/auth@portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
     "@quatrain/api": "workspace:*"
-    "@quatrain/backend": "npm:^1.2.17"
-    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/backend": "npm:^1.2.20"
+    "@quatrain/core": "npm:^1.2.19"
     "@quatrain/http": "workspace:*"
   languageName: node
   linkType: soft
@@ -2126,6 +2135,15 @@ __metadata:
     "@quatrain/core": "workspace:*"
     "@quatrain/log": "workspace:*"
     "@quatrain/types": "workspace:*"
+  languageName: node
+  linkType: soft
+
+"@quatrain/config@portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@quatrain/config@portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
+  dependencies:
+    "@quatrain/core": "workspace:*"
+    "@quatrain/log": "workspace:*"
   languageName: node
   linkType: soft
 
@@ -2208,12 +2226,14 @@ __metadata:
     "@mantine/hooks": "npm:^7.10.0"
     "@quatrain/ai": "npm:^1.1.4"
     "@quatrain/ai-gemini": "npm:^1.1.4"
+    "@quatrain/ai-openai": "npm:^1.1.0"
     "@quatrain/api-client": "npm:^1.1.7"
     "@quatrain/api-server": "npm:^1.1.11"
     "@quatrain/api-server-astro": "npm:^1.1.15"
     "@quatrain/auth": "npm:^1.2.10"
     "@quatrain/auth-rbac": "npm:^1.0.0"
     "@quatrain/backend": "npm:^1.2.17"
+    "@quatrain/config": "npm:^1.0.1"
     "@quatrain/core": "npm:^1.2.17"
     "@quatrain/ingestion": "npm:^1.0.1"
     "@quatrain/ingestion-audio": "npm:^1.0.1"
@@ -2282,7 +2302,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@quatrain/queue@portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
-    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/core": "npm:^1.2.19"
     fs-extra: "npm:^11.2.0"
   languageName: node
   linkType: soft
@@ -2319,7 +2339,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.337.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.342.0"
-    "@quatrain/storage": "npm:^1.2.13"
+    "@quatrain/storage": "npm:^1.2.14"
     fs-extra: "npm:^11.2.0"
   languageName: node
   linkType: soft
@@ -2328,7 +2348,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@quatrain/storage@portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."
   dependencies:
-    "@quatrain/core": "npm:^1.2.18"
+    "@quatrain/core": "npm:^1.2.19"
     fs-extra: "npm:^11.2.0"
     object-hash: "npm:^3.0.0"
     sharp: "npm:^0.33.5"
