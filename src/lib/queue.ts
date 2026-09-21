@@ -68,11 +68,15 @@ export interface IngestTask {
 class ModakaHubQueueManager {
    protected isListening = false;
 
+   private getQueueAdapter(): any {
+      return (Queue as any).getQueue?.() || (Queue as any).getAdapter?.();
+   }
+
    public async startListening() {
       if (this.isListening) return;
       ensureBackend();
 
-      const adapter = Queue.getAdapter();
+      const adapter = this.getQueueAdapter();
       if (!adapter) {
          Log.warn('[Modaka-Hub Queue] Queue adapter not yet registered. Retrying later.');
          return;
@@ -97,14 +101,14 @@ class ModakaHubQueueManager {
 
    public async getTasks(): Promise<IngestTask[]> {
       ensureBackend();
-      const adapter = Queue.getAdapter();
+      const adapter = this.getQueueAdapter();
       if (!adapter) return [];
       return await adapter.getTasks('ingestion');
    }
 
    public async enqueue(task: IngestTask): Promise<string> {
       ensureBackend();
-      const adapter = Queue.getAdapter();
+      const adapter = this.getQueueAdapter();
       if (!adapter) throw new Error('Queue not ready');
       const messageId = await adapter.send(task, 'ingestion');
       return messageId;
@@ -112,7 +116,7 @@ class ModakaHubQueueManager {
 
    public async cancelTask(taskId: string): Promise<boolean> {
       ensureBackend();
-      const adapter = Queue.getAdapter();
+      const adapter = this.getQueueAdapter();
       if (!adapter || typeof adapter.cancelTask !== 'function') return false;
       return await adapter.cancelTask('ingestion', taskId);
    }
