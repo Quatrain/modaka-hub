@@ -7,8 +7,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency manifests and yarn modern config
-COPY package.json yarn.lock ./
-COPY .yarn ./.yarn
+COPY package.json yarn.lock .yarnrc.yml ./
 
 # Enable corepack and install dependencies
 RUN corepack enable && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install

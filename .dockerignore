@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.dist
+.astro
+.vite
+node_modules
+dist
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+.anemorph-*
+.bookworm-*
+.modaka-hub-*
+*.log
