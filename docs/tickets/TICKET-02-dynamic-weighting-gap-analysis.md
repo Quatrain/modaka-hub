@@ -4,7 +4,7 @@
 - **Status:** 📋 Backlog / Specified
 - **Priority:** Medium
 - **Components:** Telemetry Engine, Analytics Dashboard, Curation UX
-- **Authors:** Quatrain & Bradtech Engineering Teams
+- **Authors:** Quatrain Engineering Team
 
 ---
 

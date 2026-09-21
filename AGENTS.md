@@ -16,7 +16,7 @@ All AI coding agents interacting with this workspace **MUST** strictly load and 
 ## 🏗️ 2. Project-Specific Architecture & Guidelines
 
 ### A. Central Authority Hub & Multi-Axial Ingestion
-- **Single Source of Authority (SOA):** Modaka-Hub serves as the central scientific authority repository (`bradtech/world-agronomy`).
+- **Single Source of Authority (SOA):** Modaka-Hub serves as the central scientific authority repository (e.g. `quatrain/authority`).
 - **4 Fundamental Orthogonal Axes:** Every document ingested or curated is tagged across 4 distinct axes:
   1. **Sols** (`soils`: e.g. `argilo-calcaire`, `limoneux`, `sableux`, `acide`, `vivant-microbiote`, `glomaline`)
   2. **Climats** (`climates`: e.g. `mediterraneen`, `oceanique`, `semi-aride`, `continental`)
@@ -29,7 +29,7 @@ All knowledge documents curated or exported MUST strictly follow the OKF v0.1 sp
 - **Mandatory Lineage Header:** Every fiche must declare its Source of Authority and revision stamp:
   ```yaml
   ---
-  soa: bradtech/world-agronomy
+  soa: quatrain/authority
   revision: rev-2026.08-cbf52a9
   type: guide
   title: Guide pratique des couverts végétaux
@@ -50,15 +50,15 @@ All knowledge documents curated or exported MUST strictly follow the OKF v0.1 sp
   - Direct email / password via Supabase Auth API (`POST /api/auth/password-login`).
   - SSO / OAuth 2.0 PKCE S256 (`/api/auth/login` + `/api/auth/callback`).
   - Silent token refresh via secure HTTP-only cookies in `src/middleware.ts`.
-- **Domain Restriction:** Strict enforcement of the `@brad.ag` domain. Third-party domains are forbidden.
+- **Domain Restriction:** Configurable email domain whitelist enforced via `ALLOWED_EMAIL_DOMAINS` or config container (`*` or comma-separated domains).
 - **Root Roles & Granular Policies (`@quatrain/auth-rbac`):**
-  - **`admin-brad`:** Full administrative access (git commit & remote push, taxonomy edition, adapter settings).
-  - **`user-brad`:** Content curator access (OKF document curation, dropzone upload, contextual extraction, local commit). Remote git push and taxonomy structural edits are denied.
+  - **`admin`:** Full administrative access (git commit & remote push, taxonomy edition, adapter settings).
+  - **`curator`:** Content curator access (OKF document curation, dropzone upload, contextual extraction, local commit). Remote git push and taxonomy structural edits are denied.
 - **Field-Level Security (FLS):** Critical lineage fields (`soa`, `revision`) are strictly `readonly` for non-admin users and must be validated through `rbac.sanitizeWrite('document', payload)`.
 
 ### D. Contextual Extraction Engine (`/api/extract`)
-- **Farm Profile Matching:** Extracts relevant subsets of `bradtech/world-agronomy` tailored to specific farm profiles (soil, climate, altitude, practices).
-- **Target Export:** Generates customizable OKF trees or initializes dedicated client Git repositories for farm instances (`xyz.brad.farm` / Hey Brad).
+- **Profile Matching:** Extracts relevant subsets of the central authority repository tailored to specific context profiles (soil, climate, altitude, practices).
+- **Target Export:** Generates customizable OKF trees or initializes dedicated client Git repositories for local instances (`client.example.com` / Modaka Client).
 
 ### E. Asynchronous Queue Architecture
 - **Non-blocking Ingestion:** Document parsing (PDF OCR, text extraction, AI summarization via Gemini) runs through `@quatrain/queue` / SQLite queue.

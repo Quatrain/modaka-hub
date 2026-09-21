@@ -11,7 +11,7 @@ function maskKey(val?: string): string {
 
 export const GET: APIRoute = async ({ locals }) => {
   const userRoles = locals.user?.roles || [];
-  const isAdmin = userRoles.includes('admin-brad') || userRoles.includes('admin');
+  const isAdmin = userRoles.includes('admin');
 
   if (!isAdmin) {
     return new Response(
@@ -65,7 +65,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const userRoles = locals.user?.roles || [];
-  const isAdmin = userRoles.includes('admin-brad') || userRoles.includes('admin');
+  const isAdmin = userRoles.includes('admin');
 
   if (!isAdmin) {
     return new Response(

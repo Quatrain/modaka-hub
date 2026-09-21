@@ -95,7 +95,7 @@ export const GET: APIRoute = async () => {
     }
 
     return new Response(JSON.stringify({
-      soa: config.soa || 'bradtech/world-agronomy',
+      soa: config.soa || 'modaka/authority',
       config,
       axes: axesResult,
       thematics

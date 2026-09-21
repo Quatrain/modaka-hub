@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .astro/
+.pnp.*
 .bookworm-queue/
 .bookworm-temp/
 .env.local
