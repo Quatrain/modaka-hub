@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { CurationWorkbench } from '../components/CurationWorkbench';
+import { CurationWorkbenchApp } from '../components/CurationWorkbenchApp';
 
 const user = Astro.locals.user
   ? {
@@ -12,5 +12,5 @@ const user = Astro.locals.user
 ---
 
 <Layout title="Modaka-Hub - Curation OKF">
-	<CurationWorkbench initialUser={user} client:only="react" />
+	<CurationWorkbenchApp initialUser={user} client:only="react" />
 </Layout>
