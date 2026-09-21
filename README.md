@@ -225,13 +225,13 @@ podman run -d \
 
 ### Container Construction Chain (Inheritance Model)
 
-Modaka-Hub serves as the **base engine container image** (`ghcr.io/quatrain/modaka-hub:latest`). Downstream vertical distributions (such as [Hey-Brad](https://github.com/bradtech/hey-brad)) build directly on top of this image without recompiling the application bundle:
+Modaka-Hub serves as the **base engine container image** (`ghcr.io/quatrain/modaka-hub:latest`). Downstream vertical distributions (such as domain-specific client engines or local instances) build directly on top of this image without recompiling the application bundle:
 
 ```dockerfile
 # Downstream Containerfile Example
 FROM ghcr.io/quatrain/modaka-hub:latest
 
-# Inject organization-specific taxonomy and agronomic configuration
+# Inject organization-specific taxonomy and domain configuration
 COPY modaka-hub.config.json /app/modaka-hub.config.json
 
 ENV PORT=4322
