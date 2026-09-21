@@ -17,3 +17,9 @@
 1. Under **Thematics** in the left sidebar, click **+ New Category**.
 2. Enter the slug and title (e.g. `agroforestry` / `Agroforestry Systems`).
 3. The folder and index are automatically scaffolded in the target Git repository.
+
+---
+
+## 📚 Ecosystem & User Architecture Guide
+Pour comprendre quand utiliser le Hub (serveur d'autorité) plutôt que l'application Modaka cliente (copilote local), consultez :
+👉 [Guide d'usage : Modaka vs Modaka-Hub](docs/guide-modaka-vs-modaka-hub.md)
