@@ -70,6 +70,7 @@ export default defineConfig({
         '@mantine/hooks',
         '@mantine/dropzone',
         '@tabler/icons-react',
+        '@faker-js/faker',
         /@quatrain\/.*/
       ]
     },
