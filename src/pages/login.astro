@@ -3,6 +3,7 @@ import { config } from '../lib/config';
 
 const error = Astro.url.searchParams.get('error');
 const rejectedEmail = Astro.url.searchParams.get('email');
+const hasOAuthConfig = Boolean(import.meta.env.OAUTH_CLIENT_ID || process.env.OAUTH_CLIENT_ID);
 ---
 
 <!doctype html>
@@ -280,6 +281,13 @@ const rejectedEmail = Astro.url.searchParams.get('email');
         </div>
       )}
 
+      {error === 'server_misconfigured' && (
+        <div class="alert error">
+          ⚙️ <strong>Configuration SSO manquante</strong><br />
+          L'authentification SSO n'est pas configurée sur ce serveur (<code>OAUTH_CLIENT_ID</code> manquant). Veuillez utiliser vos identifiants email et mot de passe ci-dessus.
+        </div>
+      )}
+
       <!-- Formulaire Direct Email / Mot de Passe -->
       <form class="auth-form" method="POST" action="/api/auth/password-login">
         <div class="form-group">
@@ -313,17 +321,21 @@ const rejectedEmail = Astro.url.searchParams.get('email');
         </button>
       </form>
 
-      <div class="divider">ou</div>
+      {hasOAuthConfig && (
+        <>
+          <div class="divider">ou</div>
 
-      <!-- Bouton SSO OAuth -->
-      <a href="/api/auth/login" class="btn-sso">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-          <polyline points="10 17 15 12 10 7" />
-          <line x1="15" y1="12" x2="3" y2="12" />
-        </svg>
-        Connexion SSO / Entreprise
-      </a>
+          <!-- Bouton SSO OAuth -->
+          <a href="/api/auth/login" class="btn-sso">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Connexion SSO / Entreprise
+          </a>
+        </>
+      )}
 
       {config.allowedEmailDomains.length > 0 && (
         <div class="footer-note">
