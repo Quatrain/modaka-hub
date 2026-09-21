@@ -103,7 +103,7 @@ export const POST: APIRoute = async ({ request }) => {
     const record = {
       type: 'telemetry',
       category: 'usage',
-      clientVersion: payload.clientVersion || 'hey-brad-v1.0.0',
+      clientVersion: payload.clientVersion || 'modaka-v1.0.0',
       timestamp: new Date().toISOString(),
       telemetryBatch: batch
     };

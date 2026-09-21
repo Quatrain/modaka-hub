@@ -4,7 +4,7 @@
 - **Status:** 🚀 Implemented & Specified
 - **Priority:** High
 - **Components:** `modaka-hub`, `ContentItem`, Ingestion Queue, OKF Frontmatter Schema, Gemini Prompt
-- **Authors:** Quatrain & Bradtech Engineering Teams
+- **Authors:** Quatrain Engineering Team
 
 ---
 
@@ -29,7 +29,7 @@ These attributes are persisted directly into the YAML frontmatter of the markdow
 id: precis-agroecologie-viticole
 type: book
 title: Précis d'Agroécologie Viticole
-soa: bradtech/world-agronomy
+soa: quatrain/authority
 revision: rev-1.0.0
 # --- Current Edition References ---
 authors:

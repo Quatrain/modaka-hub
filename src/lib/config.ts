@@ -183,7 +183,7 @@ export function loadConfig(options?: { ignoreConfigFile?: boolean; configFilePat
       'allowedEmailDomains',
       'modaka-hub',
       'Missing required configuration parameter',
-      'Set to \'*\' to allow all domains, or comma-separated domains (e.g. \'@brad.ag\').'
+      'Set to \'*\' to allow all domains, or comma-separated domains (e.g. \'@example.com\').'
     );
   }
 

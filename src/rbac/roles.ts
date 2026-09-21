@@ -4,7 +4,7 @@ import { RbacPolicyEngine, type RoleDefinition } from '@quatrain/auth-rbac';
  * Modaka-Hub declarative role definitions and permissions.
  *
  * Enforces fine-grained route access and Field-Level Security (FLS)
- * across anonymous visitors, Bradtech curators, and administrators.
+ * across anonymous visitors, curators, and administrators.
  */
 export const modakaRoles: RoleDefinition[] = [
   // 1. Anonymous Public Visitor (unauthenticated)
@@ -49,13 +49,6 @@ export const modakaRoles: RoleDefinition[] = [
     }
   },
 
-  // Downstream role alias for Bradtech deployment
-  {
-    id: 'user-brad',
-    name: 'Bradtech Curator',
-    inherits: ['curator']
-  },
-
   // 3. Canonical Administrator Role
   {
     id: 'admin',
@@ -73,13 +66,6 @@ export const modakaRoles: RoleDefinition[] = [
         }
       }
     }
-  },
-
-  // Downstream role alias for Bradtech deployment
-  {
-    id: 'admin-brad',
-    name: 'Bradtech Administrator',
-    inherits: ['admin']
   }
 ];
 

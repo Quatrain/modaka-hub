@@ -4,7 +4,7 @@
 - **Status:** 📋 Backlog / Specified
 - **Priority:** Low
 - **Components:** RBAC Engine, OKF Frontmatter Schema, Git Commit Signing
-- **Authors:** Quatrain & Bradtech Engineering Teams
+- **Authors:** Quatrain Engineering Team
 
 ---
 
@@ -40,7 +40,7 @@ id: biocontrol-mildew-copper-reduction
 type: technical-itinerary
 curator_trail:
   - user_id: 2ec2520e-7a0d-4fb0-884a-22f41a373567
-    email: olivier@brad.ag
+    email: curator@example.org
     role: curator
     action: drafted
     timestamp: 2026-09-03T18:45:00Z

@@ -4,7 +4,7 @@
 - **Status:** 📋 Backlog / Specified
 - **Priority:** Medium
 - **Components:** Ingestion Pipeline, Audio Processing (`@quatrain/ingestion-audio`), Web Harvester (`@quatrain/ingestion-web`)
-- **Authors:** Quatrain & Bradtech Engineering Teams
+- **Authors:** Quatrain Engineering Team
 
 ---
 

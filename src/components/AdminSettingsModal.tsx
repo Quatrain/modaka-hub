@@ -290,7 +290,7 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
                   <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                     <TextInput
                       label="S3 Bucket"
-                      placeholder="world-agronomy"
+                      placeholder="modaka-documents"
                       value={s3Bucket}
                       onChange={(e) => setS3Bucket(e.currentTarget.value)}
                     />
@@ -381,8 +381,8 @@ export function AdminSettingsModal({ opened, onClose }: AdminSettingsModalProps)
                 mb="sm"
               />
               <Group gap="xs" mt="md">
-                <Badge color="yellow">admin-brad : Privilèges complets (Push Git, Paramètres)</Badge>
-                <Badge color="blue">user-brad : Curateur (Ingestion, Écriture fiches OKF)</Badge>
+                <Badge color="yellow">admin : Privilèges complets (Push Git, Paramètres)</Badge>
+                <Badge color="blue">curator : Curateur (Ingestion, Écriture fiches OKF)</Badge>
               </Group>
             </Paper>
           </Stack>

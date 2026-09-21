@@ -1,16 +1,16 @@
 /**
- * TICKET-01 — Selective Forks Engine & Git Provisioning for Farm Instances
+ * TICKET-01 — Selective Forks Engine & Git Provisioning for Client Instances
  * https://github.com/Quatrain/modaka-hub/issues/1
  *
  * Starter skeleton for src/pages/api/extract.ts (Astro API route), implementing
  * the two pieces the ticket specifies:
- *   1. Context Matching Algorithm — filter world-agronomy/content/ by the
- *      farm's multi-axial profile (soils, climates, lat/alt, itineraries).
+ *   1. Context Matching Algorithm — filter content/ by the
+ *      target multi-axial profile (soils, climates, lat/alt, itineraries).
  *   2. Git Sub-Tree Provisioning Pipeline — materialize the matches into a
  *      dedicated bare repo with upstream lineage metadata.
  *
  * This is also the critical-path item for the whole ecosystem: modaka's
- * TICKET-03 (bi-directional sync) and the hey-brad vertical both assume this
+ * TICKET-03 (bi-directional sync) and downstream client verticals both assume this
  * endpoint exists — nothing downstream of modaka-hub can get real data
  * without it. See the roadmap doc for sequencing.
  *
@@ -127,7 +127,7 @@ async function provisionFarmRepo(
    await fs.writeFile(
       lineagePath,
       [
-         `upstream_soa: bradtech/world-agronomy`,
+         `upstream_soa: quatrain/authority`,
          `upstream_revision: ${upstreamRevision}`,
          `farm_tenant_id: ${profile.farmTenantId}`,
          `provisioned_at: ${new Date().toISOString()}`,
@@ -166,7 +166,7 @@ export const POST: APIRoute = async ({ request }) => {
    // section may call this endpoint (see docs/tickets/TICKET-04 for the
    // formal RBAC transition model this should plug into).
 
-   const contentRoot = process.env.OKF_STORAGE_PATH ?? path.resolve('world-agronomy/content')
+   const contentRoot = process.env.OKF_STORAGE_PATH ?? path.resolve('authority/content')
    const farmsRoot = process.env.FARMS_REPO_ROOT ?? path.resolve('farms')
    const upstreamRevision = process.env.SOA_REVISION ?? 'unknown'
 

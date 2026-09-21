@@ -52,11 +52,11 @@ describe('Configuration Layer & Fail-Fast Contract', () => {
     resetConfigForTests();
     expect(isEmailDomainAllowed('john@anywhere.com')).toBe(true);
 
-    process.env.ALLOWED_EMAIL_DOMAINS = '@brad.ag';
+    process.env.ALLOWED_EMAIL_DOMAINS = '@example.com';
     resetConfigForTests();
     const conf = loadConfig();
-    expect(conf.allowedEmailDomains).toEqual(['@brad.ag']);
-    expect(isEmailDomainAllowed('curator@brad.ag')).toBe(true);
+    expect(conf.allowedEmailDomains).toEqual(['@example.com']);
+    expect(isEmailDomainAllowed('curator@example.com')).toBe(true);
     expect(isEmailDomainAllowed('stranger@external.com')).toBe(false);
   });
 

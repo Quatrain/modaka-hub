@@ -375,7 +375,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                 leftSection={<IconDownload size={14} />}
                 onClick={() => setIsExtractionOpen(true)}
               >
-                Extraire pour Modaka / Hey Brad
+                Extraire pour Client Modaka
               </Button>
 
               <Badge
@@ -395,15 +395,15 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
               {currentUser && (
                 <Group gap="xs" style={{ borderLeft: "1px solid rgba(48, 54, 61, 0.8)", paddingLeft: "12px" }}>
                   <Avatar color="green" radius="xl" size="sm">
-                    {currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : "BR"}
+                    {currentUser.name ? currentUser.name.substring(0, 2).toUpperCase() : "MO"}
                   </Avatar>
                   <Box visibleFrom="xs">
                     <Group gap={6} align="center">
                       <Text size="xs" fw={700} c="white" style={{ lineHeight: 1.2 }}>
                         {currentUser.name}
                       </Text>
-                      {currentUser.roles?.includes('admin-brad') || currentUser.roles?.includes('admin') ? (
-                        <Badge size="xs" color="yellow" variant="light">Admin Brad</Badge>
+                      {currentUser.roles?.includes('admin') ? (
+                        <Badge size="xs" color="yellow" variant="light">Admin</Badge>
                       ) : (
                         <Badge size="xs" color="teal" variant="light">Curateur</Badge>
                       )}
@@ -415,7 +415,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                 </Group>
               )}
 
-              {(currentUser?.roles?.includes('admin-brad') || currentUser?.roles?.includes('admin') || currentUser?.isAdmin) && (
+              {(currentUser?.roles?.includes('admin') || currentUser?.isAdmin) && (
                 <Tooltip label="Paramètres Système (LLM, S3, Git, Auth)">
                   <ActionIcon
                     variant="light"
@@ -536,7 +536,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                 Ingestion & Curation ({documents.length})
               </Tabs.Tab>
               <Tabs.Tab value="telemetry" leftSection={<IconActivity size={16} />}>
-                Télémétrie & Retours Hey Brad ({telemetryData.totalInteractions})
+                Télémétrie & Retours Client ({telemetryData.totalInteractions})
               </Tabs.Tab>
             </Tabs.List>
 
@@ -676,7 +676,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
               </SimpleGrid>
             </Tabs.Panel>
 
-            {/* TAB 2: Telemetry & Hey Brad Feedback */}
+            {/* TAB 2: Telemetry & Client Feedback */}
             <Tabs.Panel value="telemetry">
               <Stack gap="md">
                 <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
@@ -693,7 +693,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
                       {telemetryData.totalInteractions}
                     </Text>
                     <Text size="xs" c="dimmed">
-                      Requêtes posées à Hey Brad
+                      Requêtes posées au Client Modaka
                     </Text>
                   </Paper>
 
@@ -734,7 +734,7 @@ export function CurationWorkbench({ initialUser }: CurationWorkbenchProps = {}) 
 
                 <Paper withBorder p="md" radius="md">
                   <Title order={4} mb="md">
-                    Statistiques d'Usage par Fiche Agronomique (Remontées Hey Brad)
+                    Statistiques d'Usage par Fiche (Remontées Clients)
                   </Title>
 
                   {telemetryData.stats.length === 0 ? (

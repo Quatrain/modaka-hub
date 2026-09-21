@@ -8,8 +8,7 @@ export const GET: APIRoute = async ({ locals }) => {
     });
   }
 
-  const isAdmin =
-    locals.user.roles.includes('admin-brad') || locals.user.roles.includes('admin');
+  const isAdmin = locals.user.roles.includes('admin');
 
   return new Response(
     JSON.stringify({
