@@ -39,8 +39,16 @@ const localAliases = {
   '@quatrain/ux-curation': path.join(coreUxDir, 'ux-curation/src/index.ts')
 };
 
+const nodeModulesAliases = {};
+['ux-taxonomy', 'ux-dropzone', 'ux-curation'].forEach((pkg) => {
+  const tsPath = path.resolve(`./node_modules/@quatrain/${pkg}/src/index.ts`);
+  if (fs.existsSync(tsPath)) {
+    nodeModulesAliases[`@quatrain/${pkg}`] = tsPath;
+  }
+});
+
 const hasLocalCore = Boolean(process.env.USE_LOCAL_CORE) && fs.existsSync(coreDir) && fs.existsSync(coreUxDir);
-const aliases = hasLocalCore ? localAliases : {};
+const activeAliases = hasLocalCore ? { ...nodeModulesAliases, ...localAliases } : nodeModulesAliases;
 
 export default defineConfig({
   output: 'server',
@@ -66,8 +74,20 @@ export default defineConfig({
       ]
     },
     resolve: {
-      dedupe: ['react', 'react-dom'],
-      alias: aliases
+      dedupe: [
+        'react',
+        'react-dom',
+        '@mantine/core',
+        '@mantine/hooks',
+        '@mantine/dropzone',
+        '@tabler/icons-react'
+      ],
+      alias: [
+        { find: /^@mantine\/core$/, replacement: path.resolve('./node_modules/@mantine/core/esm/index.mjs') },
+        { find: /^@mantine\/hooks$/, replacement: path.resolve('./node_modules/@mantine/hooks/esm/index.mjs') },
+        { find: /^@mantine\/dropzone$/, replacement: path.resolve('./node_modules/@mantine/dropzone/esm/index.mjs') },
+        ...Object.entries(activeAliases).map(([find, replacement]) => ({ find, replacement }))
+      ]
     }
   }
 });
