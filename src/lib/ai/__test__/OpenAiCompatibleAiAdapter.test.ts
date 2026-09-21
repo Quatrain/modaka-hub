@@ -105,6 +105,8 @@ describe('OpenAiCompatibleAiAdapter', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
       ok: false,
       status: 401,
+      statusText: 'Unauthorized',
+      json: async () => ({ error: { message: 'Invalid API key' } }),
       text: async () => 'Invalid API key'
     } as any);
 

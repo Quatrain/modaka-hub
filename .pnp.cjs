@@ -33,36 +33,36 @@ const RAW_RUNTIME_STATE =
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-gemini", "portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-client", "portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-audio", "portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-ocr", "portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-web", "portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/ai-gemini", "npm:1.1.5"],\
+          ["@quatrain/ai-openai", "npm:1.1.1"],\
+          ["@quatrain/api-client", "npm:1.1.7"],\
+          ["@quatrain/api-server", "npm:1.1.11"],\
+          ["@quatrain/api-server-astro", "npm:1.1.16"],\
+          ["@quatrain/auth", "npm:1.2.13"],\
+          ["@quatrain/auth-rbac", "npm:1.0.0"],\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/config", "npm:1.0.1"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/ingestion-audio", "npm:1.0.1"],\
+          ["@quatrain/ingestion-ocr", "npm:1.0.2"],\
+          ["@quatrain/ingestion-web", "npm:1.0.1"],\
+          ["@quatrain/log", "npm:1.2.6"],\
           ["@quatrain/modaka-hub", "workspace:."],\
-          ["@quatrain/okf", "portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue", "portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue-sqlite", "portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine", "portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine-qmd", "portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-local", "portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-s3", "portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/okf", "npm:1.0.5"],\
+          ["@quatrain/queue", "npm:1.2.3"],\
+          ["@quatrain/queue-sqlite", "npm:1.0.2"],\
+          ["@quatrain/searchengine", "npm:1.0.1"],\
+          ["@quatrain/searchengine-qmd", "npm:1.0.1"],\
+          ["@quatrain/storage", "npm:1.2.14"],\
+          ["@quatrain/storage-local", "npm:1.1.7"],\
+          ["@quatrain/storage-s3", "npm:1.2.9"],\
+          ["@quatrain/types", "npm:1.2.18"],\
+          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.1.9"],\
+          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
+          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
+          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
           ["@tabler/icons-react", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:3.46.0"],\
           ["@tsconfig/recommended", "npm:1.0.13"],\
           ["@types/fs-extra", "npm:11.0.4"],\
@@ -1475,22 +1475,22 @@ const RAW_RUNTIME_STATE =
     ]],\
     ["@google/genai", [\
       ["npm:2.18.0", {\
-        "packageLocation": "./.yarn/unplugged/@google-genai-virtual-3bcfac3ef1/node_modules/@google/genai/",\
+        "packageLocation": "./.yarn/unplugged/@google-genai-virtual-931f925742/node_modules/@google/genai/",\
         "packageDependencies": [\
           ["@google/genai", "npm:2.18.0"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:8618bb4d1e018a5c16acb370996bcdcd7e292c514d0a8efedff00458c5c44193a9e3fe40d42d2d1bab191b12cc33d966bf70045b610cdc3bf9043ded2a914d3d#npm:2.18.0", {\
-        "packageLocation": "./.yarn/unplugged/@google-genai-virtual-3bcfac3ef1/node_modules/@google/genai/",\
+      ["virtual:a1f82a0c56081f43a9728f22c19a27a3d190ac204a3b0944aed8155f8a4bb13647665d7830eaf59def9b76ce7c2f0d889394fefb84c330806bc38ac647c0ae4f#npm:2.18.0", {\
+        "packageLocation": "./.yarn/unplugged/@google-genai-virtual-931f925742/node_modules/@google/genai/",\
         "packageDependencies": [\
-          ["@google/genai", "virtual:8618bb4d1e018a5c16acb370996bcdcd7e292c514d0a8efedff00458c5c44193a9e3fe40d42d2d1bab191b12cc33d966bf70045b610cdc3bf9043ded2a914d3d#npm:2.18.0"],\
+          ["@google/genai", "virtual:a1f82a0c56081f43a9728f22c19a27a3d190ac204a3b0944aed8155f8a4bb13647665d7830eaf59def9b76ce7c2f0d889394fefb84c330806bc38ac647c0ae4f#npm:2.18.0"],\
           ["@modelcontextprotocol/sdk", null],\
           ["@types/modelcontextprotocol__sdk", null],\
           ["google-auth-library", "npm:10.9.1"],\
           ["p-retry", "npm:4.6.2"],\
           ["protobufjs", "npm:7.6.5"],\
-          ["ws", "virtual:3bcfac3ef17ce2ee56c41923f3d5987774f059f11424bdc3441c5deea417fe7270005378a19b179f45f263a4c2d05c471779a51118954d8f7090ad9b9972b7d9#npm:8.21.3"]\
+          ["ws", "virtual:931f9257429c7e77d6ff33481555b3ebe90818a66dd460961d295dff0ed34cdc96f959bb59615190cd4a0abab4e30604041160c83f072c391f3ab775639f5f59#npm:8.21.3"]\
         ],\
         "packagePeers": [\
           "@modelcontextprotocol/sdk",\
@@ -2353,215 +2353,215 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@quatrain/ai", [\
-      ["portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ai/",\
+      ["npm:1.1.4", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ai-npm-1.1.4-826ca3f6ef-10c0.zip/node_modules/@quatrain/ai/",\
         "packageDependencies": [\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/core", "npm:1.2.19"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ai-gemini", [\
-      ["portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ai-gemini/",\
+      ["npm:1.1.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ai-gemini-npm-1.1.5-a1f82a0c56-10c0.zip/node_modules/@quatrain/ai-gemini/",\
         "packageDependencies": [\
-          ["@google/genai", "virtual:8618bb4d1e018a5c16acb370996bcdcd7e292c514d0a8efedff00458c5c44193a9e3fe40d42d2d1bab191b12cc33d966bf70045b610cdc3bf9043ded2a914d3d#npm:2.18.0"],\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-gemini", "portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@google/genai", "virtual:a1f82a0c56081f43a9728f22c19a27a3d190ac204a3b0944aed8155f8a4bb13647665d7830eaf59def9b76ce7c2f0d889394fefb84c330806bc38ac647c0ae4f#npm:2.18.0"],\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/ai-gemini", "npm:1.1.5"],\
+          ["@quatrain/core", "npm:1.2.19"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ai-openai", [\
-      ["portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ai-openai/",\
+      ["npm:1.1.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ai-openai-npm-1.1.1-346a403ff3-10c0.zip/node_modules/@quatrain/ai-openai/",\
         "packageDependencies": [\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/ai-openai", "npm:1.1.1"],\
+          ["@quatrain/core", "npm:1.2.19"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/api", [\
-      ["portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/api/",\
+      ["npm:1.1.8", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-api-npm-1.1.8-c444389c61-10c0.zip/node_modules/@quatrain/api/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/http", "npm:1.0.5"],\
+          ["@quatrain/log", "npm:1.2.6"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/api-client", [\
-      ["portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/api-client/",\
+      ["npm:1.1.7", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-api-client-npm-1.1.7-392927f6e5-10c0.zip/node_modules/@quatrain/api-client/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-client", "portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/api-client", "npm:1.1.7"],\
+          ["@quatrain/http", "npm:1.0.5"],\
+          ["@quatrain/log", "npm:1.2.6"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/api-server", [\
-      ["portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/api-server/",\
+      ["npm:1.1.11", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-api-server-npm-1.1.11-69c1f79e4e-10c0.zip/node_modules/@quatrain/api-server/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/api-server", "npm:1.1.11"],\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/http", "npm:1.0.5"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/api-server-astro", [\
-      ["portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/api-server-astro/",\
+      ["npm:1.1.16", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-api-server-astro-npm-1.1.16-857321b025-10c0.zip/node_modules/@quatrain/api-server-astro/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/api-server", "npm:1.1.11"],\
+          ["@quatrain/api-server-astro", "npm:1.1.16"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/auth", [\
-      ["portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/auth/",\
+      ["npm:1.2.13", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-auth-npm-1.2.13-a4a994de91-10c0.zip/node_modules/@quatrain/auth/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/auth", "npm:1.2.13"],\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/http", "npm:1.0.5"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/auth-rbac", [\
-      ["portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/auth-rbac/",\
+      ["npm:1.0.0", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-auth-rbac-npm-1.0.0-b96f69303f-10c0.zip/node_modules/@quatrain/auth-rbac/",\
         "packageDependencies": [\
-          ["@quatrain/api", "portal:../../QUATRAIN/Core/packages/api::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/api", "npm:1.1.8"],\
+          ["@quatrain/auth-rbac", "npm:1.0.0"],\
+          ["@quatrain/http", "npm:1.0.5"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/backend", [\
-      ["portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/backend/",\
+      ["npm:1.2.20", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-backend-npm-1.2.20-59938daed3-10c0.zip/node_modules/@quatrain/backend/",\
         "packageDependencies": [\
           ["@faker-js/faker", "npm:7.6.0"],\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/log", "npm:1.2.6"],\
+          ["@quatrain/types", "npm:1.2.18"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/config", [\
-      ["portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/config/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-config-npm-1.0.1-ac454fe606-10c0.zip/node_modules/@quatrain/config/",\
         "packageDependencies": [\
-          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/config", "npm:1.0.1"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/log", "npm:1.2.6"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/core", [\
-      ["portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/core/",\
+      ["npm:1.2.19", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-core-npm-1.2.19-549941caa6-10c0.zip/node_modules/@quatrain/core/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/log", "npm:1.2.6"],\
+          ["@quatrain/types", "npm:1.2.18"],\
           ["node-persist", "npm:4.0.4"],\
           ["which", "npm:5.0.0"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/http", [\
-      ["portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/http/",\
+      ["npm:1.0.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-http-npm-1.0.5-cd30c39c1c-10c0.zip/node_modules/@quatrain/http/",\
         "packageDependencies": [\
-          ["@quatrain/http", "portal:../../QUATRAIN/Core/packages/http::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/http", "npm:1.0.5"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ingestion", [\
-      ["portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ingestion/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ingestion-npm-1.0.1-e872ad48d4-10c0.zip/node_modules/@quatrain/ingestion/",\
         "packageDependencies": [\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/log", "npm:1.2.6"],\
+          ["@quatrain/types", "npm:1.2.18"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ingestion-audio", [\
-      ["portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ingestion-audio/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ingestion-audio-npm-1.0.1-a354784088-10c0.zip/node_modules/@quatrain/ingestion-audio/",\
         "packageDependencies": [\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-audio", "portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/ingestion-audio", "npm:1.0.1"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ingestion-ocr", [\
-      ["portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ingestion-ocr/",\
+      ["npm:1.0.2", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ingestion-ocr-npm-1.0.2-da4803bd94-10c0.zip/node_modules/@quatrain/ingestion-ocr/",\
         "packageDependencies": [\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-ocr", "portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/ingestion-ocr", "npm:1.0.2"],\
           ["pdf-parse", "npm:1.1.4"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ingestion-web", [\
-      ["portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/ingestion-web/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ingestion-web-npm-1.0.1-6c59cecef5-10c0.zip/node_modules/@quatrain/ingestion-web/",\
         "packageDependencies": [\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-web", "portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/ingestion-web", "npm:1.0.1"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/log", [\
-      ["portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/log/",\
+      ["npm:1.2.6", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-log-npm-1.2.6-fa8db8b35c-10c0.zip/node_modules/@quatrain/log/",\
         "packageDependencies": [\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/log", "npm:1.2.6"],\
           ["chalk", "npm:4.1.2"],\
           ["loglevel", "npm:1.9.2"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/modaka-hub", [\
@@ -2573,36 +2573,36 @@ const RAW_RUNTIME_STATE =
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/ai", "portal:../../QUATRAIN/Core/packages/ai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-gemini", "portal:../../QUATRAIN/Core/packages/ai-gemini::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ai-openai", "portal:../../QUATRAIN/Core/packages/ai-openai::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-client", "portal:../../QUATRAIN/Core/packages/api-client::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server", "portal:../../QUATRAIN/Core/packages/api-server::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/api-server-astro", "portal:../../QUATRAIN/Core/packages/api-server-astro::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth", "portal:../../QUATRAIN/Core/packages/auth::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/auth-rbac", "portal:../../QUATRAIN/Core/packages/auth-rbac::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/config", "portal:../../QUATRAIN/Core/packages/config::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion", "portal:../../QUATRAIN/Core/packages/ingestion::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-audio", "portal:../../QUATRAIN/Core/packages/ingestion-audio::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-ocr", "portal:../../QUATRAIN/Core/packages/ingestion-ocr::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ingestion-web", "portal:../../QUATRAIN/Core/packages/ingestion-web::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ai", "npm:1.1.4"],\
+          ["@quatrain/ai-gemini", "npm:1.1.5"],\
+          ["@quatrain/ai-openai", "npm:1.1.1"],\
+          ["@quatrain/api-client", "npm:1.1.7"],\
+          ["@quatrain/api-server", "npm:1.1.11"],\
+          ["@quatrain/api-server-astro", "npm:1.1.16"],\
+          ["@quatrain/auth", "npm:1.2.13"],\
+          ["@quatrain/auth-rbac", "npm:1.0.0"],\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/config", "npm:1.0.1"],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/ingestion", "npm:1.0.1"],\
+          ["@quatrain/ingestion-audio", "npm:1.0.1"],\
+          ["@quatrain/ingestion-ocr", "npm:1.0.2"],\
+          ["@quatrain/ingestion-web", "npm:1.0.1"],\
+          ["@quatrain/log", "npm:1.2.6"],\
           ["@quatrain/modaka-hub", "workspace:."],\
-          ["@quatrain/okf", "portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue", "portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue-sqlite", "portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine", "portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine-qmd", "portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-local", "portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-s3", "portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/okf", "npm:1.0.5"],\
+          ["@quatrain/queue", "npm:1.2.3"],\
+          ["@quatrain/queue-sqlite", "npm:1.0.2"],\
+          ["@quatrain/searchengine", "npm:1.0.1"],\
+          ["@quatrain/searchengine-qmd", "npm:1.0.1"],\
+          ["@quatrain/storage", "npm:1.2.14"],\
+          ["@quatrain/storage-local", "npm:1.1.7"],\
+          ["@quatrain/storage-s3", "npm:1.2.9"],\
+          ["@quatrain/types", "npm:1.2.18"],\
+          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.1.9"],\
+          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
+          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
+          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
           ["@tabler/icons-react", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:3.46.0"],\
           ["@tsconfig/recommended", "npm:1.0.13"],\
           ["@types/fs-extra", "npm:11.0.4"],\
@@ -2627,124 +2627,124 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@quatrain/okf", [\
-      ["portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/okf/",\
+      ["npm:1.0.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-okf-npm-1.0.5-45ffeefd12-10c0.zip/node_modules/@quatrain/okf/",\
         "packageDependencies": [\
-          ["@quatrain/backend", "portal:../../QUATRAIN/Core/packages/backend::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/log", "portal:../../QUATRAIN/Core/packages/log::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/okf", "portal:../../QUATRAIN/Core/packages/okf::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/backend", "npm:1.2.20"],\
+          ["@quatrain/log", "npm:1.2.6"],\
+          ["@quatrain/okf", "npm:1.0.5"],\
+          ["@quatrain/storage", "npm:1.2.14"],\
+          ["@quatrain/types", "npm:1.2.18"],\
           ["yaml", "npm:2.9.0"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/queue", [\
-      ["portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/queue/",\
+      ["npm:1.2.3", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-queue-npm-1.2.3-9b67a28b92-10c0.zip/node_modules/@quatrain/queue/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue", "portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/queue", "npm:1.2.3"],\
           ["fs-extra", "npm:11.4.0"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/queue-sqlite", [\
-      ["portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/queue-sqlite/",\
+      ["npm:1.0.2", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-queue-sqlite-npm-1.0.2-d1a8723dc8-10c0.zip/node_modules/@quatrain/queue-sqlite/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue", "portal:../../QUATRAIN/Core/packages/queue::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/queue-sqlite", "portal:../../QUATRAIN/Core/packages/queue-sqlite::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/queue", "npm:1.2.3"],\
+          ["@quatrain/queue-sqlite", "npm:1.0.2"],\
           ["sqlite", "npm:5.1.1"],\
-          ["sqlite3", "virtual:a1ea536d30954a32ef86955fbd61240fa67b2b2a897ec8782bb104fe8fd43eb9c310f6aefbf98205c1620cd48a3f1f523cd405eafd9a7312c3975107e612e778#npm:5.1.7"]\
+          ["sqlite3", "virtual:d1a8723dc85810afb94e80285477e4ff4ec635a291e4aed9d0d42e9bb0c146677e41cb8b02ec85cf2e999ef96973c2d5f8612eb35703f0939aa67e9164db671a#npm:5.1.7"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/searchengine", [\
-      ["portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/searchengine/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-searchengine-npm-1.0.1-cffc3bda59-10c0.zip/node_modules/@quatrain/searchengine/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine", "portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/searchengine", "npm:1.0.1"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/searchengine-qmd", [\
-      ["portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/searchengine-qmd/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-searchengine-qmd-npm-1.0.1-e6dd0a2494-10c0.zip/node_modules/@quatrain/searchengine-qmd/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine", "portal:../../QUATRAIN/Core/packages/searchengine::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/searchengine-qmd", "portal:../../QUATRAIN/Core/packages/searchengine-qmd::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/searchengine", "npm:1.0.1"],\
+          ["@quatrain/searchengine-qmd", "npm:1.0.1"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/storage", [\
-      ["portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/storage/",\
+      ["npm:1.2.14", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-storage-npm-1.2.14-09aa07107e-10c0.zip/node_modules/@quatrain/storage/",\
         "packageDependencies": [\
-          ["@quatrain/core", "portal:../../QUATRAIN/Core/packages/core::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/core", "npm:1.2.19"],\
+          ["@quatrain/storage", "npm:1.2.14"],\
           ["fs-extra", "npm:11.4.0"],\
           ["object-hash", "npm:3.0.0"],\
           ["sharp", "npm:0.33.5"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/storage-local", [\
-      ["portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/storage-local/",\
+      ["npm:1.1.7", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-storage-local-npm-1.1.7-c39e72116a-10c0.zip/node_modules/@quatrain/storage-local/",\
         "packageDependencies": [\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-local", "portal:../../QUATRAIN/Core/packages/storage-local::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/storage", "npm:1.2.14"],\
+          ["@quatrain/storage-local", "npm:1.1.7"],\
           ["fs-extra", "npm:11.4.0"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/storage-s3", [\
-      ["portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/storage-s3/",\
+      ["npm:1.2.9", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-storage-s3-npm-1.2.9-10260c850e-10c0.zip/node_modules/@quatrain/storage-s3/",\
         "packageDependencies": [\
           ["@aws-sdk/client-s3", "npm:3.1116.0"],\
           ["@aws-sdk/s3-request-presigner", "npm:3.1116.0"],\
-          ["@quatrain/storage", "portal:../../QUATRAIN/Core/packages/storage::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/storage-s3", "portal:../../QUATRAIN/Core/packages/storage-s3::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/storage", "npm:1.2.14"],\
+          ["@quatrain/storage-s3", "npm:1.2.9"],\
           ["fs-extra", "npm:11.4.0"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/types", [\
-      ["portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/Core/packages/types/",\
+      ["npm:1.2.18", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-types-npm-1.2.18-32b85f48da-10c0.zip/node_modules/@quatrain/types/",\
         "packageDependencies": [\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/types", "npm:1.2.18"]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ux", [\
-      ["portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/CoreUX/packages/ux/",\
+      ["npm:1.1.9", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ux-npm-1.1.9-163014859f-10c0.zip/node_modules/@quatrain/ux/",\
         "packageDependencies": [\
-          ["@quatrain/ux", "portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ux", "npm:1.1.9"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-virtual-6c8dceccda/3/QUATRAIN/CoreUX/packages/ux/",\
+      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.1.9", {\
+        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-virtual-e740c744a9/4/.yarn/berry/cache/@quatrain-ux-npm-1.1.9-163014859f-10c0.zip/node_modules/@quatrain/ux/",\
         "packageDependencies": [\
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/ux", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.1.9"],\
           ["@types/react", "npm:18.3.31"],\
           ["@types/react-dom", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:18.3.7"],\
           ["react", "npm:18.3.1"],\
@@ -2756,25 +2756,25 @@ const RAW_RUNTIME_STATE =
           "react-dom",\
           "react"\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ux-curation", [\
-      ["portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/CoreUX/packages/ux-curation/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ux-curation-npm-1.0.1-d9edc2a461-10c0.zip/node_modules/@quatrain/ux-curation/",\
         "packageDependencies": [\
-          ["@quatrain/ux-curation", "portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ux-curation", "npm:1.0.1"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-curation-virtual-0780722b08/3/QUATRAIN/CoreUX/packages/ux-curation/",\
+      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-curation-virtual-74388667f1/4/.yarn/berry/cache/@quatrain-ux-curation-npm-1.0.1-d9edc2a461-10c0.zip/node_modules/@quatrain/ux-curation/",\
         "packageDependencies": [\
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-curation::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/types", "npm:1.2.18"],\
+          ["@quatrain/ux-curation", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
+          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
           ["@tabler/icons-react", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:3.46.0"],\
           ["@types/react", "npm:18.3.31"],\
           ["@types/react-dom", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:18.3.7"],\
@@ -2787,25 +2787,25 @@ const RAW_RUNTIME_STATE =
           "react-dom",\
           "react"\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ux-dropzone", [\
-      ["portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/CoreUX/packages/ux-dropzone/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ux-dropzone-npm-1.0.1-d815b1b0c8-10c0.zip/node_modules/@quatrain/ux-dropzone/",\
         "packageDependencies": [\
-          ["@quatrain/ux-dropzone", "portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ux-dropzone", "npm:1.0.1"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-dropzone-virtual-a0cfa712ed/3/QUATRAIN/CoreUX/packages/ux-dropzone/",\
+      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-dropzone-virtual-826830abd0/4/.yarn/berry/cache/@quatrain-ux-dropzone-npm-1.0.1-d815b1b0c8-10c0.zip/node_modules/@quatrain/ux-dropzone/",\
         "packageDependencies": [\
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-dropzone::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/types", "npm:1.2.18"],\
+          ["@quatrain/ux-dropzone", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
           ["@tabler/icons-react", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:3.46.0"],\
           ["@types/react", "npm:18.3.31"],\
           ["@types/react-dom", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:18.3.7"],\
@@ -2818,24 +2818,24 @@ const RAW_RUNTIME_STATE =
           "react-dom",\
           "react"\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@quatrain/ux-taxonomy", [\
-      ["portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "../../QUATRAIN/CoreUX/packages/ux-taxonomy/",\
+      ["npm:1.0.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/@quatrain-ux-taxonomy-npm-1.0.1-b39e2a51a4-10c0.zip/node_modules/@quatrain/ux-taxonomy/",\
         "packageDependencies": [\
-          ["@quatrain/ux-taxonomy", "portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."]\
+          ["@quatrain/ux-taxonomy", "npm:1.0.1"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A.", {\
-        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-taxonomy-virtual-fd21376e87/3/QUATRAIN/CoreUX/packages/ux-taxonomy/",\
+      ["virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1", {\
+        "packageLocation": "./.yarn/__virtual__/@quatrain-ux-taxonomy-virtual-700fda612e/4/.yarn/berry/cache/@quatrain-ux-taxonomy-npm-1.0.1-b39e2a51a4-10c0.zip/node_modules/@quatrain/ux-taxonomy/",\
         "packageDependencies": [\
           ["@mantine/core", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
           ["@mantine/hooks", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:7.17.8"],\
-          ["@quatrain/types", "portal:../../QUATRAIN/Core/packages/types::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
-          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#portal:../../QUATRAIN/CoreUX/packages/ux-taxonomy::locator=%40quatrain%2Fmodaka-hub%40workspace%3A."],\
+          ["@quatrain/types", "npm:1.2.18"],\
+          ["@quatrain/ux-taxonomy", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:1.0.1"],\
           ["@tabler/icons-react", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:3.46.0"],\
           ["@types/react", "npm:18.3.31"],\
           ["@types/react-dom", "virtual:3b113a900dac6c534a9c134a5fbed48affe8d8f918f28a194a8d54ddc84411b74bd5f25bdb13ac6d2ac0989630bb5a1064c5ecb467f5ed7761d419cd273b4616#npm:18.3.7"],\
@@ -2848,7 +2848,7 @@ const RAW_RUNTIME_STATE =
           "react-dom",\
           "react"\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@rolldown/pluginutils", [\
@@ -8318,21 +8318,21 @@ const RAW_RUNTIME_STATE =
     ]],\
     ["sqlite3", [\
       ["npm:5.1.7", {\
-        "packageLocation": "./.yarn/unplugged/sqlite3-virtual-1b70135b87/node_modules/sqlite3/",\
+        "packageLocation": "./.yarn/unplugged/sqlite3-virtual-7209e8a749/node_modules/sqlite3/",\
         "packageDependencies": [\
           ["sqlite3", "npm:5.1.7"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:a1ea536d30954a32ef86955fbd61240fa67b2b2a897ec8782bb104fe8fd43eb9c310f6aefbf98205c1620cd48a3f1f523cd405eafd9a7312c3975107e612e778#npm:5.1.7", {\
-        "packageLocation": "./.yarn/unplugged/sqlite3-virtual-1b70135b87/node_modules/sqlite3/",\
+      ["virtual:d1a8723dc85810afb94e80285477e4ff4ec635a291e4aed9d0d42e9bb0c146677e41cb8b02ec85cf2e999ef96973c2d5f8612eb35703f0939aa67e9164db671a#npm:5.1.7", {\
+        "packageLocation": "./.yarn/unplugged/sqlite3-virtual-7209e8a749/node_modules/sqlite3/",\
         "packageDependencies": [\
           ["@types/node-gyp", null],\
           ["bindings", "npm:1.5.0"],\
           ["node-addon-api", "npm:7.1.1"],\
           ["node-gyp", "npm:8.4.1"],\
           ["prebuild-install", "npm:7.1.3"],\
-          ["sqlite3", "virtual:a1ea536d30954a32ef86955fbd61240fa67b2b2a897ec8782bb104fe8fd43eb9c310f6aefbf98205c1620cd48a3f1f523cd405eafd9a7312c3975107e612e778#npm:5.1.7"],\
+          ["sqlite3", "virtual:d1a8723dc85810afb94e80285477e4ff4ec635a291e4aed9d0d42e9bb0c146677e41cb8b02ec85cf2e999ef96973c2d5f8612eb35703f0939aa67e9164db671a#npm:5.1.7"],\
           ["tar", "npm:6.2.1"]\
         ],\
         "packagePeers": [\
@@ -9523,14 +9523,14 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:3bcfac3ef17ce2ee56c41923f3d5987774f059f11424bdc3441c5deea417fe7270005378a19b179f45f263a4c2d05c471779a51118954d8f7090ad9b9972b7d9#npm:8.21.3", {\
-        "packageLocation": "./.yarn/__virtual__/ws-virtual-e6d53de6de/4/.yarn/berry/cache/ws-npm-8.21.3-63c47e1f60-10c0.zip/node_modules/ws/",\
+      ["virtual:931f9257429c7e77d6ff33481555b3ebe90818a66dd460961d295dff0ed34cdc96f959bb59615190cd4a0abab4e30604041160c83f072c391f3ab775639f5f59#npm:8.21.3", {\
+        "packageLocation": "./.yarn/__virtual__/ws-virtual-bf07d57ab5/4/.yarn/berry/cache/ws-npm-8.21.3-63c47e1f60-10c0.zip/node_modules/ws/",\
         "packageDependencies": [\
           ["@types/bufferutil", null],\
           ["@types/utf-8-validate", null],\
           ["bufferutil", null],\
           ["utf-8-validate", null],\
-          ["ws", "virtual:3bcfac3ef17ce2ee56c41923f3d5987774f059f11424bdc3441c5deea417fe7270005378a19b179f45f263a4c2d05c471779a51118954d8f7090ad9b9972b7d9#npm:8.21.3"]\
+          ["ws", "virtual:931f9257429c7e77d6ff33481555b3ebe90818a66dd460961d295dff0ed34cdc96f959bb59615190cd4a0abab4e30604041160c83f072c391f3ab775639f5f59#npm:8.21.3"]\
         ],\
         "packagePeers": [\
           "@types/bufferutil",\
