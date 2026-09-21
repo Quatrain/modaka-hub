@@ -71,6 +71,7 @@ export default defineConfig({
         '@mantine/dropzone',
         '@tabler/icons-react',
         '@faker-js/faker',
+        '@google/genai',
         /@quatrain\/.*/
       ]
     },
